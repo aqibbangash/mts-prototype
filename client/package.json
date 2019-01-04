@@ -26,17 +26,20 @@
     "font-awesome": "^4.7.0",
     "node-sass": "^4.10.0",
     "prop-types": "^15.6.2",
-    "react": "^16.6.3",
+    "react": "^16.7.0",
     "react-app-polyfill": "^0.1.3",
     "react-chartjs-2": "^2.7.2",
-    "react-dom": "^16.6.3",
+    "react-dom": "^16.7.0",
+    "react-jw-player": "^1.19.0",
     "react-loadable": "^5.5.0",
     "react-player": "^1.8.0",
     "react-router-config": "^4.4.0-beta.6",
     "react-router-dom": "^4.3.1",
+    "react-simple-video-player": "^1.0.0",
     "react-test-renderer": "^16.6.3",
     "reactstrap": "^6.5.0",
-    "simple-line-icons": "^2.4.1"
+    "simple-line-icons": "^2.4.1",
+    "video-react": "^0.13.1"
   },
   "proxy": "http://localhost:5000/",
   "devDependencies": {
