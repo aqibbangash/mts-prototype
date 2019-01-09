@@ -7,7 +7,7 @@ import Gallery from 'react-grid-gallery';
 import './screenshots.css'
 
 var request = require("request");
-//const url = "http://localhost:5000"
+// const url = "http://localhost:5000"
 const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
@@ -25,26 +25,26 @@ class Screenshots extends Component {
 
 
 
-  componentDidMount = () =>
-  {
-    console.log(" screenshots did mount ::");
-    console.log("screenshots recieved ::", this.props.screenshots.result);
+  // componentDidMount = () =>
+  // {
+  //   console.log(" screenshots did mount ::");
+  //   console.log("screenshots recieved ::", this.props.screenshots.result);
+  //
+  //    this.images=[];
+  //
+  //
+  //
+  //   // this.props.screenshots.result.screenshots.forEach(function(i,idx,x){
+  //   //   console.log("images url :: ",i);
+  //   // })
+  //   // console.log("url :: ", url+images);
+  //   // console.log("images :: ", images);
+  //    // this.setState((state, props) => {
+  //    //   return {counter: 0 + props.step};
+  //    // });
+  //  }
 
-     this.images=[];
-
-
-
-    // this.props.screenshots.result.screenshots.forEach(function(i,idx,x){
-    //   console.log("images url :: ",i);
-    // })
-    // console.log("url :: ", url+images);
-    // console.log("images :: ", images);
-     // this.setState((state, props) => {
-     //   return {counter: 0 + props.step};
-     // });
-   }
-
-   componentWillMount()
+   componentDidMount()
    {
 
      console.log("base url", url);
@@ -59,7 +59,7 @@ class Screenshots extends Component {
           thumbnail: url+i,
           thumbnailWidth: 320,
           thumbnailHeight: 174,
-          isSelected: this.state.imgSelect,
+          // isSelected: this.state.imgSelect,
           caption: "ARY News"
        })
      })
@@ -71,32 +71,67 @@ class Screenshots extends Component {
       onSelectImage={this.onSelectImage}/>
     </div>
 
+    this.setState((state, props) => {
+         return {counter: 0 + props.step};
+       });
+
    }
 
    onSelectImage= (index, image)=>
    {
-     var imgLength=''
+     // console.log("array :: ", imageArray);
+     console.log("Array length", imageArray.length);
 
-     imageArray[imageArray.length] = image.src.replace(url+"/","");
-     console.log( "length : ",imageArray.length);
-     console.log("images :: ", imageArray);
-     // console.log("image index :: ", index);
-     // console.log("image click :: ", image);
-     // console.log("img property :: ", index.hasOwnProperty("isSelected") );
-     // if(index.hasOwnProperty("isSelected"))
-     // {
-     //   console.log("true");
-     //   this.setState({
-     //        imgSelect: false
-     //    })
-     // }
-     // else {
-     //   console.log("false");
-     //   this.setState({
-     //        imgSelect: true
-     //    })
-     // }
+     var i=0
+     var imgSrc=image.src.replace(url+"/","")
+    if(image.isSelected)
+    {
+      console.log("true");
 
+        image.isSelected = false;
+        console.log("imgSrc :: ", imgSrc);
+
+        imageArray.forEach((i,idx,x)=>{
+          var index = imageArray.indexOf(i);
+          if(i==imgSrc)
+          {
+            console.log("found",i);
+            console.log("found on index :: ", idx);
+            imageArray.splice(index, 1);
+            console.log("removed :: ", imageArray);
+          }
+          else
+          {
+            console.log("not found");
+          }
+        })
+
+
+    }
+    else
+    {
+      console.log("false");
+      if(imageArray.length<6)
+      {
+        image.isSelected = true;
+
+        imageArray[imageArray.length] = image.src.replace(url+"/","");
+        console.log("added to array");
+        console.log("added :: ", imageArray);
+      }
+      else {
+        alert('only 6 images can be selected');
+      }
+
+    }
+
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+
+
+     // console.log( "length : ",imageArray.length);
+     // console.log("array :: ", imageArray);
    }
 
    onCombine=()=>

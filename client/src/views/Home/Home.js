@@ -29,7 +29,15 @@ class Home extends Component {
           <p>Ary news</p>
         </div>
         <div className="videoStyle" onClick={this.handleVideo}>
-          <ReactPlayer width="100%" height="100%"  url={url+"uploads/file.mov"} playing={true} controls={true}/>
+          <ReactPlayer
+            width="100%"
+            height="100%"
+            url={url+"uploads/file.mov"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
         </div>
         <div style={{height:"10%"}}>
           <p>Click on video to view </p>
