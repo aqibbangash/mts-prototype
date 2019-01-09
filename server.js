@@ -27,13 +27,107 @@ app.use(cors());
 // ==========================================database connection===================================
 mongoose.connect(process.env.MONGODB_URI,
   {
-    useMongoClient: true ,
     poolSize: 20,
     keepAlive: 300000,
   }); // database conneciton to azure pro database
   mongoose
   .connection
   .once('connected', () => console.log('Connected to database'));
+  mongoose
+  .connection
+  .once("connected",()=>{
+    var promises = [];
+    var previousTime = "00";
+    var count = 0;
+    var currentTime = "0"
+    var screenshotsArray = [];
+    var promise = new Promise((reject,resolve)=>{
+      for(var i = 0; i<40 ; i = i+2){
+        var timeString = "00";
+
+      if(i <= 38){
+      //  console.log("currentTime before : ",parseInt(currentTime))
+        timeString = (previousTime+":"+i).toString();
+      }else{
+        currentTime = (parseInt(previousTime)+1).toString();
+        timeString = (currentTime+":"+i/2).toString();
+      }
+  //    console.log("timeString : ", timeString);
+        ffmpeg('./uploads/file.mov')
+        .output('./screenshots/screenshot'+i+'.png')
+        .noAudio()
+        .seek(timeString)
+        .on('error', function(err) {
+        //  console.log('An error occurred: ' + err.message);
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+          promises.push('/screenshots/screenshot'+i+'.png')
+          resolve();
+          count = count+1;
+          if (i/2 == count){
+              video.create({
+                name : Date.now(),
+                datetime : Date.now(),
+                screenshots : screenshotsArray
+              }).then(function(result){
+                console.log("stored in db")
+              })
+          }
+        })
+        .on('end', function() {
+        //  console.log('Processing finished !',i);
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+          promises.push('/screenshots/screenshot'+i+'.png')
+          resolve();
+          count = count+1;
+          if (i/2 == count){
+              video.create({
+                name : Date.now(),
+                datetime : Date.now(),
+                screenshots : screenshotsArray
+              }).then(function(result){
+                console.log("stored in db")
+              })
+          }
+
+        })
+        .run();
+        //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+        // if( i >= 38){
+        //   video.create({
+        //     name : Date.now(),
+        //     datetime : Date.now(),
+        //     screenshots : screenshotsArray
+        //   }).then(function(result){
+        //     console.log("stored in db")
+        //   })
+        // }
+
+      }
+    })
+
+
+promise.all(promises)
+ .then(function(data){ /* do stuff when success */
+   video.create({
+     name : Date.now(),
+     datetime : Date.now(),
+     screenshots : screenshotsArray
+   }).then(function(result){
+     console.log("stored in db")
+   })
+ })
+ .catch(function(err){ /* error handling */ });
+
+function checkValue(numb){
+ return new Promise(function(resolve, reject){
+  // place here your logic
+  // return resolve([result object]) in case of success
+  // return reject([error object]) in case of error
+});
+
+
+  }
+})
 app.use(morgan('dev'));
 // json manipulation on server side
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true,parameterLimit:50000}));
@@ -52,65 +146,7 @@ app.get('/uploads/:id',function(req,res){
 })
 
 // app.get('/takeshot',function(req,res){
-var previousTime = "00";
-var currentTime = "0"
-var screenshotsArray = [];
-for(var i = 0; i<90 ; i = i+2){
 
-  var timeString = "00";
-if(i <= 60){
-  console.log("currentTime before : ",parseInt(currentTime))
-  timeString = (previousTime+":"+i).toString();
-}else{
-  currentTime = (parseInt(previousTime)+1).toString();
-  timeString = (currentTime+":"+i/2).toString();
-}
-console.log("timeString : ", timeString);
-  ffmpeg('./uploads/file.mov')
-  .output('./screenshots/screenshot'+i+'.png')
-  .noAudio()
-  .seek(timeString)
-  .on('error', function(err) {
-    //console.log('An error occurred: ' + err.message);
-
-  })
-  .on('end', function() {
-    console.log('Processing finished !');
-
-  })
-  .run();
-    // gm(path.join(__dirname)+'/screenshots/screenshot'+i+'.png')
-    // .crop(1500, 100, 0, 270)
-    // .write('./uploads/done'+i+'.png', (err) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }else{
-    //     console.log("done");
-    //   }
-    // });
-    screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-    var count = 0;
-    if(i >= 88){
-      video.create({
-        name : Date.now(),
-        datetime : Date.now(),
-        screenshots : screenshotsArray
-      }).then(function(result){
-        console.log("stored in db")
-      })
-
-          // .in('-page', '+0+500')  // Custom place for each of the images
-          // .in(path.join(__dirname)+'/screenshots/screenshot6.png')
-          // .in('-page', '+0+450')
-          // .in(path.join(__dirname)+'/screenshots/screenshot4.png')
-          // .in('-page', '+0+400')
-          // .in(path.join(__dirname)+'/screenshots/screenshot2.png')
-          // .in('-page', '+0+350')
-          // .in(path.join(__dirname)+'/screenshots/screenshot0.png')
-
-    }
-
-}
 
 
 
