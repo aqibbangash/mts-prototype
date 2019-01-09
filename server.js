@@ -55,7 +55,7 @@ app.get('/uploads/:id',function(req,res){
 var previousTime = "00";
 var currentTime = "0"
 var screenshotsArray = [];
-for(var i = 0; i<90 ; i = i+2){
+for(var i = 0; i<40 ; i = i+2){
 
   var timeString = "00";
 if(i <= 60){
