@@ -138,6 +138,10 @@ app.get('/screenshots/:id',function(req,res){
   console.log(req.params)
   res.sendFile(__dirname+'/screenshots/'+req.params.id)
 })
+app.get('/headlines/:id',function(req,res){
+  console.log(req.params)
+  res.sendFile(__dirname+'/headlines/'+req.params.id)
+})
 
 app.get('/headlines/:id',function(req,res){
   console.log(req.params)
