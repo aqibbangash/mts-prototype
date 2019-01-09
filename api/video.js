@@ -45,7 +45,7 @@ exports.combineTickers = function(req,res){
           }
         x.write(dir+'/output'+count+'.jpg', function (err) {
             if (err) console.log(err);
-            res.status(200).send({image:'/output'+count+'.jpg'});
+            res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
         count = count+1;
         start = 500;
