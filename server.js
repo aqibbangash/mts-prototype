@@ -137,12 +137,12 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/screenshots/:id',function(req,res){
   console.log(req.params)
-  res.sendFile(path.join(__dirname)+'/screenshots/'+req.params.id)
+  res.sendFile(__dirname+'/screenshots/'+req.params.id)
 })
 
 app.get('/uploads/:id',function(req,res){
   console.log(req.params)
-  res.sendFile(path.join(__dirname)+'/uploads/'+req.params.id)
+  res.sendFile(__dirname+'/uploads/'+req.params.id)
 })
 
 // app.get('/takeshot',function(req,res){
