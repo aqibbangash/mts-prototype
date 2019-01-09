@@ -23,16 +23,17 @@ exports.combineTickers = function(req,res){
   var x = gm()
   var count = 0;
   var start = 500;
+  params.screenshots = params.screenshots.sort();
   if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
     var headline = [];
-    for(var k=0 ; k<params.screenshots.length ; k++){
+    for(var k=params.screenshots.length-1 ; k>0 ; k--){
       if(start == 500){
          x = gm()
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(path.join(__dirname)+parms.screenshots[k])
       start = start-50;
-      if(k ==params.screenshots.length-1 || start-50<0){
+      if(k ==0 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
         var dir = path.join(__dirname)+'/headlines/'+new Date().getYear().toString()+new Date().getMonth()+new Date().getTime().toString();
