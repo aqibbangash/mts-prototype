@@ -139,9 +139,48 @@ app.get('/screenshots/:id',function(req,res){
   res.sendFile(__dirname+'/screenshots/'+req.params.id)
 })
 
+app.get('/headlines/:id',function(req,res){
+  console.log(req.params)
+  res.sendFile(__dirname+'/headlines/'+req.params.id)
+})
+
 app.get('/uploads/:id',function(req,res){
   console.log(req.params)
   res.sendFile(__dirname+'/uploads/'+req.params.id)
+})
+
+app.post('/combineTickers',function(req,res){
+  var params = req.body;
+  console.log("*****************",req.body)
+  var x = gm()
+  var count = 0;
+  var start = 500;
+  if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
+    var headline = [];
+    for(var k=0 ; k<params.screenshots.length ; k++){
+      if(start == 500){
+         x = gm()
+      }
+      x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
+      .in(__dirname+params.screenshots[k])
+      start = start-50;
+      if(k ==params.screenshots.length-1 || start-50<0){
+        x.minify()  // Halves the size, 512x512 -> 256x256
+        x.mosaic()  // Merges the images as a matrix
+        var dir = __dirname+'/headlines/';
+        console.log("%$%$%$%$%$%$%$%$%$%",dir)
+        x.write(dir+'/output'+count+'.jpg', function (err) {
+            if (err) console.log(err);
+            res.status(200).send({image: 'headlines/output'+count+'.jpg'});
+        });
+        count = count+1;
+        start = 500;
+      }
+    }
+  }else{
+    res.status(403).send({message:"screenshots must be selected"});
+  }
+
 })
 
 // app.get('/takeshot',function(req,res){

@@ -2,7 +2,8 @@ var video = require("../modals/video.js");
 const gm = require('gm');
 const width = 1000;
 const height = 100;
-var fs = require('fs')
+var fs = require('fs');
+var path = require('path');
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
@@ -19,7 +20,7 @@ exports.getVideos = function(req,res){
 
 exports.combineTickers = function(req,res){
   var params = req.body;
-  console.log("*****************")
+  console.log("*****************",req.body)
   var x = gm()
   var count = 0;
   var start = 500;
@@ -30,7 +31,7 @@ exports.combineTickers = function(req,res){
          x = gm()
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
-      .in(path.join(__dirname)+parms.screenshots[k])
+      .in(path.join(__dirname)+params.screenshots[k])
       start = start-50;
       if(k ==params.screenshots.length-1 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
