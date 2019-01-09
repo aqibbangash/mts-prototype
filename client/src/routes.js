@@ -26,6 +26,7 @@ const Tooltips = React.lazy(() => import('./views/Base/Tooltips'));
 // const Charts = React.lazy(() => import('./views/Charts'));
 
 const Home = React.lazy(() => import('./views/Home/Home'));
+const Screenshots = React.lazy(() => import('./views/Home/Screenshots'));
 
 // const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 // const Flags = React.lazy(() => import('./views/Icons/Flags'));
@@ -44,6 +45,7 @@ const Home = React.lazy(() => import('./views/Home/Home'));
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/home', component: Home },
+  { path: '/home/Screenshots', name: 'Screenshots', component: Screenshots },
   // { path: '/theme', exact: true, name: 'Theme', component: Colors },
   // { path: '/theme/colors', name: 'Colors', component: Colors },
   // { path: '/theme/typography', name: 'Typography', component: Typography },
