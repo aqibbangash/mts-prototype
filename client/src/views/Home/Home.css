@@ -3,7 +3,7 @@
 .HomeStyle
 {
   width:100%;
-  background:yellow;
+  /* background:yellow; */
   display:inline-flex
 }
 .videoStyle
@@ -16,5 +16,5 @@
 {
   width:50%;
   margin:5px;
-  background:orange
+  /* background:orange */
 }

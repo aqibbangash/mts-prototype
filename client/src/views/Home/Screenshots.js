@@ -6,10 +6,10 @@ import './screenshots.css'
 
 class Screenshots extends Component {
 
-  constructor()
-  {
-    super();
-  }
+  // constructor()
+  // {
+  //   super();
+  // }
 
 
   componentDidMount = () =>
