@@ -8,11 +8,11 @@ var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 exports.getVideos = function(req,res){
-  video.find({}).exec(function(error,result){
+  video.find({}).sort({createdAt:1}).exec(function(error,result){
     if(error){
       res.status(500).send({error:error});
     }else{
-      res.status(200).send({result:result});
+      res.status(200).send({result:result[0]});
     }
   })
 }
