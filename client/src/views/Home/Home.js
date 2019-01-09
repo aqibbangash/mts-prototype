@@ -6,7 +6,8 @@ import ReactPlayer from 'react-player'
 import Screenshots from'./Screenshots.js'
 import './Home.css'
 
-// const url = "http://localhost:5000/"
+var request = require("request");
+const url = "http://localhost:5000/"
 
 class Home extends Component {
 
@@ -18,6 +19,7 @@ class Home extends Component {
   componentDidMount = () =>
   {
     console.log("did mount ::");
+    this.screenshotsList=''
     this.HomeContent=
     <div className="HomeStyle">
 
@@ -26,7 +28,7 @@ class Home extends Component {
           <p>Ary news</p>
         </div>
         <div className="videoStyle" onClick={this.handleVideo}>
-          <ReactPlayer width="100%" height="100%"  url={"http://localhost:3000/uploads/file.mov"} playing controls={true}/>
+          <ReactPlayer width="100%" height="100%"  url={"http://localhost:3000/uploads/file.mov"} playing={false} controls={true}/>
         </div>
         <div style={{height:"10%"}}>
           <p>Click on video to view </p>
@@ -44,36 +46,35 @@ class Home extends Component {
    handleVideo=()=>
    {
      console.log("video clicked ::");
-     // console.log("screenshots folder :: ", {"http://localhost:3000/screenshots"});
-     // var screenshotsPath="http://localhost:3000/"
-     // var screenshotsList=[]
-     // screenshotsPath.forEach(function(i,idx,x){
-     //   screenshotsList[idx]={i['screenshots']}
-     // })
-     // console.log("screenshots List :: ", screenshotsList);
 
-     
-     // fetch(
-     //   url + 'api/category-list', {
-     //       method: 'get',
-     //       headers: new Headers({
-     //         "Content-Type": "application/json"
-     //       })
-     //
-     //     }
-     // )
-     // .then(
-     //
-     //   (res) => {
-     //     console.log("Response ::", res)
-     //   }
-     // )
+     var options = {
+       method: 'POST',
+       url: url + 'getvideos',
+       headers: { },
+     };
 
-     this.HomeContent=<Screenshots />
+     request(options, (error, response, body) =>
+     {
+       if (error)
+       {
+         console.log("Error", error);
+       }
+       else
+       {
+         console.log("Response body :: ", JSON.parse(body));
+         // this.screenshotsList=JSON.parse(response.body.result)
+
+
+       }
+     });
+
+     this.HomeContent=<Screenshots  />
 
        this.setState((state, props) => {
          return {counter: 0 + props.step};
        });
+
+
    }
 
 

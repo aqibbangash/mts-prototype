@@ -14,7 +14,9 @@ class Screenshots extends Component {
 
   componentDidMount = () =>
   {
-    console.log(" screenshots did mount ::");
+    // console.log(" screenshots did mount ::", this.props);
+
+
      // this.setState((state, props) => {
      //   return {counter: 0 + props.step};
      // });
