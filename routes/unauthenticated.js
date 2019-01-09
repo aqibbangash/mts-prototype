@@ -4,5 +4,5 @@ var app = express();
 var router = express.Router();
 
 router.post('/getVideos',video.getVideos);
-//router.post('/combineTickers',video.combineTickers);
+router.post('/combineTickers',video.combineTickers);
 module.exports = router;

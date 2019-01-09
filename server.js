@@ -149,7 +149,7 @@ app.get('/uploads/:id',function(req,res){
   res.sendFile(__dirname+'/uploads/'+req.params.id)
 })
 
-app.post('/combineTickers',function(req,res){
+app.post('/combineTickerjhjkhjhs',function(req,res){
   var params = req.body;
   console.log("*****************",req.body)
   var x = gm()

@@ -7,7 +7,9 @@ import Gallery from 'react-grid-gallery';
 import './screenshots.css'
 
 var request = require("request");
-const url = "http://localhost:5000"
+//const url = "http://localhost:5000"
+const url = "https://mts-prototype.herokuapp.com"
+
 var imageArray=[]
 class Screenshots extends Component {
 
@@ -75,7 +77,7 @@ class Screenshots extends Component {
    {
      var imgLength=''
 
-     imageArray[imageArray.length] = image.src.replace(url,"");
+     imageArray[imageArray.length] = image.src.replace(url+"/","");
      console.log( "length : ",imageArray.length);
      console.log("images :: ", imageArray);
      // console.log("image index :: ", index);
