@@ -35,7 +35,7 @@ exports.combineTickers = function(req,res){
       if(k ==params.screenshots.length-1 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
-        var dir = path.join(__dirname)+'/headlines/'+new Date().getYear().toString()+new Date().getMonth().toString();
+        var dir = path.join(__dirname)+'/headlines/'+new Date().getYear().toString()+new Date().getMonth()+new Date().getTime().toString();
         if (!fs.existsSync(dir)){
               fs.mkdirSync(dir);
           }
@@ -45,9 +45,6 @@ exports.combineTickers = function(req,res){
         });
         count = count+1;
         start = 500;
-        if(k == params.screenshots.length-1){
-
-        }
       }
     }
   }else{

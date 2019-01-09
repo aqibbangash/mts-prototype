@@ -59,7 +59,7 @@ for(var i = 0; i<90 ; i = i+2){
 
   var timeString = "00";
 if(i <= 60){
-  console.log("currentTime before : ",parseInt(currentTime))
+//  console.log("currentTime before : ",parseInt(currentTime))
   timeString = (previousTime+":"+i).toString();
 }else{
   currentTime = (parseInt(previousTime)+1).toString();
@@ -75,7 +75,7 @@ console.log("timeString : ", timeString);
 
   })
   .on('end', function() {
-    console.log('Processing finished !');
+    //console.log('Processing finished !');
 
   })
   .run();
