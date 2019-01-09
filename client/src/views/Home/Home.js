@@ -7,7 +7,8 @@ import Screenshots from'./Screenshots.js'
 import './Home.css'
 
 var request = require("request");
-const url = "http://localhost:5000/"
+// const url = "http://localhost:5000/"
+const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -28,7 +29,7 @@ class Home extends Component {
           <p>Ary news</p>
         </div>
         <div className="videoStyle" onClick={this.handleVideo}>
-          <ReactPlayer width="100%" height="100%"  url={"http://localhost:3000/uploads/file.mov"} playing={false} controls={true}/>
+          <ReactPlayer width="100%" height="100%"  url={url+"uploads/file.mov"} playing={true} controls={true}/>
         </div>
         <div style={{height:"10%"}}>
           <p>Click on video to view </p>
