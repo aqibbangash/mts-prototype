@@ -58,12 +58,11 @@ mongoose.connect(process.env.MONGODB_URI,
         .noAudio()
         .seek(timeString)
         .on('error', function(err) {
-        //  console.log('An error occurred: ' + err.message);
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
           promises.push('/screenshots/screenshot'+i+'.png')
           resolve();
-          count = count+1;
-          if (i/2 == count){
+          count = count+2;
+          if (i == count){
               video.create({
                 name : Date.now(),
                 datetime : Date.now(),
@@ -75,11 +74,11 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .on('end', function() {
         //  console.log('Processing finished !',i);
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
           promises.push('/screenshots/screenshot'+i+'.png')
           resolve();
-          count = count+1;
-          if (i/2 == count){
+          count = count+2;
+          if (i == count){
               video.create({
                 name : Date.now(),
                 datetime : Date.now(),
