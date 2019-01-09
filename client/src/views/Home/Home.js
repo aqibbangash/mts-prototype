@@ -62,17 +62,18 @@ class Home extends Component {
        else
        {
          console.log("Response body :: ", JSON.parse(body));
-         // this.screenshotsList=JSON.parse(response.body.result)
+         this.screenshotsList=JSON.parse(body)
 
+         this.HomeContent=<Screenshots  screenshots={this.screenshotsList}/>
+
+           this.setState((state, props) => {
+             return {counter: 0 + props.step};
+           });
 
        }
      });
 
-     this.HomeContent=<Screenshots  />
 
-       this.setState((state, props) => {
-         return {counter: 0 + props.step};
-       });
 
 
    }
