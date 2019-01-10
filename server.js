@@ -278,6 +278,54 @@ app.post('/combineTickers',function(req,res){
 //})
 
 
+process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+// Imports the Google Cloud client library
+const speech = require('@google-cloud/speech');
+//const fs = require('fs');
+
+// Creates a client
+const client = new speech.SpeechClient();
+
+// The name of the audio file to transcribe
+const fileName = './uploads/audio.mp3';
+
+// Reads a local audio file and converts it to base64
+const file = fs.readFileSync(fileName);
+const audioBytes = file.toString('base64');
+
+// The audio file's encoding, sample rate in hertz, and BCP-47 language code
+const audio = {
+  content: audioBytes,
+};
+console.log("1");
+const config = {
+  encoding: 'LINEAR16',
+  sampleRateHertz: 16000,
+  languageCode: 'ur-PK',
+};
+const request = {
+  audio: audio,
+  config: config,
+};
+console.log("2");
+// Detects speech in the audio file
+client
+  .recognize(request)
+  .then(data => {
+    console.log(data);
+    const response = data[0];
+    const transcription = response.results
+      .map(result => result.alternatives[0].transcript)
+      .join('\n');
+    console.log(`Transcription: ${transcription}`);
+  })
+  .catch(err => {
+    console.error('ERROR:', err);
+  });
+
+
+
+
 // create a GET route
 app.get('/express_backend', (req, res) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
