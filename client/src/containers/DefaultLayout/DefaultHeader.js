@@ -4,8 +4,8 @@ import {   Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import {  AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+// import logo from '../../assets/img/brand/logo.svg'
+// import sygnet from '../../assets/img/brand/sygnet.svg'
 
 const propTypes = {
   children: PropTypes.node,
@@ -25,10 +25,10 @@ class DefaultHeader extends Component {
 
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
-          <AppNavbarBrand
+          {/*<AppNavbarBrand
             full={{ src: logo, width: 89, height: 25, alt: 'MTS' }}
             minimized={{ src: sygnet, width: 30, height: 30, alt: 'MTS' }}
-          />
+          />*/}
 
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">

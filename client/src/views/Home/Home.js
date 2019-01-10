@@ -26,7 +26,7 @@ class Home extends Component {
 
       <div className="videoGrid" >
         <div style={{height:"10%"}}>
-          <p>Ary news</p>
+          <p className="videoTitle">Ary news</p>
         </div>
         <div className="videoStyle" onClick={this.handleVideo}>
           <ReactPlayer
@@ -40,7 +40,7 @@ class Home extends Component {
             />
         </div>
         <div style={{height:"10%"}}>
-          <p>Click on video to view </p>
+          <p style={{fontWeight:"bold"}}>Click on video to view sorted News Tickers</p>
         </div>
       </div>
 
