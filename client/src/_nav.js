@@ -27,81 +27,81 @@ export default {
           url: '/search/breadcrumbs',
           icon: 'icon-puzzle',
         },
-        {
-          name: 'Cards',
-          url: '/search/cards',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Carousels',
-          url: '/search/carousels',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Collapses',
-          url: '/search/collapses',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Dropdowns',
-          url: '/search/dropdowns',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Forms',
-          url: '/search/forms',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Jumbotrons',
-          url: '/search/jumbotrons',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'List groups',
-          url: '/search/list-groups',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Navs',
-          url: '/search/navs',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Paginations',
-          url: '/search/paginations',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Popovers',
-          url: '/search/popovers',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Progress Bar',
-          url: '/search/progress-bar',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Switches',
-          url: '/search/switches',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tables',
-          url: '/search/tables',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tabs',
-          url: '/search/tabs',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Tooltips',
-          url: '/search/tooltips',
-          icon: 'icon-puzzle',
-        },
+        // {
+        //   name: 'Cards',
+        //   url: '/search/cards',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Carousels',
+        //   url: '/search/carousels',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Collapses',
+        //   url: '/search/collapses',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Dropdowns',
+        //   url: '/search/dropdowns',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Forms',
+        //   url: '/search/forms',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Jumbotrons',
+        //   url: '/search/jumbotrons',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'List groups',
+        //   url: '/search/list-groups',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Navs',
+        //   url: '/search/navs',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Paginations',
+        //   url: '/search/paginations',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Popovers',
+        //   url: '/search/popovers',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Progress Bar',
+        //   url: '/search/progress-bar',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Switches',
+        //   url: '/search/switches',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Tables',
+        //   url: '/search/tables',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Tabs',
+        //   url: '/search/tabs',
+        //   icon: 'icon-puzzle',
+        // },
+        // {
+        //   name: 'Tooltips',
+        //   url: '/search/tooltips',
+        //   icon: 'icon-puzzle',
+        // },
       ],
     },
     // {

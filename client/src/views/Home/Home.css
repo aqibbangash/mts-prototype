@@ -18,3 +18,8 @@
   margin:5px;
   /* background:orange */
 }
+.videoTitle
+{
+  font-weight: bold;
+  font-size: 18px
+}

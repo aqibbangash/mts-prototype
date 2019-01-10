@@ -6,6 +6,7 @@ import {
   WhatsappShareButton,
   EmailShareButton,
   WhatsappIcon,
+  EmailIcon
 } from 'react-share';
 
 import './screenshots.css'
@@ -15,6 +16,7 @@ var request = require("request");
 const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
+
 class Screenshots extends Component {
 
   constructor(props){
@@ -27,59 +29,48 @@ class Screenshots extends Component {
         this.onSelectImage = this.onSelectImage.bind(this);
     }
 
-
-
-  // componentDidMount = () =>
-  // {
-  //   console.log(" screenshots did mount ::");
-  //   console.log("screenshots recieved ::", this.props.screenshots.result);
-  //
-  //    this.images=[];
-  //
-  //
-  //
-  //   // this.props.screenshots.result.screenshots.forEach(function(i,idx,x){
-  //   //   console.log("images url :: ",i);
-  //   // })
-  //   // console.log("url :: ", url+images);
-  //   // console.log("images :: ", images);
-  //    // this.setState((state, props) => {
-  //    //   return {counter: 0 + props.step};
-  //    // });
-  //  }
-
    componentDidMount()
    {
 
      console.log("base url", url);
      var images=[]
-     // this.imgState="";
-     // var imgSelect=this.imgState;
-     // var handleImageSelect=this.handleImageSelect()
      this.props.screenshots.result.screenshots.forEach((i,idx,x)=>{
        // console.log("images url :: ",i);
        images.push({
           src: url+i,
           thumbnail: url+i,
-          thumbnailWidth: 320,
-          thumbnailHeight: 174,
+          thumbnailWidth: 2300,
+          thumbnailHeight: 200,
           showLightboxThumbnails:true,
-          // isSelected: this.state.imgSelect,
-          caption: "ARY News"
+          caption: "ARY News",
+
        })
      })
      this.images=images
 
-     this.bottomContent=<div><Button onClick={this.onCombine} bsStyle="primary" className="combineBtn">Combine</Button>
-    <Gallery
-      images={this.images}
-      onSelectImage={this.onSelectImage}/>
+     this.bottomContent=<div>
+       <Button onClick={this.onCombine} bsStyle="primary" className="combineBtn">Combine</Button>
+
+        <Gallery
+          images={this.images}
+          onSelectImage={this.onSelectImage}
+          thumbnailStyle={this.handlethumbnailStyle}
+        />
+
     </div>
 
     this.setState((state, props) => {
          return {counter: 0 + props.step};
        });
 
+   }
+
+   handlethumbnailStyle=()=>
+   {
+     return{
+       height:"100%",
+       width:"100%"
+     }
    }
 
    onSelectImage= (index, image)=>
@@ -145,15 +136,33 @@ class Screenshots extends Component {
      console.log("combined ", imageArray);
     //  this.bottomContent=
     //  <div>
-    //      <WhatsappShareButton
-    //         url="http://github.com"
-    //         title={title}
-    //         separator=":: ">
+    //    <div className="combinedImg">
+    //      // <img src='https://www.google.com/imgres?imgurl=https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/New_Logo_Gmail.svg/1014px-New_Logo_Gmail.svg.png&imgrefurl=https://commons.wikimedia.org/wiki/File:New_Logo_Gmail.svg&h=768&w=1014&tbnid=HzHY2q6zZ1IPCM:&q=gmail&tbnh=114&tbnw=151&usg=AI4_-kTzLjE2netxgzO2BA9A_Xei2Q0Q9g&vet=1&docid=VU16gnGLPAljTM&itg=1&sa=X&ved=2ahUKEwjBnpPq0eLfAhXITxUIHUpSC6UQ_B0wFXoECAUQEA' />
+    //    </div>
+    //    <div className="ShareBtnDiv">
+    //        <WhatsappShareButton
+    //           url="http://github.com"
+    //           title={title}
+    //           separator=":: "
+    //           className="WhatsappBtn">
+    //             <WhatsappIcon size={32} round />
+    //             <p className="whatsAppTitle">Share via WhatsApp</p>
     //
-    //           Share via whatsApp
+    //         </WhatsappShareButton>
     //
-    //       </WhatsappShareButton>
+    //         <EmailShareButton
+    //           url="www.something.com"
+    //           subject={title}
+    //           body="body"
+    //           className="EmailBtn">
+    //
+    //           <EmailIcon size={32} round />
+    //           <p className="emailTitle">Share via E-Mail</p>
+    //
+    //         </EmailShareButton>
+    //   </div>
     // </div>
+
      var options = {
        method: 'POST',
        url: url + '/combineTickers',
