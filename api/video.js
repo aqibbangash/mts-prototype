@@ -9,7 +9,7 @@ var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 exports.getVideos = function(req,res){
-  video.find({}).sort({createdAt:1}).exec(function(error,result){
+  video.find({}).sort({createdAt:-1}).exec(function(error,result){
     if(error){
       res.status(500).send({error:error});
     }else{

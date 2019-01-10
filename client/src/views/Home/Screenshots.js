@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-// const url = "http://localhost:5000"
-const url = "https://mts-prototype.herokuapp.com"
+const url = "http://localhost:5000"
+//const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -134,34 +134,7 @@ class Screenshots extends Component {
    {
      var title= "title";
      console.log("combined ", imageArray);
-    //  this.bottomContent=
-    //  <div>
-    //    <div className="combinedImg">
-    //      // <img src='https://www.google.com/imgres?imgurl=https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/New_Logo_Gmail.svg/1014px-New_Logo_Gmail.svg.png&imgrefurl=https://commons.wikimedia.org/wiki/File:New_Logo_Gmail.svg&h=768&w=1014&tbnid=HzHY2q6zZ1IPCM:&q=gmail&tbnh=114&tbnw=151&usg=AI4_-kTzLjE2netxgzO2BA9A_Xei2Q0Q9g&vet=1&docid=VU16gnGLPAljTM&itg=1&sa=X&ved=2ahUKEwjBnpPq0eLfAhXITxUIHUpSC6UQ_B0wFXoECAUQEA' />
-    //    </div>
-    //    <div className="ShareBtnDiv">
-    //        <WhatsappShareButton
-    //           url="http://github.com"
-    //           title={title}
-    //           separator=":: "
-    //           className="WhatsappBtn">
-    //             <WhatsappIcon size={32} round />
-    //             <p className="whatsAppTitle">Share via WhatsApp</p>
-    //
-    //         </WhatsappShareButton>
-    //
-    //         <EmailShareButton
-    //           url="www.something.com"
-    //           subject={title}
-    //           body="body"
-    //           className="EmailBtn">
-    //
-    //           <EmailIcon size={32} round />
-    //           <p className="emailTitle">Share via E-Mail</p>
-    //
-    //         </EmailShareButton>
-    //   </div>
-    // </div>
+
 
      var options = {
        method: 'POST',
@@ -180,8 +153,36 @@ class Screenshots extends Component {
        else
        {
          console.log("Response :: ", response);
-         // this.bottomContent=<div>{<img src=''>}</div>
+         console.log("url :: ", url+"/"+body.image)
+         // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
+          this.bottomContent=
+          <div>
+            <div className="combinedImg">
+              <img src={url+"/"+body.image} />
+            </div>
+            <div className="ShareBtnDiv">
+                <WhatsappShareButton
+                   url={url+"/"+body.image}
+                   title="Image"
+                   separator=":: "
+                   className="WhatsappBtn">
+                     <WhatsappIcon size={32} round />
+                     <p className="whatsAppTitle">Share via WhatsApp</p>
 
+                 </WhatsappShareButton>
+
+                 <EmailShareButton
+                   url="www.something.com"
+                   subject="Image"
+                   body={url+"/"+body.image}
+                   className="EmailBtn">
+
+                   <EmailIcon size={32} round />
+                   <p className="emailTitle">Share via E-Mail</p>
+
+                 </EmailShareButton>
+           </div>
+         </div>
            this.setState((state, props) => {
              return {counter: 0 + props.step};
            });

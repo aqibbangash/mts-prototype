@@ -20,6 +20,18 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 const gm = require('gm');
 const width = 1000;
 const height = 100;
+
+var stripHeight = 120;
+var stripWidth = 1050;
+
+var stripStartX = 0;
+var stripEndX = 1050;
+
+var stripStartY = 600;
+var stripEndY = 720;
+
+var  logoName = "ary.png";
+
 var video = require('./modals/video.js');
  console.log(ffmpegInstaller.path+"/uploads", ffmpegInstaller.version);
 app.use(cors());
@@ -42,7 +54,8 @@ mongoose.connect(process.env.MONGODB_URI,
     var currentTime = "0"
     var screenshotsArray = [];
     var width = 1300;
-    var height = 150;
+    var height = 160;
+
     var x = 0;
     var y = 600;
     var tcount = 0;
@@ -69,7 +82,7 @@ mongoose.connect(process.env.MONGODB_URI,
 
           promises.push('/screenshots/screenshot'+i+'.png')
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
          //if (!err) console.log(' hooray! ');
     });
           resolve();
@@ -88,7 +101,7 @@ mongoose.connect(process.env.MONGODB_URI,
         //  console.log('Processing finished !',i);
 
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
          //if (!err) console.log(' hooray! ');
     });
           promises.push('/screenshots/screenshot'+i+'.png')
@@ -174,12 +187,12 @@ app.post('/combineTickers',function(req,res){
   console.log("*****************",req.body)
   var x = gm()
   var count = 0;
-  var start = 600;
+  var start = (stripHeight*params.screenshots.length-1)-stripHeight;
   params.screenshots = params.screenshots.sort();
   if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
     var headline = [];
     for(var k=params.screenshots.length-1 ; k>=0 ; k--){
-      if(start == 600){
+      if(start == (stripHeight*params.screenshots.length-1)-stripHeight){
          x = gm()
       }
       if(params.screenshots[k][0] != '/'){
@@ -187,9 +200,13 @@ app.post('/combineTickers',function(req,res){
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(__dirname+params.screenshots[k])
-      start = start-100;
+      start = start-stripHeight;
       console.log(k)
       if(k ==0 ){
+
+        x.in('-page', '+'+stripEndX+'+'+(0).toString())  // Custom place for each of the images
+        .in(__dirname+'/uploads/'+logoName)
+
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
         var dir = __dirname+'/headlines/';
@@ -201,7 +218,7 @@ app.post('/combineTickers',function(req,res){
             res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
       //  count = count+1;
-        start = 500;
+        //start = stripHeight*params.screenshots.length;
       }
     }
   }else{

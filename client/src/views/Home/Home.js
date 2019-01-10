@@ -7,8 +7,8 @@ import Screenshots from'./Screenshots.js'
 import './Home.css'
 
 var request = require("request");
-// const url = "http://localhost:5000/"
-const url = "https://mts-prototype.herokuapp.com/"
+const url = "http://localhost:5000/"
+//const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
