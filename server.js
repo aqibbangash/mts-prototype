@@ -166,19 +166,17 @@ app.post('/combineTickers',function(req,res){
       if(start == 500){
          x = gm()
       }
-
-      console.log(path.resolve(__dirname, "src"))
       if(params.screenshots[k][0] != '/'){
         params.screenshots[k] = "/"+params.screenshots[k];
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
-      .in((__dirname).toString().replace('/api',"").replace("\api","")+params.screenshots[k])
+      .in(__dirname+params.screenshots[k])
       start = start-50;
       console.log(k)
       if(k ==0 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
-        var dir = (__dirname).toString().replace('/api',"").replace("\api","")+'/headlines/';
+        var dir = __dirname+'/headlines/';
         if (!fs.existsSync(dir)){
               fs.mkdirSync(dir);
           }
