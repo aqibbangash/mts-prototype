@@ -33,7 +33,9 @@ exports.combineTickers = function(req,res){
       }
 
       console.log(path.resolve(__dirname, "src"))
-
+      if(params.screenshots[k][0] != '/'){
+        params.screenshots[k] = "/"+params.screenshots[k];
+      }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(path.join((__dirname).toString().replace('/api',"").replace("\api","")+params.screenshots[k]))
       start = start-50;
@@ -45,7 +47,7 @@ exports.combineTickers = function(req,res){
         if (!fs.existsSync(dir)){
               fs.mkdirSync(dir);
           }
-        x.write(dir+'/output'+count+'.jpg', function (err) {
+        x.write(dir+'output'+count+'.jpg', function (err) {
             if (err) console.log(err);
             res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });

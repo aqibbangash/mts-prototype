@@ -32,7 +32,7 @@ class Home extends Component {
           <ReactPlayer
             width="100%"
             height="100%"
-            url={url+"uploads/file.mov"}
+            url={url+"uploads/videoplayback.mp4"}
             playing
             controls={true}
             volume={null}

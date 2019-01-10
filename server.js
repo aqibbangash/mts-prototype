@@ -41,27 +41,39 @@ mongoose.connect(process.env.MONGODB_URI,
     var count = 0;
     var currentTime = "0"
     var screenshotsArray = [];
+    var width = 1300;
+    var height = 150;
+    var x = 0;
+    var y = 600;
+    var tcount = 0;
+    var timeString = "00";
     var promise = new Promise((reject,resolve)=>{
-      for(var i = 0; i<40 ; i = i+2){
-        var timeString = "00";
+      for(var i = 0; i<160 ; i = i+5){
 
-      if(i <= 38){
+        tcount = tcount+1;
+      if(tcount <= 59 && tcount>=0){
       //  console.log("currentTime before : ",parseInt(currentTime))
-        timeString = (previousTime+":"+i).toString();
+        timeString = (previousTime+":"+tcount).toString();
       }else{
+        tcount = 0;
         currentTime = (parseInt(previousTime)+1).toString();
-        timeString = (currentTime+":"+i/2).toString();
+        previousTime = currentTime;
+        timeString = (currentTime+":"+tcount).toString();
       }
   //    console.log("timeString : ", timeString);
-        ffmpeg('./uploads/file.mov')
+        ffmpeg('./uploads/videoplayback.mp4')
         .output('./screenshots/screenshot'+i+'.png')
         .noAudio()
         .seek(timeString)
         .on('error', function(err) {
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+
           promises.push('/screenshots/screenshot'+i+'.png')
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+         //if (!err) console.log(' hooray! ');
+    });
           resolve();
-          count = count+2;
+          count = count+5;
           if (i == count){
               video.create({
                 name : Date.now(),
@@ -74,10 +86,14 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .on('end', function() {
         //  console.log('Processing finished !',i);
+
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+         //if (!err) console.log(' hooray! ');
+    });
           promises.push('/screenshots/screenshot'+i+'.png')
           resolve();
-          count = count+2;
+          count = count+5;
           if (i == count){
               video.create({
                 name : Date.now(),
@@ -91,7 +107,7 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .run();
         //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-        // if( i >= 38){
+        // if( i >= 158){
         //   video.create({
         //     name : Date.now(),
         //     datetime : Date.now(),
@@ -153,31 +169,38 @@ app.get('/uploads/:id',function(req,res){
   res.sendFile(__dirname+'/uploads/'+req.params.id)
 })
 
-app.post('/combineTickerjhjkhjhs',function(req,res){
+app.post('/combineTickers',function(req,res){
   var params = req.body;
   console.log("*****************",req.body)
   var x = gm()
   var count = 0;
   var start = 500;
+  params.screenshots = params.screenshots.sort();
   if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
     var headline = [];
-    for(var k=0 ; k<params.screenshots.length ; k++){
+    for(var k=params.screenshots.length-1 ; k>=0 ; k--){
       if(start == 500){
          x = gm()
+      }
+      if(params.screenshots[k][0] != '/'){
+        params.screenshots[k] = "/"+params.screenshots[k];
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(__dirname+params.screenshots[k])
       start = start-50;
-      if(k ==params.screenshots.length-1 || start-50<0){
+      console.log(k)
+      if(k ==0 ){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
         var dir = __dirname+'/headlines/';
-        console.log("%$%$%$%$%$%$%$%$%$%",dir)
-        x.write(dir+'/output'+count+'.jpg', function (err) {
+        if (!fs.existsSync(dir)){
+              fs.mkdirSync(dir);
+          }
+        x.write(dir+'output'+count+'.jpg', function (err) {
             if (err) console.log(err);
-            res.status(200).send({image: 'headlines/output'+count+'.jpg'});
+            res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
-        count = count+1;
+      //  count = count+1;
         start = 500;
       }
     }
