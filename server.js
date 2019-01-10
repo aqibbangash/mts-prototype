@@ -184,7 +184,7 @@ app.post('/combineTickers',function(req,res){
       .in(__dirname+params.screenshots[k])
       start = start-50;
       console.log(k)
-      if(k ==0 || start-50<0){
+      if(k ==0 ){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
         var dir = __dirname+'/headlines/';
