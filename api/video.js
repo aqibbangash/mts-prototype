@@ -47,7 +47,7 @@ exports.combineTickers = function(req,res){
         if (!fs.existsSync(dir)){
               fs.mkdirSync(dir);
           }
-        x.write(dir+'/output'+count+'.jpg', function (err) {
+        x.write(dir+'output'+count+'.jpg', function (err) {
             if (err) console.log(err);
             res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
