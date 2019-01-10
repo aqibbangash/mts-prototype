@@ -48,7 +48,7 @@ mongoose.connect(process.env.MONGODB_URI,
     var tcount = 0;
     var timeString = "00";
     var promise = new Promise((reject,resolve)=>{
-      for(var i = 0; i<160 ; i = i+5){
+      for(var i = 0; i<60 ; i = i+5){
 
         tcount = tcount+1;
       if(tcount <= 59 && tcount>=0){
@@ -174,12 +174,12 @@ app.post('/combineTickers',function(req,res){
   console.log("*****************",req.body)
   var x = gm()
   var count = 0;
-  var start = 500;
+  var start = 600;
   params.screenshots = params.screenshots.sort();
   if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
     var headline = [];
     for(var k=params.screenshots.length-1 ; k>=0 ; k--){
-      if(start == 500){
+      if(start == 600){
          x = gm()
       }
       if(params.screenshots[k][0] != '/'){
@@ -187,7 +187,7 @@ app.post('/combineTickers',function(req,res){
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(__dirname+params.screenshots[k])
-      start = start-50;
+      start = start-100;
       console.log(k)
       if(k ==0 ){
         x.minify()  // Halves the size, 512x512 -> 256x256
