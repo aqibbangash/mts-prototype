@@ -33,7 +33,9 @@ exports.combineTickers = function(req,res){
       }
 
       console.log(path.resolve(__dirname, "src"))
-
+      if(params.screenshots[k][0] != '/'){
+        params.screenshots[k] = "/"+params.screenshots[k];
+      }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
       .in(path.join((__dirname).toString().replace('/api',"").replace("\api","")+params.screenshots[k]))
       start = start-50;
