@@ -153,31 +153,40 @@ app.get('/uploads/:id',function(req,res){
   res.sendFile(__dirname+'/uploads/'+req.params.id)
 })
 
-app.post('/combineTickerjhjkhjhs',function(req,res){
+app.post('/combineTickers',function(req,res){
   var params = req.body;
   console.log("*****************",req.body)
   var x = gm()
   var count = 0;
   var start = 500;
+  params.screenshots = params.screenshots.sort();
   if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
     var headline = [];
-    for(var k=0 ; k<params.screenshots.length ; k++){
+    for(var k=params.screenshots.length-1 ; k>=0 ; k--){
       if(start == 500){
          x = gm()
       }
+
+      console.log(path.resolve(__dirname, "src"))
+      if(params.screenshots[k][0] != '/'){
+        params.screenshots[k] = "/"+params.screenshots[k];
+      }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
-      .in(__dirname+params.screenshots[k])
+      .in((__dirname).toString().replace('/api',"").replace("\api","")+params.screenshots[k])
       start = start-50;
-      if(k ==params.screenshots.length-1 || start-50<0){
+      console.log(k)
+      if(k ==0 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
-        var dir = __dirname+'/headlines/';
-        console.log("%$%$%$%$%$%$%$%$%$%",dir)
-        x.write(dir+'/output'+count+'.jpg', function (err) {
+        var dir = (__dirname).toString().replace('/api',"").replace("\api","")+'/headlines/';
+        if (!fs.existsSync(dir)){
+              fs.mkdirSync(dir);
+          }
+        x.write(dir+'output'+count+'.jpg', function (err) {
             if (err) console.log(err);
-            res.status(200).send({image: 'headlines/output'+count+'.jpg'});
+            res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
-        count = count+1;
+      //  count = count+1;
         start = 500;
       }
     }
