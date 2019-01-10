@@ -41,19 +41,27 @@ mongoose.connect(process.env.MONGODB_URI,
     var count = 0;
     var currentTime = "0"
     var screenshotsArray = [];
+    var width = 1300;
+    var height = 150;
+    var x = 0;
+    var y = 600;
+    var tcount = 0;
+    var timeString = "00";
     var promise = new Promise((reject,resolve)=>{
-      for(var i = 0; i<40 ; i = i+2){
-        var timeString = "00";
+      for(var i = 0; i<160 ; i = i+5){
 
-      if(i <= 38){
+        tcount = tcount+1;
+      if(tcount <= 59 && tcount>=0){
       //  console.log("currentTime before : ",parseInt(currentTime))
-        timeString = (previousTime+":"+i).toString();
+        timeString = (previousTime+":"+tcount).toString();
       }else{
+        tcount = 0;
         currentTime = (parseInt(previousTime)+1).toString();
-        timeString = (currentTime+":"+i/2).toString();
+        previousTime = currentTime;
+        timeString = (currentTime+":"+tcount).toString();
       }
   //    console.log("timeString : ", timeString);
-        ffmpeg('./uploads/file.mov')
+        ffmpeg('./uploads/videoplayback.mp4')
         .output('./screenshots/screenshot'+i+'.png')
         .noAudio()
         .seek(timeString)
@@ -61,11 +69,11 @@ mongoose.connect(process.env.MONGODB_URI,
 
           promises.push('/screenshots/screenshot'+i+'.png')
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(1000, 100, 0, 300).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
          //if (!err) console.log(' hooray! ');
     });
           resolve();
-          count = count+2;
+          count = count+5;
           if (i == count){
               video.create({
                 name : Date.now(),
@@ -78,17 +86,14 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .on('end', function() {
         //  console.log('Processing finished !',i);
-        var width = 100;
-        var height = 200;
-        var x = 0;
-        var y = 150;
+
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(1000, 100, 0, 300).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(width, height, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
          //if (!err) console.log(' hooray! ');
     });
           promises.push('/screenshots/screenshot'+i+'.png')
           resolve();
-          count = count+2;
+          count = count+5;
           if (i == count){
               video.create({
                 name : Date.now(),
@@ -102,7 +107,7 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .run();
         //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-        // if( i >= 38){
+        // if( i >= 158){
         //   video.create({
         //     name : Date.now(),
         //     datetime : Date.now(),
