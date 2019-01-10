@@ -58,8 +58,12 @@ mongoose.connect(process.env.MONGODB_URI,
         .noAudio()
         .seek(timeString)
         .on('error', function(err) {
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+
           promises.push('/screenshots/screenshot'+i+'.png')
+          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(1000, 100, 0, 300).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+         //if (!err) console.log(' hooray! ');
+    });
           resolve();
           count = count+2;
           if (i == count){
@@ -74,7 +78,14 @@ mongoose.connect(process.env.MONGODB_URI,
         })
         .on('end', function() {
         //  console.log('Processing finished !',i);
+        var width = 100;
+        var height = 200;
+        var x = 0;
+        var y = 150;
           screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(1000, 100, 0, 300).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+         //if (!err) console.log(' hooray! ');
+    });
           promises.push('/screenshots/screenshot'+i+'.png')
           resolve();
           count = count+2;
