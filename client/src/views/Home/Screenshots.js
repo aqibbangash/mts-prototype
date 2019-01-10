@@ -143,41 +143,41 @@ class Screenshots extends Component {
    {
      var title= "title";
      console.log("combined ", imageArray);
-     this.bottomContent=
-     <div>
-         <WhatsappShareButton
-            url="http://github.com"
-            title={title}
-            separator=":: ">
+    //  this.bottomContent=
+    //  <div>
+    //      <WhatsappShareButton
+    //         url="http://github.com"
+    //         title={title}
+    //         separator=":: ">
+    //
+    //           Share via whatsApp
+    //
+    //       </WhatsappShareButton>
+    // </div>
+     var options = {
+       method: 'POST',
+       url: url + '/combineTickers',
+       headers: { },
+       form:{screenshots:imageArray},
+       json: true
+     };
 
-              <WhatsappIcon size={32} round />
+     request(options, (error, response, body) =>
+     {
+       if (error)
+       {
+         console.log("Error", error);
+       }
+       else
+       {
+         console.log("Response :: ", response);
+         // this.bottomContent=<div>{<img src=''>}</div>
 
-          </WhatsappShareButton>
-    </div>
-     // var options = {
-     //   method: 'POST',
-     //   url: url + '/combineTickers',
-     //   headers: { },
-     //   form:{screenshots:imageArray},
-     //   json: true
-     // };
-     //
-     // request(options, (error, response, body) =>
-     // {
-     //   if (error)
-     //   {
-     //     console.log("Error", error);
-     //   }
-     //   else
-     //   {
-     //     console.log("Response :: ", response);
-     //     // this.bottomContent=<div>{<img src=''>}</div>
-     //
            this.setState((state, props) => {
              return {counter: 0 + props.step};
            });
-     //   }
-     // });
+       }
+     });
 
    }
 
