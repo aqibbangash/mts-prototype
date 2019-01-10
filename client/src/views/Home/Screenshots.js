@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
+import { Button } from 'react-bootstrap';
 
-// import { Button } from 'react-bootstrap';
-
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+} from 'react-share';
 
 import './screenshots.css'
 
@@ -59,13 +63,14 @@ class Screenshots extends Component {
           thumbnail: url+i,
           thumbnailWidth: 320,
           thumbnailHeight: 174,
+          showLightboxThumbnails:true,
           // isSelected: this.state.imgSelect,
           caption: "ARY News"
        })
      })
      this.images=images
 
-     this.bottomContent=<div><button onClick={this.onCombine} className="combineBtn">Combine</button>
+     this.bottomContent=<div><Button onClick={this.onCombine} bsStyle="primary" className="combineBtn">Combine</Button>
     <Gallery
       images={this.images}
       onSelectImage={this.onSelectImage}/>
@@ -136,32 +141,43 @@ class Screenshots extends Component {
 
    onCombine=()=>
    {
+     var title= "title";
      console.log("combined ", imageArray);
+     this.bottomContent=
+     <div>
+         <WhatsappShareButton
+            url="http://github.com"
+            title={title}
+            separator=":: ">
 
-     var options = {
-       method: 'POST',
-       url: url + '/combineTickers',
-       headers: { },
-       form:{screenshots:imageArray},
-       json: true
-     };
+              <WhatsappIcon size={32} round />
 
-     request(options, (error, response, body) =>
-     {
-       if (error)
-       {
-         console.log("Error", error);
-       }
-       else
-       {
-         console.log("Response :: ", response);
-         // this.bottomContent=<div>{<img src=''>}</div>
-
+          </WhatsappShareButton>
+    </div>
+     // var options = {
+     //   method: 'POST',
+     //   url: url + '/combineTickers',
+     //   headers: { },
+     //   form:{screenshots:imageArray},
+     //   json: true
+     // };
+     //
+     // request(options, (error, response, body) =>
+     // {
+     //   if (error)
+     //   {
+     //     console.log("Error", error);
+     //   }
+     //   else
+     //   {
+     //     console.log("Response :: ", response);
+     //     // this.bottomContent=<div>{<img src=''>}</div>
+     //
            this.setState((state, props) => {
              return {counter: 0 + props.step};
            });
-       }
-     });
+     //   }
+     // });
 
    }
 
