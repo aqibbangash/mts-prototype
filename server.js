@@ -68,7 +68,7 @@ mongoose.connect(process.env.MONGODB_URI,
   app.use('/static', express.static(path.join(__dirname, 'public')));
 
   app.post('/getVideos',function(req,res){
-    video.findOne({vidoeName : convertVideoName}).exec(function(error,videoFound){
+    video.findOne({videoName : convertVideoName}).exec(function(error,videoFound){
       if(error){
         res.status(500).send({error:error});
       }else{
