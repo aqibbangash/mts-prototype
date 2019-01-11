@@ -17,7 +17,7 @@ class Transcript extends Component {
 
     return (
       <div className="transcriptBody">
-        <p className="transcriptContent">Transcript here</p>
+        <p className="transcriptContent">{this.props.content}</p>
       </div>
     )
   }

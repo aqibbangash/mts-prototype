@@ -74,19 +74,17 @@ class Home extends Component {
        }
        else
        {
-         console.log("Response :: ", response);
+         console.log("Response :: ", body.transcription);
 
-           // this.setState((state, props) => {
-           //   return {counter: 0 + props.step};
-           // });
+         this.HomeContent=<Transcript content={body.transcription} />
+
+         this.setState((state, props) => {
+           return {counter: 0 + props.step};
+         });
        }
      });
 
-     this.HomeContent=<Transcript />
 
-     this.setState((state, props) => {
-       return {counter: 0 + props.step};
-     });
    }
 
    handleVideo=()=>
