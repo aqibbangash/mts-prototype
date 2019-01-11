@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import './Transcript.css'
 
 // var request = require("request");
-const url = "http://localhost:5000/"
+// const url = "http://localhost:5000/"
 //const url = "https://mts-prototype.herokuapp.com/"
 
 class Transcript extends Component {
