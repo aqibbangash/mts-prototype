@@ -11,6 +11,7 @@
   width:100%;
   height:80%;
   cursor: pointer;
+  background: black
 }
 .videoGrid
 {
@@ -21,5 +22,14 @@
 .videoTitle
 {
   font-weight: bold;
-  font-size: 18px
+  font-size: 18px;
+  margin-bottom: 8px
+}
+.videoClickDescription
+{
+  font-weight:bold;
+  margin:8px 0px 8px 0px
+}
+p{
+  margin: 0
 }
