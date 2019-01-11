@@ -20,7 +20,7 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 const gm = require('gm');
 const width = 1000;
 const height = 100;
-
+var convertVideoName = 'videoplayback.mp4';
 var stripHeight = 120;
 var stripWidth = 1050;
 
@@ -33,7 +33,7 @@ var stripEndY = 720;
 var  logoName = "ary.png";
 
 var video = require('./modals/video.js');
- console.log(ffmpegInstaller.path+"/uploads", ffmpegInstaller.version);
+console.log(ffmpegInstaller.path+"/uploads", ffmpegInstaller.version);
 app.use(cors());
 // console.log that your server is up and running
 // ==========================================database connection===================================
@@ -48,296 +48,281 @@ mongoose.connect(process.env.MONGODB_URI,
   mongoose
   .connection
   .once("connected",()=>{
-    var promises = [];
-    var previousTime = "00";
-    var count = 0;
-    var currentTime = "0"
-    var screenshotsArray = [];
-    var width = 1300;
-    var height = 160;
 
-    var x = 0;
-    var y = 600;
-    var tcount = 0;
-    var timeString = "00";
-    var promise = new Promise((reject,resolve)=>{
-      for(var i = 0; i<60 ; i = i+5){
 
-        tcount = tcount+1;
-      if(tcount <= 59 && tcount>=0){
-      //  console.log("currentTime before : ",parseInt(currentTime))
-        timeString = (previousTime+":"+tcount).toString();
+    function checkValue(numb){
+      return new Promise(function(resolve, reject){
+        // place here your logic
+        // return resolve([result object]) in case of success
+        // return reject([error object]) in case of error
+      });
+
+
+    }
+  })
+  app.use(morgan('dev'));
+  // json manipulation on server side
+  app.use(bodyParser.urlencoded({limit: '50mb', extended: true,parameterLimit:50000}));
+  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(morgan('combined'));
+  app.use('/static', express.static(path.join(__dirname, 'public')));
+
+  app.post('/getVideos',function(req,res){
+    video.findOne({vidoeName : convertVideoName}).exec(function(error,videoFound){
+      if(error){
+        res.status(500).send({error:error});
       }else{
-        tcount = 0;
-        currentTime = (parseInt(previousTime)+1).toString();
-        previousTime = currentTime;
-        timeString = (currentTime+":"+tcount).toString();
-      }
-  //    console.log("timeString : ", timeString);
-        ffmpeg('./uploads/videoplayback.mp4')
-        .output('./screenshots/screenshot'+i+'.png')
-        .noAudio()
-        .seek(timeString)
-        .on('error', function(err) {
+        if(videoFound){
+          res.status(200).send({result:videoFound});
+        }else{
 
-          promises.push('/screenshots/screenshot'+i+'.png')
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
-         //if (!err) console.log(' hooray! ');
-    });
-          resolve();
-          count = count+5;
-          if (i == count){
+            var promises = [];
+            var previousTime = "00";
+            var count = 0;
+            var currentTime = "0"
+            var screenshotsArray = [];
+            var width = 1300;
+            var height = 160;
+
+            var x = 0;
+            var y = 600;
+            var tcount = 0;
+            var timeString = "00";
+            var promise = new Promise((reject,resolve)=>{
+              for(var i = 0; i<60 ; i = i+5){
+
+                tcount = tcount+1;
+                if(tcount <= 59 && tcount>=0){
+                  //  console.log("currentTime before : ",parseInt(currentTime))
+                  timeString = (previousTime+":"+tcount).toString();
+                }else{
+                  tcount = 0;
+                  currentTime = (parseInt(previousTime)+1).toString();
+                  previousTime = currentTime;
+                  timeString = (currentTime+":"+tcount).toString();
+                }
+                //    console.log("timeString : ", timeString);
+                ffmpeg('./uploads/videoplayback.mp4')
+                .output('./screenshots/screenshot'+i+'.png')
+                .noAudio()
+                .seek(timeString)
+                .on('error', function(err) {
+
+                  promises.push('/screenshots/screenshot'+i+'.png')
+                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+                  gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+                    //if (!err) console.log(' hooray! ');
+                  });
+                  resolve();
+                  count = count+5;
+                  if (i == count){
+                    video.create({
+                      name : Date.now(),
+                      videoName : convertVideoName,
+                      datetime : Date.now(),
+                      screenshots : screenshotsArray
+                    }).then(function(result){
+                    res.status(200).send({message:"data stored in db",result:result});
+                    })
+                  }
+                })
+                .on('end', function() {
+                  //  console.log('Processing finished !',i);
+
+                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
+                  gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+                    //if (!err) console.log(' hooray! ');
+                  });
+                  promises.push('/screenshots/screenshot'+i+'.png')
+                  resolve();
+                  count = count+5;
+                  if (i == count){
+                    video.create({
+                      name : Date.now(),
+                      videoName : convertVideoName,
+                      datetime : Date.now(),
+                      screenshots : screenshotsArray
+                    }).then(function(result){
+                      res.status(200).send({message:"data stored in db",result:result});
+                    })
+                  }
+
+                })
+                .run();
+                //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+                // if( i >= 158){
+                //   video.create({
+                //     name : Date.now(),
+                //     datetime : Date.now(),
+                //     screenshots : screenshotsArray
+                //   }).then(function(result){
+                //     console.log("stored in db")
+                //   })
+                // }
+
+              }
+            })
+
+
+            promise.all(promises)
+            .then(function(data){ /* do stuff when success */
               video.create({
                 name : Date.now(),
+                videoName : convertVideoName,
                 datetime : Date.now(),
                 screenshots : screenshotsArray
               }).then(function(result){
-                console.log("stored in db")
+                console.log("stored in db");
+              //  res.status(200).send({message:"data stored in db",result:result});
               })
-          }
-        })
-        .on('end', function() {
-        //  console.log('Processing finished !',i);
-
-          screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-          gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
-         //if (!err) console.log(' hooray! ');
-    });
-          promises.push('/screenshots/screenshot'+i+'.png')
-          resolve();
-          count = count+5;
-          if (i == count){
-              video.create({
-                name : Date.now(),
-                datetime : Date.now(),
-                screenshots : screenshotsArray
-              }).then(function(result){
-                console.log("stored in db")
-              })
-          }
-
-        })
-        .run();
-        //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-        // if( i >= 158){
-        //   video.create({
-        //     name : Date.now(),
-        //     datetime : Date.now(),
-        //     screenshots : screenshotsArray
-        //   }).then(function(result){
-        //     console.log("stored in db")
-        //   })
-        // }
-
+            })
+            .catch(function(err){ /* error handling */ });
+        }
       }
     })
+  })
 
 
-promise.all(promises)
- .then(function(data){ /* do stuff when success */
-   video.create({
-     name : Date.now(),
-     datetime : Date.now(),
-     screenshots : screenshotsArray
-   }).then(function(result){
-     console.log("stored in db")
-   })
- })
- .catch(function(err){ /* error handling */ });
+  app.get('/screenshots/:id',function(req,res){
+    console.log(req.params)
+    res.sendFile(__dirname+'/screenshots/'+req.params.id)
+  })
+  app.get('/headlines/:id',function(req,res){
+    console.log(req.params)
+    res.sendFile(__dirname+'/headlines/'+req.params.id)
+  })
 
-function checkValue(numb){
- return new Promise(function(resolve, reject){
-  // place here your logic
-  // return resolve([result object]) in case of success
-  // return reject([error object]) in case of error
-});
+  app.get('/headlines/:id',function(req,res){
+    console.log(req.params)
+    res.sendFile(__dirname+'/headlines/'+req.params.id)
+  })
 
+  app.get('/uploads/:id',function(req,res){
+    console.log(req.params)
+    res.sendFile(__dirname+'/uploads/'+req.params.id)
+  })
 
-  }
-})
-app.use(morgan('dev'));
-// json manipulation on server side
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true,parameterLimit:50000}));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(morgan('combined'));
-app.use('/static', express.static(path.join(__dirname, 'public')));
+  app.post('/combineTickers',function(req,res){
+    var params = req.body;
+    console.log("*****************",req.body)
+    var x = gm()
+    var count = 0;
+    var start = (stripHeight*params.screenshots.length-1)-stripHeight;
+    params.screenshots = params.screenshots.sort();
+    if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
+      var headline = [];
+      for(var k=params.screenshots.length-1 ; k>=0 ; k--){
+        if(start == (stripHeight*params.screenshots.length-1)-stripHeight){
+          x = gm()
+        }
+        if(params.screenshots[k][0] != '/'){
+          params.screenshots[k] = "/"+params.screenshots[k];
+        }
+        x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
+        .in(__dirname+params.screenshots[k])
+        start = start-stripHeight;
+        console.log(k)
+        if(k ==0 ){
 
-app.get('/screenshots/:id',function(req,res){
-  console.log(req.params)
-  res.sendFile(__dirname+'/screenshots/'+req.params.id)
-})
-app.get('/headlines/:id',function(req,res){
-  console.log(req.params)
-  res.sendFile(__dirname+'/headlines/'+req.params.id)
-})
+          x.in('-page', '+'+stripEndX+'+'+(0).toString())  // Custom place for each of the images
+          .in(__dirname+'/uploads/'+logoName)
 
-app.get('/headlines/:id',function(req,res){
-  console.log(req.params)
-  res.sendFile(__dirname+'/headlines/'+req.params.id)
-})
-
-app.get('/uploads/:id',function(req,res){
-  console.log(req.params)
-  res.sendFile(__dirname+'/uploads/'+req.params.id)
-})
-
-app.post('/combineTickers',function(req,res){
-  var params = req.body;
-  console.log("*****************",req.body)
-  var x = gm()
-  var count = 0;
-  var start = (stripHeight*params.screenshots.length-1)-stripHeight;
-  params.screenshots = params.screenshots.sort();
-  if(params.screenshots!=null && params.screenshots!=undefined && params.screenshots.length>0){
-    var headline = [];
-    for(var k=params.screenshots.length-1 ; k>=0 ; k--){
-      if(start == (stripHeight*params.screenshots.length-1)-stripHeight){
-         x = gm()
-      }
-      if(params.screenshots[k][0] != '/'){
-        params.screenshots[k] = "/"+params.screenshots[k];
-      }
-      x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
-      .in(__dirname+params.screenshots[k])
-      start = start-stripHeight;
-      console.log(k)
-      if(k ==0 ){
-
-        x.in('-page', '+'+stripEndX+'+'+(0).toString())  // Custom place for each of the images
-        .in(__dirname+'/uploads/'+logoName)
-
-        x.minify()  // Halves the size, 512x512 -> 256x256
-        x.mosaic()  // Merges the images as a matrix
-        var dir = __dirname+'/headlines/';
-        if (!fs.existsSync(dir)){
-              fs.mkdirSync(dir);
+          x.minify()  // Halves the size, 512x512 -> 256x256
+          x.mosaic()  // Merges the images as a matrix
+          var dir = __dirname+'/headlines/';
+          if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
           }
-        x.write(dir+'output'+count+'.jpg', function (err) {
+          x.write(dir+'output'+count+'.jpg', function (err) {
             if (err) console.log(err);
             res.status(200).send({image:'headlines/output'+count+'.jpg'});
-        });
-      //  count = count+1;
-        //start = stripHeight*params.screenshots.length;
+          });
+          //  count = count+1;
+          //start = stripHeight*params.screenshots.length;
+        }
       }
+    }else{
+      res.status(403).send({message:"screenshots must be selected"});
     }
-  }else{
-    res.status(403).send({message:"screenshots must be selected"});
-  }
 
-})
-
-// app.get('/takeshot',function(req,res){
-
-
-
-
-//
-// const speech = require('@google-cloud/speech');
-//
-// // Creates a client
-// const client = new speech.SpeechClient();
-//
-// // The name of the audio file to transcribe
-// const fileName = path.join(__dirname)+'/uploads/audio.mp3';
-//
-// // Reads a local audio file and converts it to base64
-// const file = fs.readFileSync(fileName);
-// const audioBytes = file.toString('base64');
-//
-// // The audio file's encoding, sample rate in hertz, and BCP-47 language code
-// const audio = {
-//   content: audioBytes,
-// };
-// const config = {
-//   encoding: 'LINEAR16',
-//   sampleRateHertz: 16000,
-//   languageCode: 'en-US',
-// };
-// const request = {
-//   audio: audio,
-//   config: config,
-// };
-//
-// // Detects speech in the audio file
-// client
-//   .recognize(request)
-//   .then(data => {
-//     const response = data[0];
-//     const transcription = response.results
-//       .map(result => result.alternatives[0].transcript)
-//       .join('\n');
-//     console.log(`Transcription: ${transcription}`);
-//   })
-//   .catch(err => {
-//     console.error('ERROR:', err);
-//   });
-
-
-
-//})
-
-
-process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
-// Imports the Google Cloud client library
-const speech = require('@google-cloud/speech');
-//const fs = require('fs');
-
-// Creates a client
-const client = new speech.SpeechClient();
-
-// The name of the audio file to transcribe
-const fileName = './uploads/audio.mp3';
-
-// Reads a local audio file and converts it to base64
-const file = fs.readFileSync(fileName);
-const audioBytes = file.toString('base64');
-
-// The audio file's encoding, sample rate in hertz, and BCP-47 language code
-const audio = {
-  content: audioBytes,
-};
-console.log("1");
-const config = {
-  encoding: 'LINEAR16',
-  sampleRateHertz: 16000,
-  languageCode: 'ur-PK',
-};
-const request = {
-  audio: audio,
-  config: config,
-};
-console.log("2");
-// Detects speech in the audio file
-client
-  .recognize(request)
-  .then(data => {
-    console.log(data);
-    const response = data[0];
-    const transcription = response.results
-      .map(result => result.alternatives[0].transcript)
-      .join('\n');
-    console.log(`Transcription: ${transcription}`);
   })
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
+
+  // app.get('/takeshot',function(req,res){
 
 
 
 
-// create a GET route
-app.get('/express_backend', (req, res) => {
-  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-});
+  //
+  // const speech = require('@google-cloud/speech');
+  //
+  // // Creates a client
+  // const client = new speech.SpeechClient();
+  //
+  // // The name of the audio file to transcribe
+  // const fileName = path.join(__dirname)+'/uploads/audio.mp3';
+  //
+  // // Reads a local audio file and converts it to base64
+  // const file = fs.readFileSync(fileName);
+  // const audioBytes = file.toString('base64');
+  //
+  // // The audio file's encoding, sample rate in hertz, and BCP-47 language code
+  // const audio = {
+  //   content: audioBytes,
+  // };
+  // const config = {
+  //   encoding: 'LINEAR16',
+  //   sampleRateHertz: 16000,
+  //   languageCode: 'en-US',
+  // };
+  // const request = {
+  //   audio: audio,
+  //   config: config,
+  // };
+  //
+  // // Detects speech in the audio file
+  // client
+  //   .recognize(request)
+  //   .then(data => {
+  //     const response = data[0];
+  //     const transcription = response.results
+  //       .map(result => result.alternatives[0].transcript)
+  //       .join('\n');
+  //     console.log(`Transcription: ${transcription}`);
+  //   })
+  //   .catch(err => {
+  //     console.error('ERROR:', err);
+  //   });
 
-if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  // Handle React routing, return all requests to React app
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-}
-  app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+
+
+  //})
+
+  // var converter = require('video-converter');
+  //
+  //
+  // // convert mp4 to mp3
+  // converter.convert("./uploads/videoplayback.mp4", "audio.wav", function(err) {
+  //   if (err) throw err;
+  //
+  // })
+
+
+
+
+
+
+    // create a GET route
+    app.get('/express_backend', (req, res) => {
+      res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
+    });
+
+    if (process.env.NODE_ENV === 'production') {
+      // Serve any static files
+      app.use(express.static(path.join(__dirname, 'client/build')));
+      // Handle React routing, return all requests to React app
+      app.get('*', function(req, res) {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+      });
+    }
+    app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
+    app.listen(port, () => console.log(`Listening on port ${port}`));
