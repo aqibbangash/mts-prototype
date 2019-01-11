@@ -57,11 +57,34 @@ class Home extends Component {
    handleTranscript=()=>
    {
      console.log("transcript button clicked ::");
-     this.HomeContent=<Transcript />
 
-     this.setState((state, props) => {
-       return {counter: 0 + props.step};
+     var options = {
+       method: 'POST',
+       url: url + 'createTranscription',
+       headers: { },
+       // form:{screenshots:imageArray},
+       json: true
+     };
+
+     request(options, (error, response, body) =>
+     {
+       if (error)
+       {
+         console.log("Error", error);
+       }
+       else
+       {
+         console.log("Response :: ", body.transcription);
+
+         this.HomeContent=<Transcript content={body.transcription} />
+
+         this.setState((state, props) => {
+           return {counter: 0 + props.step};
+         });
+       }
      });
+
+
    }
 
    handleVideo=()=>

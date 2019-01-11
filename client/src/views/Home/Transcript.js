@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import './Transcript.css'
 
 // var request = require("request");
-const url = "http://localhost:5000/"
+// const url = "http://localhost:5000/"
 //const url = "https://mts-prototype.herokuapp.com/"
 
 class Transcript extends Component {
@@ -17,7 +17,7 @@ class Transcript extends Component {
 
     return (
       <div className="transcriptBody">
-        <p className="transcriptContent">Transcript here</p>
+        <p className="transcriptContent">{this.props.content}</p>
       </div>
     )
   }
