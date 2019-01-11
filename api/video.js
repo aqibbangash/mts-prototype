@@ -67,7 +67,7 @@ exports.createTranscription = function(req,res){
   if(req.body.videoName == null || req.body.videoName == undefined){
     req.body.videoName = convertVideoName;
   }
-  video.findOne({videoName : req.body.videoName}).exec(function(error,resu){
+  video.findOne({videoName : req.body.videoName, transcription:{$ne:null},transcription:{$ne:""}}).exec(function(error,resu){
     if(error){
       res.status(500).send({error:error});
     }else{
@@ -117,15 +117,19 @@ exports.createTranscription = function(req,res){
           const transcription = response.results
           .map(result => result.alternatives[0].transcript)
           .join('\n');
-          // console.log(`Transcription: ${transcription}`);
-          resu.transcription = transcription;
-          resu.save(function(error,done){
-            if(error){
-              res.status(500).send({error:error});
-            }else{
-            res.status(200).send({transcription : transcription});
-            }
-          })
+           console.log(`Transcription: ${transcription}`);
+           video.update({videoName : convertVideoName},{transcription:transcription},{multi:false}).then(function(completed){
+             console.log(completed);
+             res.status(200).send({transcription : transcription});
+           })
+          // resu.transcription = transcription;
+          // resu.save(function(error,done){
+          //   if(error){
+          //     res.status(500).send({error:error});
+          //   }else{
+          //   res.status(200).send({transcription : done.transcription});
+          //   }
+          // })
 
         })
         .catch(err => {

@@ -4,7 +4,7 @@ var VideoSchema = new mongoose.Schema({
   datetime : {type:Date},
   screenshots : {type:Array , default:[]},
   headlineTicker : {type:Array , default:[]},
-  transcription : {type:String},
+  transcription : {type:String,default:""},
   videoName : {type:String},
   createdAt : {type:Date , default:Date.now()}
 });
