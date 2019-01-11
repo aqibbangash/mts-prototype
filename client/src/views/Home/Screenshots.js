@@ -163,6 +163,11 @@ class Screenshots extends Component {
             <div className="ShareBtnDiv">
                 <WhatsappShareButton
                    url={url+"/"+body.image}
+<<<<<<< HEAD
+=======
+                   title="Image"
+                   separator=":: "
+>>>>>>> 527fa822140b616a7c2659a53df22c2e66abd09a
                    className="WhatsappBtn">
                      <WhatsappIcon size={32} round />
                      <p className="whatsAppTitle">Share via WhatsApp</p>

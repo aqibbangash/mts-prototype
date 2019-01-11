@@ -38,6 +38,7 @@
     "react-player": "^1.8.0",
     "redux": "^4.0.1",
     "sharp": "^0.21.1",
+    "video-converter": "^1.0.0",
     "video-react": "^0.13.1"
   }
 }

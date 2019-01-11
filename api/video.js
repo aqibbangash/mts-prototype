@@ -7,9 +7,10 @@ var path = require('path')
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
+var convertVideoName = 'videoplayback.mp4';
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 exports.getVideos = function(req,res){
-  video.find({}).sort({createdAt:1}).exec(function(error,result){
+  video.find({}).sort({createdAt:-1}).exec(function(error,result){
     if(error){
       res.status(500).send({error:error});
     }else{
@@ -58,5 +59,82 @@ exports.combineTickers = function(req,res){
   }else{
     res.status(403).send({message:"screenshots must be selected"});
   }
+
+}
+
+
+exports.createTranscription = function(req,res){
+  if(req.body.videoName == null || req.body.videoName == undefined){
+    req.body.videoName = convertVideoName;
+  }
+  video.findOne({videoName : req.body.videoName}).exec(function(error,resu){
+    if(error){
+      res.status(500).send({error:error});
+    }else{
+      if(resu){
+        res.status(200).send({transcription : resu.transcription});
+      }else{
+        process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+        // Imports the Google Cloud client library
+        const speech = require('@google-cloud/speech');
+        //const fs = require('fs');
+
+        // Creates a client
+        const client = new speech.SpeechClient();
+
+        // The name of the audio file to transcribe
+        //  const fileName = './sample.mp3';
+        const gcsUri = 'gs://arynews/sample.wav';
+        const encoding = 'LINEAR16';
+        const sampleRateHertz = 44100;
+        const languageCode = 'ur-PK';
+        const config = {
+          encoding: encoding,
+          sampleRateHertz: sampleRateHertz,
+          languageCode: languageCode,
+        };
+
+        const audio = {
+          uri: gcsUri,
+        };
+
+        const request = {
+          config: config,
+          audio: audio,
+        };
+
+        // Detects speech in the audio file. This creates a recognition job that you
+        // can wait for now, or get its result later.
+        client
+        .longRunningRecognize(request)
+        .then(data => {
+          const operation = data[0];
+          // Get a Promise representation of the final result of the job
+          return operation.promise();
+        })
+        .then(data => {
+          const response = data[0];
+          const transcription = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join('\n');
+          // console.log(`Transcription: ${transcription}`);
+          resu.transcription = transcription;
+          resu.save(function(error,done){
+            if(error){
+              res.status(500).send({error:error});
+            }else{
+            res.status(200).send({transcription : transcription});
+            }
+          })
+
+        })
+        .catch(err => {
+          console.error('ERROR:', err);
+          res.status(500).send({error:err});
+        });
+      }
+
+    }
+  })
 
 }
