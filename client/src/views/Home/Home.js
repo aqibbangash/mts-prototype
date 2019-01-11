@@ -8,8 +8,8 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
-// const url = "http://localhost:5000/"
-const url = "https://mts-prototype.herokuapp.com/"
+const url = "http://localhost:5000/"
+// const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -57,6 +57,31 @@ class Home extends Component {
    handleTranscript=()=>
    {
      console.log("transcript button clicked ::");
+
+     var options = {
+       method: 'POST',
+       url: url + 'createTranscription',
+       headers: { },
+       // form:{screenshots:imageArray},
+       json: true
+     };
+
+     request(options, (error, response, body) =>
+     {
+       if (error)
+       {
+         console.log("Error", error);
+       }
+       else
+       {
+         console.log("Response :: ", response);
+
+           // this.setState((state, props) => {
+           //   return {counter: 0 + props.step};
+           // });
+       }
+     });
+
      this.HomeContent=<Transcript />
 
      this.setState((state, props) => {
