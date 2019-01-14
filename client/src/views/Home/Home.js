@@ -8,8 +8,8 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
- const url = "http://localhost:5000/"
-//const url = "https://mts-prototype.herokuapp.com/"
+ // const url = "http://localhost:5000/"
+const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -29,11 +29,11 @@ class Home extends Component {
         <div>
           <p className="videoTitle">Ary news</p>
         </div>
-        <div className="videoStyle" onClick={this.handleVideo}>
+        <div className="videoStyle" onClick={()=>this.handleVideo('ary')}>
           <ReactPlayer
             width="99.9%"
             height="100%"
-            url={url+"uploads/videoplayback.mp4"}
+            url={url+"uploads/ary.mp4"}
             playing
             controls={true}
             volume={null}
@@ -49,13 +49,13 @@ class Home extends Component {
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">Ary news</p>
+          <p className="videoTitle">Bol news</p>
         </div>
-        <div className="videoStyle" onClick={this.handleVideo}>
+        <div className="videoStyle" onClick={()=>this.handleVideo('bol')}>
           <ReactPlayer
             width="99.9%"
             height="100%"
-            url={url+"uploads/videoplayback.mp4"}
+            url={url+"uploads/bol.mp4"}
             playing
             controls={true}
             volume={null}
@@ -72,8 +72,9 @@ class Home extends Component {
         <div>
           <p className="videoTitle">Ary news</p>
         </div>
-        <div className="videoStyle" onClick={this.handleVideo}>
+        <div className="videoStyle" onClick={()=>this.handleVideo('empty')}>
           <ReactPlayer
+            id='ary'
             width="99.9%"
             height="100%"
             url={url+"uploads/videoplayback.mp4"}
@@ -129,14 +130,18 @@ class Home extends Component {
 
    }
 
-   handleVideo=()=>
+   handleVideo=(n)=>
    {
-     console.log("video clicked ::");
+     console.log("video clicked ::", n);
 
      var options = {
        method: 'POST',
        url: url + 'getvideos',
        headers: { },
+       form:{
+         videoName:n
+       },
+       json:true
      };
 
      request(options, (error, response, body) =>
@@ -147,8 +152,8 @@ class Home extends Component {
        }
        else
        {
-         console.log("Response body :: ", JSON.parse(body));
-         this.screenshotsList=JSON.parse(body)
+         console.log("Response body :: ", body);
+         this.screenshotsList=body
 
          this.HomeContent=<Screenshots  screenshots={this.screenshotsList}/>
 
