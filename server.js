@@ -20,10 +20,10 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 const gm = require('gm');
 const width = 1000;
 const height = 100;
-var convertVideoName = 'videoplayback.mp4';
+var convertVideoName = 'ary';
 var stripHeight = 120;
 var stripWidth = 1050;
-
+var timestamp = 60;
 var stripStartX = 0;
 var stripEndX = 1050;
 
@@ -68,6 +68,11 @@ mongoose.connect(process.env.MONGODB_URI,
   app.use('/static', express.static(path.join(__dirname, 'public')));
 
   app.post('/getVideos',function(req,res){
+  console.log("request ",req.body)
+    var params = req.body;
+    if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
+        convertVideoName = params.videoName;
+    }
     video.findOne({videoName : convertVideoName}).exec(function(error,videoFound){
       if(error){
         res.status(500).send({error:error});
@@ -85,11 +90,11 @@ mongoose.connect(process.env.MONGODB_URI,
             var height = 160;
 
             var x = 0;
-            var y = 600;
+            var y = 580;
             var tcount = 0;
             var timeString = "00";
             var promise = new Promise((reject,resolve)=>{
-              for(var i = 0; i<60 ; i = i+5){
+              for(var i = 0; i<160 ; i = i+5){
 
                 tcount = tcount+1;
                 if(tcount <= 59 && tcount>=0){
@@ -102,15 +107,15 @@ mongoose.connect(process.env.MONGODB_URI,
                   timeString = (currentTime+":"+tcount).toString();
                 }
                 //    console.log("timeString : ", timeString);
-                ffmpeg('./uploads/videoplayback.mp4')
-                .output('./screenshots/screenshot'+i+'.png')
+                ffmpeg('./uploads/'+convertVideoName+'.mp4')
+                .output('./screenshots/screenshot'+convertVideoName+i+'.png')
                 .noAudio()
                 .seek(timeString)
                 .on('error', function(err) {
 
                   promises.push('/screenshots/screenshot'+i+'.png')
-                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-                  gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
+                  gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
                     //if (!err) console.log(' hooray! ');
                   });
                   resolve();
@@ -129,11 +134,11 @@ mongoose.connect(process.env.MONGODB_URI,
                 .on('end', function() {
                   //  console.log('Processing finished !',i);
 
-                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+count+'.png']);
-                  gm(__dirname+'/screenshots/screenshot'+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+count+'.png', function (err) {
+                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
+                  gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
                     //if (!err) console.log(' hooray! ');
                   });
-                  promises.push('/screenshots/screenshot'+i+'.png')
+                  promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
                   resolve();
                   count = count+5;
                   if (i == count){
@@ -181,8 +186,14 @@ mongoose.connect(process.env.MONGODB_URI,
       }
     })
   })
-
-
+  // var x = 100;
+  // var y = 600;
+  //  stripHeight = 20;
+  //  stripWidth = 1050;
+  // gm(__dirname+'/screenshots/screenshotgeo155.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshotgeo160.png', function (err) {
+  //   if(err) console.log("error",err);
+  //   if (!err) console.log(' hooray! ');
+  // });
   app.get('/screenshots/:id',function(req,res){
     console.log(req.params)
     res.sendFile(__dirname+'/screenshots/'+req.params.id)
@@ -201,6 +212,7 @@ mongoose.connect(process.env.MONGODB_URI,
     console.log(req.params)
     res.sendFile(__dirname+'/uploads/'+req.params.id)
   })
+
 
   app.post('/combineTickers',function(req,res){
     var params = req.body;
@@ -223,22 +235,29 @@ mongoose.connect(process.env.MONGODB_URI,
         start = start-stripHeight;
         console.log(k)
         if(k ==0 ){
+          video.findOne({screenshots:{$in:[params.screenshots[0]]}}).exec(function(error,done){
+            if(error){
+              res.status(500).send({error:error});
+            }else{
+              console.log(done);
+              x.in('-page', '+'+stripEndX+'+'+(0).toString())  // Custom place for each of the images
+              .in(__dirname+'/uploads/'+done.videoName+'.png')
 
-          x.in('-page', '+'+stripEndX+'+'+(0).toString())  // Custom place for each of the images
-          .in(__dirname+'/uploads/'+logoName)
+              x.minify()  // Halves the size, 512x512 -> 256x256
+              x.mosaic()  // Merges the images as a matrix
+              var dir = __dirname+'/headlines/';
+              if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir);
+              }
+              x.write(dir+'output'+count+'.jpg', function (err) {
+                if (err) console.log(err);
+                res.status(200).send({image:'headlines/output'+count+'.jpg'});
+              });
+              //  count = count+1;
+              //start = stripHeight*params.screenshots.length;
+            }
+          })
 
-          x.minify()  // Halves the size, 512x512 -> 256x256
-          x.mosaic()  // Merges the images as a matrix
-          var dir = __dirname+'/headlines/';
-          if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-          }
-          x.write(dir+'output'+count+'.jpg', function (err) {
-            if (err) console.log(err);
-            res.status(200).send({image:'headlines/output'+count+'.jpg'});
-          });
-          //  count = count+1;
-          //start = stripHeight*params.screenshots.length;
         }
       }
     }else{

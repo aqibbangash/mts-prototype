@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-// const url = "http://localhost:5000"
-const url = "https://mts-prototype.herokuapp.com"
+ const url = "http://localhost:5000"
+//const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -178,6 +178,7 @@ class Screenshots extends Component {
             </div>
             <div className="ShareBtnDiv">
               {/*<Button onClick={this.handleImageDownload}>Download Image</Button>*/}
+
                 <WhatsappShareButton
                    url={url+"/"+body.image}
 
