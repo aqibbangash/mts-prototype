@@ -161,6 +161,7 @@ class Screenshots extends Component {
               <img src={url+"/"+body.image} />
             </div>
             <div className="ShareBtnDiv">
+            
                 <WhatsappShareButton
                    url={url+"/"+body.image}
 
