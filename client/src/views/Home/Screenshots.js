@@ -31,6 +31,7 @@ class Screenshots extends Component {
 
    componentDidMount()
    {
+     this.imagePath=''
      imageArray=[]
      console.log("base url", url);
      var images=[]
@@ -130,6 +131,19 @@ class Screenshots extends Component {
      // console.log("array :: ", imageArray);
    }
 
+   // handleImageDownload=()=>
+   // {
+   //   console.log("Image download path :: ", this.imagePath);
+   //   console.log("button clicked");
+   //   var link = document.createElement('a');
+   //    link.href = this.imagePath;
+   //    link.download = this.imagePath;
+   //    document.body.appendChild(link);
+   //    link.click();
+   //    document.body.removeChild(link);
+   //
+   // }
+
    onCombine=()=>
    {
      var title= "title";
@@ -154,6 +168,8 @@ class Screenshots extends Component {
        {
          console.log("Response :: ", response);
          console.log("url :: ", url+"/"+body.image)
+         this.imagePath=url+"/"+body.image
+         console.log("url :: ", this.imagePath)
          // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
           this.bottomContent=
           <div>
@@ -161,6 +177,7 @@ class Screenshots extends Component {
               <img src={url+"/"+body.image} />
             </div>
             <div className="ShareBtnDiv">
+              {/*<Button onClick={this.handleImageDownload}>Download Image</Button>*/}
                 <WhatsappShareButton
                    url={url+"/"+body.image}
 

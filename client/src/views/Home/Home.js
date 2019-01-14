@@ -47,6 +47,48 @@ class Home extends Component {
       </div>
 
 
+      <div className="videoGrid" >
+        <div>
+          <p className="videoTitle">Ary news</p>
+        </div>
+        <div className="videoStyle" onClick={this.handleVideo}>
+          <ReactPlayer
+            width="99.9%"
+            height="100%"
+            url={url+"uploads/videoplayback.mp4"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+        </div>
+        <div>
+          <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
+          <Button bsStyle="primary" onClick={this.handleTranscript}>View Transcripts</Button>
+        </div>
+      </div>
+
+      <div className="videoGrid" >
+        <div>
+          <p className="videoTitle">Ary news</p>
+        </div>
+        <div className="videoStyle" onClick={this.handleVideo}>
+          <ReactPlayer
+            width="99.9%"
+            height="100%"
+            url={url+"uploads/videoplayback.mp4"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+        </div>
+        <div>
+          <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
+          <Button bsStyle="primary" onClick={this.handleTranscript}>View Transcripts</Button>
+        </div>
+      </div>
+
 
     </div>
      this.setState((state, props) => {
