@@ -27,7 +27,7 @@ class Home extends Component {
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">Ary news</p>
+          <p className="videoTitle">ARY news</p>
         </div>
         <div className="videoStyle" onClick={()=>this.handleVideo('ary')}>
           <ReactPlayer
@@ -42,14 +42,14 @@ class Home extends Component {
         </div>
         <div>
           <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={this.handleTranscript}>View Transcripts</Button>
+          <Button bsStyle="primary" onClick={()=>this.handleTranscript('ary')}>View Transcripts</Button>
         </div>
       </div>
 
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">Bol news</p>
+          <p className="videoTitle">BOL news</p>
         </div>
         <div className="videoStyle" onClick={()=>this.handleVideo('bol')}>
           <ReactPlayer
@@ -64,13 +64,13 @@ class Home extends Component {
         </div>
         <div>
           <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={this.handleTranscript}>View Transcripts</Button>
+          <Button bsStyle="primary" onClick={()=>this.handleTranscript('bol')}>View Transcripts</Button>
         </div>
       </div>
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">Ary news</p>
+          <p className="videoTitle">AAP news</p>
         </div>
         <div className="videoStyle" onClick={()=>this.handleVideo('aap')}>
           <ReactPlayer
@@ -86,7 +86,7 @@ class Home extends Component {
         </div>
         <div>
           <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={this.handleTranscript}>View Transcripts</Button>
+          <Button bsStyle="primary" onClick={()=>this.handleTranscript('aap')}>View Transcripts</Button>
         </div>
       </div>
 
@@ -97,15 +97,17 @@ class Home extends Component {
      });
    }
 
-   handleTranscript=()=>
+   handleTranscript=(n)=>
    {
-     console.log("transcript button clicked ::");
+     console.log("transcript button clicked ::", n );
 
      var options = {
        method: 'POST',
        url: url + 'createTranscription',
        headers: { },
-       // form:{screenshots:imageArray},
+       form:{
+         videoName:n
+       },
        json: true
      };
 
