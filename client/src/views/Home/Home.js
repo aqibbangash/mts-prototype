@@ -72,7 +72,7 @@ class Home extends Component {
         <div>
           <p className="videoTitle">Ary news</p>
         </div>
-        <div className="videoStyle" onClick={()=>this.handleVideo('empty')}>
+        <div className="videoStyle" onClick={()=>this.handleVideo('app')}>
           <ReactPlayer
             id='ary'
             width="99.9%"

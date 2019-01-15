@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
-import { Button } from 'react-bootstrap';
+import { Button, Glyphicon, glyph } from 'react-bootstrap';
 
 import {
   WhatsappShareButton,
@@ -131,18 +131,27 @@ class Screenshots extends Component {
      // console.log("array :: ", imageArray);
    }
 
-   // handleImageDownload=()=>
-   // {
-   //   console.log("Image download path :: ", this.imagePath);
-   //   console.log("button clicked");
-   //   var link = document.createElement('a');
-   //    link.href = this.imagePath;
-   //    link.download = this.imagePath;
-   //    document.body.appendChild(link);
-   //    link.click();
-   //    document.body.removeChild(link);
-   //
-   // }
+   forceDownload=(link)=>{
+     console.log("Download image clicked ", link);
+    var url = this.imagePath;
+    var fileName = 'image.jpg';
+    link.innerText = "Working...";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function(){
+        var urlCreator = window.URL || window.webkitURL;
+        var imageUrl = urlCreator.createObjectURL(this.response);
+        var tag = document.createElement('a');
+        tag.href = imageUrl;
+        tag.download = fileName;
+        document.body.appendChild(tag);
+        tag.click();
+        document.body.removeChild(tag);
+        link.innerText="Download Image";
+    }
+    xhr.send();
+}
 
    onCombine=()=>
    {
@@ -177,7 +186,8 @@ class Screenshots extends Component {
               <img src={url+"/"+body.image} />
             </div>
             <div className="ShareBtnDiv">
-              {/*<Button onClick={this.handleImageDownload}>Download Image</Button>*/}
+
+              <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Image</Button>
 
                 <WhatsappShareButton
                    url={url+"/"+body.image}
