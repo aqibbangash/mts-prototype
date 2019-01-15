@@ -27,11 +27,30 @@
   font-size: 18px;
   margin-bottom: 8px
 }
-.videoClickDescription
+/* .videoClickDescription
 {
   font-weight:bold;
   margin:8px 0px 8px 0px
-}
+} */
 p{
   margin: 0
+}
+
+.newsTickerBtn
+{
+  width: 49%;
+  height: 34px;
+  margin-right: 2%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: nowrap;
+}
+.transcriptionBtn
+{
+  width: 49%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: nowrap;
 }

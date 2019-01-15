@@ -8,8 +8,8 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
-const url = "http://localhost:5000/"
-//const url = "https://mts-prototype.herokuapp.com/"
+  // const url = "http://localhost:5000/"
+const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -25,70 +25,70 @@ class Home extends Component {
     this.HomeContent=
     <div className="HomeStyle">
 
-    <div className="videoGrid" >
-    <div>
-    <p className="videoTitle">ARY news</p>
-    </div>
-    <div className="videoStyle" onClick={()=>this.handleVideo('ary')}>
-    <ReactPlayer
-    width="99.9%"
-    height="100%"
-    url={url+"uploads/ary.mp4"}
-    playing
-    controls={true}
-    volume={null}
-    muted
-    />
-    </div>
-    <div>
-    <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-    <Button bsStyle="primary" onClick={()=>this.handleTranscript('ary')}>View Transcripts</Button>
-    </div>
-    </div>
+      <div className="videoGrid" >
+        <div>
+          <p className="videoTitle">ARY News</p>
+        </div>
+        <div className="videoStyle">
+          <ReactPlayer
+            width="99.9%"
+            height="100%"
+            url={url+"uploads/ary.mp4"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+        </div>
+        <div >
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
+        </div>
+      </div>
 
 
-    <div className="videoGrid" >
-    <div>
-    <p className="videoTitle">BOL news</p>
-    </div>
-    <div className="videoStyle" onClick={()=>this.handleVideo('bol')}>
-    <ReactPlayer
-    width="99.9%"
-    height="100%"
-    url={url+"uploads/bol.mp4"}
-    playing
-    controls={true}
-    volume={null}
-    muted
-    />
-    </div>
-    <div>
-    <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-    <Button bsStyle="primary" onClick={()=>this.handleTranscript('bol')}>View Transcripts</Button>
-    </div>
-    </div>
+      <div className="videoGrid" >
+        <div>
+          <p className="videoTitle">BOL News</p>
+        </div>
+        <div className="videoStyle">
+          <ReactPlayer
+            width="99.9%"
+            height="100%"
+            url={url+"uploads/bol.mp4"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+        </div>
+        <div>
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
+        </div>
+      </div>
 
-    <div className="videoGrid" >
-    <div>
-    <p className="videoTitle">AAP news</p>
-    </div>
-    <div className="videoStyle" onClick={()=>this.handleVideo('aap')}>
-    <ReactPlayer
-    id='ary'
-    width="99.9%"
-    height="100%"
-    url={url+"uploads/aap.mp4"}
-    playing
-    controls={true}
-    volume={null}
-    muted
-    />
-    </div>
-    <div>
-    <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-    <Button bsStyle="primary" onClick={()=>this.handleTranscript('aap')}>View Transcripts</Button>
-    </div>
-    </div>
+      <div className="videoGrid" >
+        <div>
+          <p className="videoTitle">AAP News</p>
+        </div>
+        <div className="videoStyle">
+          <ReactPlayer
+            id='ary'
+            width="99.9%"
+            height="100%"
+            url={url+"uploads/aap.mp4"}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+        </div>
+        <div>
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
+        </div>
+      </div>
 
 
     </div>
