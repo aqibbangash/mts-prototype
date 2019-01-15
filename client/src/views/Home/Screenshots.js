@@ -34,7 +34,9 @@ class Screenshots extends Component {
      this.imagePath=''
      imageArray=[]
      console.log("base url", url);
-     var images=[]
+     var images=[];
+     this.videoName=this.props.screenshots.result.videoName.toUpperCase();
+     console.log("Video Name :: ", this.videoName);
      this.props.screenshots.result.screenshots.forEach((i,idx,x)=>{
        // console.log("images url :: ",i);
        images.push({
@@ -43,7 +45,7 @@ class Screenshots extends Component {
           thumbnailWidth: 2300,
           thumbnailHeight: 200,
           showLightboxThumbnails:true,
-          caption: "ARY News",
+          caption: this.videoName + " News",
 
        })
      })
