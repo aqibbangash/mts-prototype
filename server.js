@@ -72,8 +72,7 @@ app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next)
     otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
     message:  req.params.message,
     attachments:[
-
-               {contents : new Buffer(fs.readFileSync(__dirname +'/headlines/'+imageName+'.jpg'))}
+                  {contents : new Buffer(fs.readFileSync(__dirname +'/headlines/'+req.params.imageName+'.jpg'))}
              ]
   }, function (err) {
     if (err) {
@@ -95,21 +94,6 @@ mongoose.connect(process.env.MONGODB_URI,
   mongoose
   .connection
   .once('connected', () => console.log('Connected to database'));
-  mongoose
-  .connection
-  .once("connected",()=>{
-
-
-    function checkValue(numb){
-      return new Promise(function(resolve, reject){
-        // place here your logic
-        // return resolve([result object]) in case of success
-        // return reject([error object]) in case of error
-      });
-
-
-    }
-  })
   app.use(morgan('dev'));
   // json manipulation on server side
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true,parameterLimit:50000}));

@@ -6,4 +6,6 @@ var router = express.Router();
 //router.post('/getVideos',video.getVideos);
 //router.post('/combineTickers',video.combineTickers);
 router.post('/createTranscription',video.createTranscription);
+router.post('/createbucket',video.createbucket);
+router.post('/uploadFileToBucket',video.uploadFileToBucket);
 module.exports = router;

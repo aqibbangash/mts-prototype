@@ -143,3 +143,54 @@ exports.createTranscription = function(req,res){
   })
 
 }
+
+
+
+exports.createbucket = function(req,res){
+
+  // Imports the Google Cloud client library
+  process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+  const {Storage} = require('@google-cloud/storage');
+
+  // Your Google Cloud Platform project ID
+  const projectId = 'mts-project-227607';
+
+  // Creates a client
+  const storage = new Storage({
+    projectId: projectId,
+  });
+
+  // The name for the new bucket
+  const bucketName = 'bolnews';
+
+  // Creates the new bucket
+  storage
+    .createBucket(bucketName)
+    .then(() => {
+      console.log(`Bucket ${bucketName} created.`);
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
+
+}
+
+exports.uploadFileToBucket = function(req,res){
+  process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+  const {Storage} = require('@google-cloud/storage');
+
+  // Your Google Cloud Platform project ID
+  const projectId = 'mts-project-227607';
+
+  // Creates a client
+  const storage = new Storage({
+    projectId: projectId,
+  });
+
+  // The name for the new bucket
+  var bucket = storage.bucket('bolnews');
+  console.log(__dirname.replace('/api',"")+'/headlines/output0.jpg')
+  bucket.upload(__dirname.replace('/api',"")+'/headlines/output0.jpg', function(err, file) {
+              if (err) throw new Error(err);
+          });
+}
