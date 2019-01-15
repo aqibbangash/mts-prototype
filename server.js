@@ -29,12 +29,62 @@ var stripEndX = 1050;
 
 var stripStartY = 600;
 var stripEndY = 720;
-
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
 var  logoName = "ary.png";
-
+var mailer = require('express-mailer');
+mailer.extend(app, {
+  from: process.env.MAIL_USERNAME,
+  host: 'mail.sofittech.com', // hostname
+  secureConnection: false, // use SSL
+  port: 25, // port for secure SMTP
+  transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+  auth: {
+    user: process.env.MAIL_USERNAME,
+    pass: process.env.MAIL_PASSWORD
+  }
+});
 var video = require('./modals/video.js');
 console.log(ffmpegInstaller.path+"/uploads", ffmpegInstaller.version);
 app.use(cors());
+app.get('/sendemail/:id/:subject/:message', function (req, res, next) {
+  app.mailer.send('email', {
+    to: req.params.id, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+    subject: req.params.subject, // REQUIRED.
+    otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
+    message: req.params.message,
+
+  }, function (err) {
+    if (err) {
+      // handle error
+      console.log(err);
+      res.send('There was an error sending the email');
+      return;
+    }
+    res.send('Email Sent');
+  });
+});
+
+app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next) {
+  app.mailer.send('email', {
+    to: req.params.id, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+    subject: req.params.subject, // REQUIRED.
+    otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
+    message:  req.params.message,
+    attachments:[
+
+               {contents : new Buffer(fs.readFileSync(__dirname +'/headlines/'+imageName+'.jpg'))}
+             ]
+  }, function (err) {
+    if (err) {
+      // handle error
+      console.log(err);
+      res.send('There was an error sending the email');
+      return;
+    }
+    res.send('Email Sent');
+  });
+});
 // console.log that your server is up and running
 // ==========================================database connection===================================
 mongoose.connect(process.env.MONGODB_URI,
@@ -68,10 +118,10 @@ mongoose.connect(process.env.MONGODB_URI,
   app.use('/static', express.static(path.join(__dirname, 'public')));
 
   app.post('/getVideos',function(req,res){
-  console.log("request ",req.body)
+    console.log("request ",req.body)
     var params = req.body;
     if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
-        convertVideoName = params.videoName;
+      convertVideoName = params.videoName;
     }
     video.findOne({videoName : convertVideoName}).exec(function(error,videoFound){
       if(error){
@@ -81,107 +131,107 @@ mongoose.connect(process.env.MONGODB_URI,
           res.status(200).send({result:videoFound});
         }else{
 
-            var promises = [];
-            var previousTime = "00";
-            var count = 0;
-            var currentTime = "0"
-            var screenshotsArray = [];
-            var width = 1300;
-            var height = 160;
+          var promises = [];
+          var previousTime = "00";
+          var count = 0;
+          var currentTime = "0"
+          var screenshotsArray = [];
+          var width = 1300;
+          var height = 160;
 
-            var x = 0;
-            var y = 580;
-            var tcount = 0;
-            var timeString = "00";
-            var promise = new Promise((reject,resolve)=>{
-              for(var i = 0; i<160 ; i = i+5){
+          var x = 0;
+          var y = 580;
+          var tcount = 0;
+          var timeString = "00";
+          var promise = new Promise((reject,resolve)=>{
+            for(var i = 0; i<160 ; i = i+5){
 
-                tcount = tcount+1;
-                if(tcount <= 59 && tcount>=0){
-                  //  console.log("currentTime before : ",parseInt(currentTime))
-                  timeString = (previousTime+":"+tcount).toString();
-                }else{
-                  tcount = 0;
-                  currentTime = (parseInt(previousTime)+1).toString();
-                  previousTime = currentTime;
-                  timeString = (currentTime+":"+tcount).toString();
-                }
-                //    console.log("timeString : ", timeString);
-                ffmpeg('./uploads/'+convertVideoName+'.mp4')
-                .output('./screenshots/screenshot'+convertVideoName+i+'.png')
-                .noAudio()
-                .seek(timeString)
-                .on('error', function(err) {
-
-                  promises.push('/screenshots/screenshot'+i+'.png')
-                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
-                  gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
-                    //if (!err) console.log(' hooray! ');
-                  });
-                  resolve();
-                  count = count+5;
-                  if (i == count){
-                    video.create({
-                      name : Date.now(),
-                      videoName : convertVideoName,
-                      datetime : Date.now(),
-                      screenshots : screenshotsArray
-                    }).then(function(result){
-                    res.status(200).send({message:"data stored in db",result:result});
-                    })
-                  }
-                })
-                .on('end', function() {
-                  //  console.log('Processing finished !',i);
-
-                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
-                  gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
-                    //if (!err) console.log(' hooray! ');
-                  });
-                  promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
-                  resolve();
-                  count = count+5;
-                  if (i == count){
-                    video.create({
-                      name : Date.now(),
-                      videoName : convertVideoName,
-                      datetime : Date.now(),
-                      screenshots : screenshotsArray
-                    }).then(function(result){
-                      res.status(200).send({message:"data stored in db",result:result});
-                    })
-                  }
-
-                })
-                .run();
-                //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-                // if( i >= 158){
-                //   video.create({
-                //     name : Date.now(),
-                //     datetime : Date.now(),
-                //     screenshots : screenshotsArray
-                //   }).then(function(result){
-                //     console.log("stored in db")
-                //   })
-                // }
-
+              tcount = tcount+1;
+              if(tcount <= 59 && tcount>=0){
+                //  console.log("currentTime before : ",parseInt(currentTime))
+                timeString = (previousTime+":"+tcount).toString();
+              }else{
+                tcount = 0;
+                currentTime = (parseInt(previousTime)+1).toString();
+                previousTime = currentTime;
+                timeString = (currentTime+":"+tcount).toString();
               }
-            })
+              //    console.log("timeString : ", timeString);
+              ffmpeg('./uploads/'+convertVideoName+'.mp4')
+              .output('./screenshots/screenshot'+convertVideoName+i+'.png')
+              .noAudio()
+              .seek(timeString)
+              .on('error', function(err) {
 
-
-            promise.all(promises)
-            .then(function(data){ /* do stuff when success */
-              video.create({
-                name : Date.now(),
-                videoName : convertVideoName,
-                datetime : Date.now(),
-                screenshots : screenshotsArray
-              }).then(function(result){
-                console.log("stored in db");
-              //  res.status(200).send({message:"data stored in db",result:result});
+                promises.push('/screenshots/screenshot'+i+'.png')
+                screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
+                gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, stripStartX, stripStartY).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
+                  //if (!err) console.log(' hooray! ');
+                });
+                resolve();
+                count = count+5;
+                if (i == count){
+                  video.create({
+                    name : Date.now(),
+                    videoName : convertVideoName,
+                    datetime : Date.now(),
+                    screenshots : screenshotsArray
+                  }).then(function(result){
+                    res.status(200).send({message:"data stored in db",result:result});
+                  })
+                }
               })
+              .on('end', function() {
+                //  console.log('Processing finished !',i);
+
+                screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
+                gm(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png').crop(stripWidth, stripHeight, x, y).write(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png', function (err) {
+                  //if (!err) console.log(' hooray! ');
+                });
+                promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
+                resolve();
+                count = count+5;
+                if (i == count){
+                  video.create({
+                    name : Date.now(),
+                    videoName : convertVideoName,
+                    datetime : Date.now(),
+                    screenshots : screenshotsArray
+                  }).then(function(result){
+                    res.status(200).send({message:"data stored in db",result:result});
+                  })
+                }
+
+              })
+              .run();
+              //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
+              // if( i >= 158){
+              //   video.create({
+              //     name : Date.now(),
+              //     datetime : Date.now(),
+              //     screenshots : screenshotsArray
+              //   }).then(function(result){
+              //     console.log("stored in db")
+              //   })
+              // }
+
+            }
+          })
+
+
+          promise.all(promises)
+          .then(function(data){ /* do stuff when success */
+            video.create({
+              name : Date.now(),
+              videoName : convertVideoName,
+              datetime : Date.now(),
+              screenshots : screenshotsArray
+            }).then(function(result){
+              console.log("stored in db");
+              //  res.status(200).send({message:"data stored in db",result:result});
             })
-            .catch(function(err){ /* error handling */ });
+          })
+          .catch(function(err){ /* error handling */ });
         }
       }
     })
@@ -330,18 +380,18 @@ mongoose.connect(process.env.MONGODB_URI,
 
 
 
-    // create a GET route
-    app.get('/express_backend', (req, res) => {
-      res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-    });
+  // create a GET route
+  app.get('/express_backend', (req, res) => {
+    res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
+  });
 
-    if (process.env.NODE_ENV === 'production') {
-      // Serve any static files
-      app.use(express.static(path.join(__dirname, 'client/build')));
-      // Handle React routing, return all requests to React app
-      app.get('*', function(req, res) {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-      });
-    }
-    app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
-    app.listen(port, () => console.log(`Listening on port ${port}`));
+  if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+  }
+  app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
+  app.listen(port, () => console.log(`Listening on port ${port}`));

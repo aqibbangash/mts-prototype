@@ -30,7 +30,7 @@ exports.combineTickers = function(req,res){
     var headline = [];
     for(var k=params.screenshots.length-1 ; k>=0 ; k--){
       if(start == 500){
-         x = gm()
+        x = gm()
       }
 
       console.log(path.resolve(__dirname, "src"))
@@ -46,13 +46,13 @@ exports.combineTickers = function(req,res){
         x.mosaic()  // Merges the images as a matrix
         var dir = path.join((__dirname).toString().replace('/api',"").replace("\api",""))+'/headlines/';
         if (!fs.existsSync(dir)){
-              fs.mkdirSync(dir);
-          }
+          fs.mkdirSync(dir);
+        }
         x.write(dir+'output'+count+'.jpg', function (err) {
-            if (err) console.log(err);
-            res.status(200).send({image:'headlines/output'+count+'.jpg'});
+          if (err) console.log(err);
+          res.status(200).send({image:'headlines/output'+count+'.jpg'});
         });
-      //  count = count+1;
+        //  count = count+1;
         start = 500;
       }
     }
@@ -118,11 +118,11 @@ exports.createTranscription = function(req,res){
           const transcription = response.results
           .map(result => result.alternatives[0].transcript)
           .join('\n');
-           console.log(`Transcription: ${transcription}`);
-           video.update({videoName : req.body.videoName},{transcription:transcription},{multi:false}).then(function(completed){
-             console.log(completed);
-             res.status(200).send({transcription : transcription});
-           })
+          console.log(`Transcription: ${transcription}`);
+          video.update({videoName : req.body.videoName},{transcription:transcription},{multi:false}).then(function(completed){
+            console.log(completed);
+            res.status(200).send({transcription : transcription});
+          })
           // resu.transcription = transcription;
           // resu.save(function(error,done){
           //   if(error){
