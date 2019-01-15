@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
-import { Button, Glyphicon, glyph } from 'react-bootstrap';
+import { Button, Glyphicon, glyph, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 import {
   WhatsappShareButton,
@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-  // const url = "http://localhost:5000"
-const url = "https://mts-prototype.herokuapp.com"
+  const url = "http://localhost:5000"
+// const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -27,10 +27,16 @@ class Screenshots extends Component {
         };
 
         this.onSelectImage = this.onSelectImage.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
    componentDidMount()
    {
+     this.imageName=''
+     this.recipent=''
+     this.showEmail=false;
+     this.EmailBody=''
+     this.EmailSubject=''
      this.imagePath=''
      imageArray=[]
      console.log("base url", url);
@@ -147,6 +153,104 @@ class Screenshots extends Component {
     xhr.send();
 }
 
+  handleChange(e) {
+      this.setState({ value: e.target.value });
+      if(e.target.name=='email')
+      {
+        this.recipent=e.target.value
+      }
+      else if (e.target.name=='subject')
+      {
+        this.subject=e.target.value
+      }
+      else if (e.target.name=='body')
+      {
+        this.body=e.target.value
+      }
+
+  }
+
+  sendEmail=()=>
+  {
+    console.log("email sent !");
+
+    console.log("Recipent :: ", this.recipent);
+    console.log("Suject :: ", this.subject);
+    console.log("Body  :: ", this.body);
+    var imageName= this.imageName.split('/');
+    console.log("Image Name :: ", imageName[1]);
+
+    var options = {
+      method: 'GET',
+      url: url + '/sendemail/'+this.recipent+"/"+this.subject+"/"+this.body+"/"+imageName[1],
+      headers: { },
+      json: true
+    };
+    console.log("Options :: ", options);
+    request(options, (error, response, body) =>
+    {
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response", response);
+
+        this.componentDidMount();
+      }
+    })
+
+  }
+
+  handleEmailForm=()=>
+  {
+    console.log("send Email button clicked");
+    this.showEmail=true;
+
+    this.bottomContent=<div className="emailModal">
+      <div className="EmailModalBody">
+        <p className="emailLabel">Send via Email</p>
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="email"
+            name='email'
+            placeholder="Enter Email"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="text"
+            name='subject'
+            placeholder="Subject"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailBody">
+
+          <FormControl
+            style={{height:"100px"}}
+            componentClass="textarea"
+            placeholder="Body"
+            name='body'
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <Button bsStyle="success" onClick={this.sendEmail} className="EmailSendBtn">Send</Button>
+      </div>
+    </div>
+
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
+
    onCombine=()=>
    {
      var title= "title";
@@ -172,6 +276,7 @@ class Screenshots extends Component {
          console.log("Response :: ", response);
          console.log("url :: ", url+"/"+body.image)
          this.imagePath=url+"/"+body.image
+         this.imageName=body.image;
          console.log("url :: ", this.imagePath)
          // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
           this.bottomContent=
@@ -192,16 +297,8 @@ class Screenshots extends Component {
 
                  </WhatsappShareButton>
 
-                 <EmailShareButton
-                   url="www.something.com"
-                   subject="Image"
-                   body={url+"/"+body.image}
-                   className="EmailBtn">
+                 <Button className="EmailBtn" onClick={this.handleEmailForm}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
 
-                   <EmailIcon size={32} round />
-                   <p className="emailTitle">Share via E-Mail</p>
-
-                 </EmailShareButton>
            </div>
          </div>
            this.setState((state, props) => {
@@ -219,6 +316,7 @@ class Screenshots extends Component {
     return (
 
       <div className="screenshotPage">
+
         {this.bottomContent}
 
       </div>
