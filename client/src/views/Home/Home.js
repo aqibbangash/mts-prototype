@@ -8,7 +8,7 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
-  //const url = "http://localhost:5000/"
+  // const url = "http://localhost:5000/"
 const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
@@ -27,9 +27,9 @@ class Home extends Component {
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">ARY news</p>
+          <p className="videoTitle">ARY News</p>
         </div>
-        <div className="videoStyle" onClick={()=>this.handleVideo('ary')}>
+        <div className="videoStyle">
           <ReactPlayer
             width="99.9%"
             height="100%"
@@ -41,17 +41,17 @@ class Home extends Component {
             />
         </div>
         <div>
-          <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={()=>this.handleTranscript('ary')}>View Transcripts</Button>
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">BOL news</p>
+          <p className="videoTitle">BOL News</p>
         </div>
-        <div className="videoStyle" onClick={()=>this.handleVideo('bol')}>
+        <div className="videoStyle">
           <ReactPlayer
             width="99.9%"
             height="100%"
@@ -63,16 +63,16 @@ class Home extends Component {
             />
         </div>
         <div>
-          <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={()=>this.handleTranscript('bol')}>View Transcripts</Button>
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">AAP news</p>
+          <p className="videoTitle">AAP News</p>
         </div>
-        <div className="videoStyle" onClick={()=>this.handleVideo('aap')}>
+        <div className="videoStyle">
           <ReactPlayer
             id='ary'
             width="99.9%"
@@ -85,8 +85,8 @@ class Home extends Component {
             />
         </div>
         <div>
-          <p className="videoClickDescription">Click on video to view sorted News Tickers</p>
-          <Button bsStyle="primary" onClick={()=>this.handleTranscript('aap')}>View Transcripts</Button>
+          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">View News Tickers</Button>
+          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 

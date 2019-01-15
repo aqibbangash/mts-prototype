@@ -12,7 +12,7 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-  //const url = "http://localhost:5000"
+  // const url = "http://localhost:5000"
 const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
