@@ -64,6 +64,7 @@ exports.combineTickers = function(req,res){
 
 
 exports.createTranscription = function(req,res){
+  console.log("Request : ",req.body);
   if(req.body.videoName == null || req.body.videoName == undefined){
     req.body.videoName = convertVideoName;
   }
@@ -84,7 +85,7 @@ exports.createTranscription = function(req,res){
 
         // The name of the audio file to transcribe
         //  const fileName = './sample.mp3';
-        const gcsUri = 'gs://arynews/sample.wav';
+        const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
         const encoding = 'LINEAR16';
         const sampleRateHertz = 44100;
         const languageCode = 'ur-PK';
@@ -118,7 +119,7 @@ exports.createTranscription = function(req,res){
           .map(result => result.alternatives[0].transcript)
           .join('\n');
            console.log(`Transcription: ${transcription}`);
-           video.update({videoName : convertVideoName},{transcription:transcription},{multi:false}).then(function(completed){
+           video.update({videoName : req.body.videoName},{transcription:transcription},{multi:false}).then(function(completed){
              console.log(completed);
              res.status(200).send({transcription : transcription});
            })

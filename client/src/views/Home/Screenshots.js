@@ -12,7 +12,7 @@ import {
 import './screenshots.css'
 
 var request = require("request");
- // const url = "http://localhost:5000"
+  //const url = "http://localhost:5000"
 const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
@@ -110,18 +110,10 @@ class Screenshots extends Component {
     else
     {
       console.log("false");
-      if(imageArray.length<6)
-      {
         image.isSelected = true;
-
         imageArray[imageArray.length] = image.src.replace(url+"/","");
         console.log("added to array");
         console.log("added :: ", imageArray);
-      }
-      else {
-        alert('only 6 images can be selected');
-      }
-
     }
 
     this.setState((state, props) => {
