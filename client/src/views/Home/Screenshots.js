@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
-import { Button, Glyphicon, glyph } from 'react-bootstrap';
+import { Button, Glyphicon, glyph, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 import {
   WhatsappShareButton,
@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-  // const url = "http://localhost:5000"
-const url = "https://mts-prototype.herokuapp.com"
+  const url = "http://localhost:5000"
+// const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -26,39 +26,46 @@ class Screenshots extends Component {
       imgSelect:false
     };
 
-    this.onSelectImage = this.onSelectImage.bind(this);
-  }
+        this.onSelectImage = this.onSelectImage.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
 
-  componentDidMount()
-  {
-    this.imagePath=''
-    imageArray=[]
-    console.log("base url", url);
-    var images=[];
-    this.videoName=this.props.screenshots.result.videoName.toUpperCase();
-    console.log("Video Name :: ", this.videoName);
-    this.props.screenshots.result.screenshots.forEach((i,idx,x)=>{
-      // console.log("images url :: ",i);
-      images.push({
-        src: url+i,
-        thumbnail: url+i,
-        thumbnailWidth: 2300,
-        thumbnailHeight: 200,
-        showLightboxThumbnails:true,
-        caption: this.videoName + " News",
+   componentDidMount()
+   {
+     this.imageName=''
+     this.recipent=''
+     this.showEmail=false;
+     this.EmailBody=''
+     this.EmailSubject=''
+     this.imagePath=''
+     imageArray=[]
+     console.log("base url", url);
+     var images=[];
+     this.videoName=this.props.screenshots.result.videoName.toUpperCase();
+     console.log("Video Name :: ", this.videoName);
+     this.props.screenshots.result.screenshots.forEach((i,idx,x)=>{
+       // console.log("images url :: ",i);
+       images.push({
+          src: url+i,
+          thumbnail: url+i,
+          thumbnailWidth: 2300,
+          thumbnailHeight: 200,
+          showLightboxThumbnails:true,
+          caption: this.videoName + " News",
 
-      })
-    })
-    this.images=images
+       })
+     })
+     this.images=images
 
-    this.bottomContent=<div>
-    <Button onClick={this.onCombine} bsStyle="primary" className="combineBtn">Combine</Button>
+     this.bottomContent=<div>
+       <Button onClick={this.onCombine} bsStyle="primary" className="combineBtn">Combine</Button>
 
-    <Gallery
-    images={this.images}
-    onSelectImage={this.onSelectImage}
-    thumbnailStyle={this.handlethumbnailStyle}
-    />
+        <Gallery
+          images={this.images}
+          onSelectImage={this.onSelectImage}
+          thumbnailStyle={this.handlethumbnailStyle}
+        />
+
 
     </div>
 
@@ -147,19 +154,42 @@ class Screenshots extends Component {
     xhr.send();
   }
 
-  onCombine=()=>
-  {
-    var title= "title";
-    console.log("combined ", imageArray);
 
+
+  handleChange(e) {
+      this.setState({ value: e.target.value });
+      if(e.target.name=='email')
+      {
+        this.recipent=e.target.value
+      }
+      else if (e.target.name=='subject')
+      {
+        this.subject=e.target.value
+      }
+      else if (e.target.name=='body')
+      {
+        this.body=e.target.value
+      }
+
+  }
+
+  sendEmail=()=>
+  {
+    console.log("email sent !");
+
+    console.log("Recipent :: ", this.recipent);
+    console.log("Suject :: ", this.subject);
+    console.log("Body  :: ", this.body);
+    var imageName= this.imageName.split('/');
+    console.log("Image Name :: ", imageName[1]);
 
     var options = {
-      method: 'POST',
-      url: url + '/combineTickers',
+      method: 'GET',
+      url: url + '/sendemail/'+this.recipent+"/"+this.subject+"/"+this.body+"/"+imageName[1],
       headers: { },
-      form:{screenshots:imageArray},
       json: true
     };
+    console.log("Options :: ", options);
 
     request(options, (error, response, body) =>
     {
@@ -169,48 +199,120 @@ class Screenshots extends Component {
       }
       else
       {
-        console.log("Response :: ", response);
-        console.log("url :: ", url+"/"+body.image)
-        this.imagePath=url+"/"+body.image
-        console.log("url :: ", this.imagePath)
-        // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
-        this.bottomContent=
-        <div>
-        <div className="combinedImg">
-        <img src={url+"/"+body.image} />
-        </div>
-        <div className="ShareBtnDiv">
+        console.log("Response", response);
 
-        <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Image</Button>
-
-        <WhatsappShareButton
-        url={url+"/"+body.image}
-
-        className="WhatsappBtn">
-        <WhatsappIcon size={32} round />
-        <p className="whatsAppTitle">Share via WhatsApp</p>
-
-        </WhatsappShareButton>
-
-        <EmailShareButton
-        url="www.something.com"
-        subject="Image"
-        body={url+"/"+body.image}
-        className="EmailBtn">
-
-        <EmailIcon size={32} round />
-        <p className="emailTitle">Share via E-Mail</p>
-
-        </EmailShareButton>
-        </div>
-        </div>
-        this.setState((state, props) => {
-          return {counter: 0 + props.step};
-        });
+        this.componentDidMount();
       }
-    });
+    })
 
   }
+
+  handleEmailForm=()=>
+  {
+    console.log("send Email button clicked");
+    this.showEmail=true;
+
+    this.bottomContent=<div className="emailModal">
+      <div className="EmailModalBody">
+        <p className="emailLabel">Send via Email</p>
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="email"
+            name='email'
+            placeholder="Enter Email"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="text"
+            name='subject'
+            placeholder="Subject"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailBody">
+
+          <FormControl
+            style={{height:"100px"}}
+            componentClass="textarea"
+            placeholder="Body"
+            name='body'
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <Button bsStyle="success" onClick={this.sendEmail} className="EmailSendBtn">Send</Button>
+      </div>
+    </div>
+
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
+
+   onCombine=()=>
+   {
+     var title= "title";
+     console.log("combined ", imageArray);
+
+
+     var options = {
+       method: 'POST',
+       url: url + '/combineTickers',
+       headers: { },
+       form:{screenshots:imageArray},
+       json: true
+     };
+
+     request(options, (error, response, body) =>
+     {
+       if (error)
+       {
+         console.log("Error", error);
+       }
+       else
+       {
+         console.log("Response :: ", response);
+         console.log("url :: ", url+"/"+body.image)
+         this.imagePath=url+"/"+body.image
+         this.imageName=body.image;
+         console.log("url :: ", this.imagePath)
+         // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
+          this.bottomContent=
+          <div>
+            <div className="combinedImg">
+              <img src={url+"/"+body.image} />
+            </div>
+            <div className="ShareBtnDiv">
+
+              <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Image</Button>
+
+                <WhatsappShareButton
+                   url={url+"/"+body.image}
+
+                   className="WhatsappBtn">
+                     <WhatsappIcon size={32} round />
+                     <p className="whatsAppTitle">Share via WhatsApp</p>
+
+                 </WhatsappShareButton>
+
+                 <Button className="EmailBtn" onClick={this.handleEmailForm}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
+
+           </div>
+         </div>
+           this.setState((state, props) => {
+             return {counter: 0 + props.step};
+           });
+       }
+     });
+
+   }
+
 
   render() {
 
@@ -219,7 +321,8 @@ class Screenshots extends Component {
     return (
 
       <div className="screenshotPage">
-      {this.bottomContent}
+
+        {this.bottomContent}
 
       </div>
 
