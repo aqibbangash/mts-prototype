@@ -66,6 +66,7 @@ class Screenshots extends Component {
           thumbnailStyle={this.handlethumbnailStyle}
         />
 
+
     </div>
 
     this.setState((state, props) => {
@@ -153,10 +154,6 @@ class Screenshots extends Component {
     xhr.send();
   }
 
-  onCombine=()=>
-  {
-    var title= "title";
-    console.log("combined ", imageArray);
 
 
   handleChange(e) {
@@ -193,6 +190,7 @@ class Screenshots extends Component {
       json: true
     };
     console.log("Options :: ", options);
+
     request(options, (error, response, body) =>
     {
       if (error)
@@ -314,6 +312,7 @@ class Screenshots extends Component {
      });
 
    }
+
 
   render() {
 
