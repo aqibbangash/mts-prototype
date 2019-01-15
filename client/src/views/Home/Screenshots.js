@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
-import { Button } from 'react-bootstrap';
+import { Button, Glyphicon, glyph } from 'react-bootstrap';
 
 import {
   WhatsappShareButton,
@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
- const url = "http://localhost:5000"
-//const url = "https://mts-prototype.herokuapp.com"
+ // const url = "http://localhost:5000"
+const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -31,9 +31,12 @@ class Screenshots extends Component {
 
    componentDidMount()
    {
+     this.imagePath=''
      imageArray=[]
      console.log("base url", url);
-     var images=[]
+     var images=[];
+     this.videoName=this.props.screenshots.result.videoName.toUpperCase();
+     console.log("Video Name :: ", this.videoName);
      this.props.screenshots.result.screenshots.forEach((i,idx,x)=>{
        // console.log("images url :: ",i);
        images.push({
@@ -42,7 +45,7 @@ class Screenshots extends Component {
           thumbnailWidth: 2300,
           thumbnailHeight: 200,
           showLightboxThumbnails:true,
-          caption: "ARY News",
+          caption: this.videoName + " News",
 
        })
      })
@@ -130,6 +133,28 @@ class Screenshots extends Component {
      // console.log("array :: ", imageArray);
    }
 
+   forceDownload=(link)=>{
+     console.log("Download image clicked ", link);
+    var url = this.imagePath;
+    var fileName = 'image.jpg';
+    link.innerText = "Working...";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function(){
+        var urlCreator = window.URL || window.webkitURL;
+        var imageUrl = urlCreator.createObjectURL(this.response);
+        var tag = document.createElement('a');
+        tag.href = imageUrl;
+        tag.download = fileName;
+        document.body.appendChild(tag);
+        tag.click();
+        document.body.removeChild(tag);
+        link.innerText="Download Image";
+    }
+    xhr.send();
+}
+
    onCombine=()=>
    {
      var title= "title";
@@ -154,6 +179,8 @@ class Screenshots extends Component {
        {
          console.log("Response :: ", response);
          console.log("url :: ", url+"/"+body.image)
+         this.imagePath=url+"/"+body.image
+         console.log("url :: ", this.imagePath)
          // this.bottomContent=<div><img src={url+"/"+body.image}/></div>
           this.bottomContent=
           <div>
@@ -161,7 +188,9 @@ class Screenshots extends Component {
               <img src={url+"/"+body.image} />
             </div>
             <div className="ShareBtnDiv">
-            
+
+              <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Image</Button>
+
                 <WhatsappShareButton
                    url={url+"/"+body.image}
 
