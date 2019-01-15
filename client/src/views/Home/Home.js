@@ -72,12 +72,12 @@ class Home extends Component {
         <div>
           <p className="videoTitle">Ary news</p>
         </div>
-        <div className="videoStyle" onClick={()=>this.handleVideo('app')}>
+        <div className="videoStyle" onClick={()=>this.handleVideo('aap')}>
           <ReactPlayer
             id='ary'
             width="99.9%"
             height="100%"
-            url={url+"uploads/videoplayback.mp4"}
+            url={url+"uploads/aap.mp4"}
             playing
             controls={true}
             volume={null}
