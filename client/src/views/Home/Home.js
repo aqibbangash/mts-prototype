@@ -40,9 +40,9 @@ class Home extends Component {
             muted
             />
         </div>
-        <div>
+        <div >
           <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">View News Tickers</Button>
-          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ class Home extends Component {
         </div>
         <div>
           <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">View News Tickers</Button>
-          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 
@@ -86,7 +86,7 @@ class Home extends Component {
         </div>
         <div>
           <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">View News Tickers</Button>
-          <Button bsStyle="primary" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
+          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
         </div>
       </div>
 
