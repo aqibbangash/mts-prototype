@@ -16,6 +16,7 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.17",
     "@google-cloud/speech": "^2.1.1",
+    "@google-cloud/storage": "^2.3.4",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
