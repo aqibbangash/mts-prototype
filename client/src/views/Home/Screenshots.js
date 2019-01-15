@@ -20,11 +20,11 @@ var imageArray=[]
 class Screenshots extends Component {
 
   constructor(props){
-        super(props);
+    super(props);
 
-        this.state = {
-            imgSelect:false
-        };
+    this.state = {
+      imgSelect:false
+    };
 
         this.onSelectImage = this.onSelectImage.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -69,57 +69,57 @@ class Screenshots extends Component {
     </div>
 
     this.setState((state, props) => {
-         return {counter: 0 + props.step};
-       });
+      return {counter: 0 + props.step};
+    });
 
-   }
+  }
 
-   handlethumbnailStyle=()=>
-   {
-     return{
-       height:"100%",
-       width:"100%"
-     }
-   }
+  handlethumbnailStyle=()=>
+  {
+    return{
+      height:"100%",
+      width:"100%"
+    }
+  }
 
-   onSelectImage= (index, image)=>
-   {
-     // console.log("array :: ", imageArray);
-     console.log("Array length", imageArray.length);
+  onSelectImage= (index, image)=>
+  {
+    // console.log("array :: ", imageArray);
+    console.log("Array length", imageArray.length);
 
-     var i=0
-     var imgSrc=image.src.replace(url+"/","")
+    var i=0
+    var imgSrc=image.src.replace(url+"/","")
     if(image.isSelected)
     {
       console.log("true");
 
-        image.isSelected = false;
-        console.log("imgSrc :: ", imgSrc);
+      image.isSelected = false;
+      console.log("imgSrc :: ", imgSrc);
 
-        imageArray.forEach((i,idx,x)=>{
-          var index = imageArray.indexOf(i);
-          if(i==imgSrc)
-          {
-            console.log("found",i);
-            console.log("found on index :: ", idx);
-            imageArray.splice(index, 1);
-            console.log("removed :: ", imageArray);
-          }
-          else
-          {
-            console.log("not found");
-          }
-        })
+      imageArray.forEach((i,idx,x)=>{
+        var index = imageArray.indexOf(i);
+        if(i==imgSrc)
+        {
+          console.log("found",i);
+          console.log("found on index :: ", idx);
+          imageArray.splice(index, 1);
+          console.log("removed :: ", imageArray);
+        }
+        else
+        {
+          console.log("not found");
+        }
+      })
 
 
     }
     else
     {
       console.log("false");
-        image.isSelected = true;
-        imageArray[imageArray.length] = image.src.replace(url+"/","");
-        console.log("added to array");
-        console.log("added :: ", imageArray);
+      image.isSelected = true;
+      imageArray[imageArray.length] = image.src.replace(url+"/","");
+      console.log("added to array");
+      console.log("added :: ", imageArray);
     }
 
     this.setState((state, props) => {
@@ -127,12 +127,12 @@ class Screenshots extends Component {
     });
 
 
-     // console.log( "length : ",imageArray.length);
-     // console.log("array :: ", imageArray);
-   }
+    // console.log( "length : ",imageArray.length);
+    // console.log("array :: ", imageArray);
+  }
 
-   forceDownload=(link)=>{
-     console.log("Download image clicked ", link);
+  forceDownload=(link)=>{
+    console.log("Download image clicked ", link);
     var url = this.imagePath;
     var fileName = 'image.jpg';
     link.innerText = "Working...";
@@ -140,18 +140,24 @@ class Screenshots extends Component {
     xhr.open("GET", url, true);
     xhr.responseType = "blob";
     xhr.onload = function(){
-        var urlCreator = window.URL || window.webkitURL;
-        var imageUrl = urlCreator.createObjectURL(this.response);
-        var tag = document.createElement('a');
-        tag.href = imageUrl;
-        tag.download = fileName;
-        document.body.appendChild(tag);
-        tag.click();
-        document.body.removeChild(tag);
-        link.innerText="Download Image";
+      var urlCreator = window.URL || window.webkitURL;
+      var imageUrl = urlCreator.createObjectURL(this.response);
+      var tag = document.createElement('a');
+      tag.href = imageUrl;
+      tag.download = fileName;
+      document.body.appendChild(tag);
+      tag.click();
+      document.body.removeChild(tag);
+      link.innerText="Download Image";
     }
     xhr.send();
-}
+  }
+
+  onCombine=()=>
+  {
+    var title= "title";
+    console.log("combined ", imageArray);
+
 
   handleChange(e) {
       this.setState({ value: e.target.value });

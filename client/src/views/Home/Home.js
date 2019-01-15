@@ -92,84 +92,84 @@ class Home extends Component {
 
 
     </div>
-     this.setState((state, props) => {
-       return {counter: 0 + props.step};
-     });
-   }
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
 
-   handleTranscript=(n)=>
-   {
-     console.log("transcript button clicked ::", n );
+  handleTranscript=(n)=>
+  {
+    console.log("transcript button clicked ::", n );
 
-     var options = {
-       method: 'POST',
-       url: url + 'createTranscription',
-       headers: { },
-       form:{
-         videoName:n
-       },
-       json: true
-     };
+    var options = {
+      method: 'POST',
+      url: url + 'createTranscription',
+      headers: { },
+      form:{
+        videoName:n
+      },
+      json: true
+    };
 
-     request(options, (error, response, body) =>
-     {
-       if (error)
-       {
-         console.log("Error", error);
-       }
-       else
-       {
-         console.log("Response :: ", body.transcription);
+    request(options, (error, response, body) =>
+    {
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response :: ", body.transcription);
 
-         this.HomeContent=<Transcript content={body.transcription} />
+        this.HomeContent=<Transcript content={body.transcription} />
 
-         this.setState((state, props) => {
-           return {counter: 0 + props.step};
-         });
-       }
-     });
-
-
-   }
-
-   handleVideo=(n)=>
-   {
-     console.log("video clicked ::", n);
-
-     var options = {
-       method: 'POST',
-       url: url + 'getvideos',
-       headers: { },
-       form:{
-         videoName:n
-       },
-       json:true
-     };
-
-     request(options, (error, response, body) =>
-     {
-       if (error)
-       {
-         console.log("Error", error);
-       }
-       else
-       {
-         console.log("Response body :: ", body);
-         this.screenshotsList=body
-
-         this.HomeContent=<Screenshots  screenshots={this.screenshotsList}/>
-
-           this.setState((state, props) => {
-             return {counter: 0 + props.step};
-           });
-
-       }
-     });
+        this.setState((state, props) => {
+          return {counter: 0 + props.step};
+        });
+      }
+    });
 
 
+  }
+
+  handleVideo=(n)=>
+  {
+    console.log("video clicked ::", n);
+
+    var options = {
+      method: 'POST',
+      url: url + 'getvideos',
+      headers: { },
+      form:{
+        videoName:n
+      },
+      json:true
+    };
+
+    request(options, (error, response, body) =>
+    {
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response body :: ", body);
+        this.screenshotsList=body
+
+        this.HomeContent=<Screenshots  screenshots={this.screenshotsList}/>
+
+        this.setState((state, props) => {
+          return {counter: 0 + props.step};
+        });
+
+      }
+    });
 
 
-   }
+
+
+  }
 
 
   render() {
