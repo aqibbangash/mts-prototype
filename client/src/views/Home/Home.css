@@ -1,5 +1,36 @@
 @import "~video-react/dist/video-react.css";
 
+.modalContainer {
+  position: absolute  ;
+  /* background: yellow */
+}
+
+.fade:not(.show) {
+    opacity: 1;
+    background: rgb(0,0,0,0.3)
+}
+
+.modalBody
+{
+  /* background: orange; */
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.modal-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+    top: 150px
+}
+
 .HomeStyle
 {
   width:100%;
@@ -53,4 +84,18 @@ p{
   overflow: hidden;
   word-wrap: break-word;
   white-space: nowrap;
+}
+
+.TickerLimitField
+{
+  border-radius: 4px;
+  border: 1px solid gray;
+  width: 100%;
+}
+.GetTickerBtn
+{
+  width: 30%;
+  height: 35px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
