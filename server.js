@@ -73,7 +73,7 @@ app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next)
     otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
     message:  req.params.message,
     attachments:[
-                  {contents : new Buffer(fs.readFileSync(normalize(__dirname +'/headlines/'+req.params.imageName+'.jpg')))}
+                  {filename: 'test.jpg', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/headlines/'+req.params.imageName+'.jpg'))),contentType: 'image/jpeg'}
              ]
   }, function (err) {
     if (err) {

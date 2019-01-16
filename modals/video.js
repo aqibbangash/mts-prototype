@@ -8,6 +8,5 @@ var VideoSchema = new mongoose.Schema({
   videoName : {type:String},
   timestamp:{type:Number},
   createdAt : {type:Date , default:Date.now()}
-  
 });
 module.exports = mongoose.model('Video', VideoSchema);
