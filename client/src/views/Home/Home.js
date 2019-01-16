@@ -216,6 +216,7 @@ class Home extends Component {
       if (error)
       {
         console.log("Error", error);
+        
       }
       else
       {
