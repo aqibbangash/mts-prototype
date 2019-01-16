@@ -17,7 +17,7 @@ app.use(express.static('screenshots'))
 app.use(express.static('headlines'))
 app.use(express.static('uploads'))
 var command = ffmpeg();
-ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+ffmpeg.setFfmpegPath(normalize(ffmpegInstaller.path));
 const gm = require('gm');
 const width = 1000;
 const height = 100;
@@ -46,7 +46,7 @@ mailer.extend(app, {
   }
 });
 var video = require('./modals/video.js');
-console.log(ffmpegInstaller.path+"/uploads", ffmpegInstaller.version);
+console.log(normalize(ffmpegInstaller.path+"/uploads"), ffmpegInstaller.version);
 app.use(cors());
 app.get('/sendemail/:id/:subject/:message', function (req, res, next) {
   app.mailer.send('email', {
@@ -380,10 +380,10 @@ mongoose.connect(process.env.MONGODB_URI,
 
   if (process.env.NODE_ENV === 'production') {
     // Serve any static files
-    app.use(express.static(path.join(normalize(__dirname, 'client/build'))));
+    app.use(express.static(path.join(normalize(__dirname), 'client/build')));
     // Handle React routing, return all requests to React app
     app.get('*', function(req, res) {
-      res.sendFile(path.join(normalize(__dirname, 'client/build', 'index.html')));
+      res.sendFile(path.join(normalize(__dirname), 'client/build', 'index.html'));
     });
   }
   app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
