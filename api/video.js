@@ -7,6 +7,7 @@ var path = require('path')
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
+const normalize = require('normalize-path');
 var convertVideoName = 'videoplayback.mp4';
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 exports.getVideos = function(req,res){
@@ -38,16 +39,17 @@ exports.combineTickers = function(req,res){
         params.screenshots[k] = "/"+params.screenshots[k];
       }
       x.in('-page', '+0+'+(start).toString())  // Custom place for each of the images
-      .in(path.join((__dirname).toString().replace('/api',"").replace("\api","")+params.screenshots[k]))
+      .in(path.join((normalize(__dirname)).toString().replace('/api',"").replace("\api","")+params.screenshots[k]))
       start = start-50;
       console.log(k)
       if(k ==0 || start-50<0){
         x.minify()  // Halves the size, 512x512 -> 256x256
         x.mosaic()  // Merges the images as a matrix
-        var dir = path.join((__dirname).toString().replace('/api',"").replace("\api",""))+'/headlines/';
+        var dir = path.join((normalize(__dirname)).toString().replace('/api',"").replace("\api",""))+'/headlines/';
         if (!fs.existsSync(dir)){
           fs.mkdirSync(dir);
         }
+        dir = normalize(dir);
         x.write(dir+'output'+count+'.jpg', function (err) {
           if (err) console.log(err);
           res.status(200).send({image:'headlines/output'+count+'.jpg'});
@@ -75,7 +77,7 @@ exports.createTranscription = function(req,res){
       if(resu){
         res.status(200).send({transcription : resu.transcription});
       }else{
-        process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+        process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
         // Imports the Google Cloud client library
         const speech = require('@google-cloud/speech');
         //const fs = require('fs');
@@ -149,7 +151,7 @@ exports.createTranscription = function(req,res){
 exports.createbucket = function(req,res){
 
   // Imports the Google Cloud client library
-  process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+  process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
   const {Storage} = require('@google-cloud/storage');
 
   // Your Google Cloud Platform project ID
@@ -176,7 +178,7 @@ exports.createbucket = function(req,res){
 }
 
 exports.uploadFileToBucket = function(req,res){
-  process.env.GOOGLE_APPLICATION_CREDENTIALS="./mts-project-227607-06400f774c3f.json"
+  process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
   const {Storage} = require('@google-cloud/storage');
 
   // Your Google Cloud Platform project ID
@@ -189,8 +191,8 @@ exports.uploadFileToBucket = function(req,res){
 
   // The name for the new bucket
   var bucket = storage.bucket('bolnews');
-  console.log(__dirname.replace('/api',"")+'/headlines/output0.jpg')
-  bucket.upload(__dirname.replace('/api',"")+'/headlines/output0.jpg', function(err, file) {
+  console.log(normalize(__dirname.replace('/api',"")+'/headlines/output0.jpg'))
+  bucket.upload(normalize(__dirname.replace('/api',"")+'/headlines/output0.jpg'), function(err, file) {
               if (err) throw new Error(err);
           });
 }
