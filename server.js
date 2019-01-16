@@ -127,8 +127,12 @@ mongoose.connect(process.env.MONGODB_URI,
           var y = 580;
           var tcount = 0;
           var timeString = "00";
+          var timeDiffrenece = 5;
+          if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
+            timeDiffrenece = parseInt(req.body.timestamp);
+          }
           var promise = new Promise((reject,resolve)=>{
-            for(var i = 0; i<160 ; i = i+5){
+            for(var i = 0; i<160 ; i = i+timeDiffrenece){
 
               tcount = tcount+1;
               if(tcount <= 59 && tcount>=0){
@@ -153,7 +157,7 @@ mongoose.connect(process.env.MONGODB_URI,
                   //if (!err) console.log(' hooray! ');
                 });
                 resolve();
-                count = count+5;
+                count = count+timeDiffrenece;
                 if (i == count){
                   video.create({
                     name : Date.now(),
@@ -174,7 +178,7 @@ mongoose.connect(process.env.MONGODB_URI,
                 });
                 promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
                 resolve();
-                count = count+5;
+                count = count+timeDiffrenece;
                 if (i == count){
                   video.create({
                     name : Date.now(),
