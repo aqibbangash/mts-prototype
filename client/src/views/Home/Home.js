@@ -8,8 +8,8 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
-  const url = "http://localhost:5000/"
-// const url = "https://mts-prototype.herokuapp.com/"
+  // const url = "http://localhost:5000/"
+const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -206,7 +206,7 @@ class Home extends Component {
       headers: { },
       form:{
         videoName:n,
-        timestamp : 10
+        timestamp : 5
       },
       json:true
     };
