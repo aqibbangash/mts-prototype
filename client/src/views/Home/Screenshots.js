@@ -12,8 +12,8 @@ import {
 import './screenshots.css'
 
 var request = require("request");
-  const url = "http://localhost:5000"
-// const url = "https://mts-prototype.herokuapp.com"
+  // const url = "http://localhost:5000"
+const url = "https://mts-prototype.herokuapp.com"
 
 var imageArray=[]
 
@@ -180,12 +180,13 @@ class Screenshots extends Component {
     console.log("Recipent :: ", this.recipent);
     console.log("Suject :: ", this.subject);
     console.log("Body  :: ", this.body);
-    var imageName= this.imageName.split('/');
-    console.log("Image Name :: ", imageName[1]);
+    var imageFullName= this.imageName.split('/');
+    var imageName=imageFullName[1].split('.')
+    console.log("Image Name :: ", imageName[0]);
 
     var options = {
       method: 'GET',
-      url: url + '/sendemail/'+this.recipent+"/"+this.subject+"/"+this.body+"/"+imageName[1],
+      url: url + '/sendemail/'+this.recipent+"/"+this.subject+"/"+this.body+"/"+imageName[0],
       headers: { },
       json: true
     };
