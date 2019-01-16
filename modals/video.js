@@ -6,6 +6,7 @@ var VideoSchema = new mongoose.Schema({
   headlineTicker : {type:Array , default:[]},
   transcription : {type:String,default:""},
   videoName : {type:String},
+  timestamp:{type:Number},
   createdAt : {type:Date , default:Date.now()}
 });
 module.exports = mongoose.model('Video', VideoSchema);

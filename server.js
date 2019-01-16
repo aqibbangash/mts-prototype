@@ -105,10 +105,14 @@ mongoose.connect(process.env.MONGODB_URI,
   app.post('/getVideos',function(req,res){
     console.log("request ",req.body)
     var params = req.body;
+    var timeDiffrenece = 5;
+    if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
+      timeDiffrenece = parseInt(req.body.timestamp);
+    }
     if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
       convertVideoName = params.videoName;
     }
-    video.findOne({videoName : convertVideoName}).exec(function(error,videoFound){
+    video.findOne({videoName : convertVideoName,timestamp:timeDiffrenece}).exec(function(error,videoFound){
       if(error){
         res.status(500).send({error:error});
       }else{
@@ -128,10 +132,7 @@ mongoose.connect(process.env.MONGODB_URI,
           var y = 580;
           var tcount = 0;
           var timeString = "00";
-          var timeDiffrenece = 5;
-          if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
-            timeDiffrenece = parseInt(req.body.timestamp);
-          }
+
           var promise = new Promise((reject,resolve)=>{
             for(var i = 0; i<160 ; i = i+timeDiffrenece){
 
@@ -164,6 +165,7 @@ mongoose.connect(process.env.MONGODB_URI,
                     name : Date.now(),
                     videoName : convertVideoName,
                     datetime : Date.now(),
+                    timestamp : timeDiffrenece,
                     screenshots : screenshotsArray
                   }).then(function(result){
                     res.status(200).send({message:"data stored in db",result:result});
@@ -185,6 +187,7 @@ mongoose.connect(process.env.MONGODB_URI,
                     name : Date.now(),
                     videoName : convertVideoName,
                     datetime : Date.now(),
+                    timestamp : timeDiffrenece,
                     screenshots : screenshotsArray
                   }).then(function(result){
                     res.status(200).send({message:"data stored in db",result:result});
@@ -214,7 +217,8 @@ mongoose.connect(process.env.MONGODB_URI,
               name : Date.now(),
               videoName : convertVideoName,
               datetime : Date.now(),
-              screenshots : screenshotsArray
+              screenshots : screenshotsArray,
+              timestamp : timeDiffrenece,
             }).then(function(result){
               console.log("stored in db");
               //  res.status(200).send({message:"data stored in db",result:result});
