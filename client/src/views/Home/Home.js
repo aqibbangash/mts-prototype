@@ -8,8 +8,8 @@ import Transcript from'./Transcript.js'
 import './Home.css'
 
 var request = require("request");
-  // const url = "http://localhost:5000/"
-const url = "https://mts-prototype.herokuapp.com/"
+  const url = "http://localhost:5000/"
+// const url = "https://mts-prototype.herokuapp.com/"
 
 class Home extends Component {
 
@@ -199,6 +199,19 @@ class Home extends Component {
   handleVideo=(n)=>
   {
     console.log("video clicked ::", n);
+    var timeStamp=''
+    if(n=='ary')
+    {
+      timeStamp=15
+    }
+    else if(n=='bol')
+    {
+      timeStamp=30
+    }
+    else if(n=='ary')
+    {
+      timeStamp=40
+    }
 
     var options = {
       method: 'POST',
@@ -206,7 +219,7 @@ class Home extends Component {
       headers: { },
       form:{
         videoName:n,
-        timestamp : 5
+        timestamp : timeStamp
       },
       json:true
     };
