@@ -30,30 +30,30 @@ class Home extends Component {
     this.setState({ show: false });
   }
 
-  handleShow(e) {
+  handleShow = (e) => {
     console.log("Modal show for :: ", e);
 
     if(e=='ary')
     {
-      this.SetTickerBtn=<Button bsStyle="primary" className='GetTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">Confirm</Button>
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">Confirm</Button>
     }
     else if (e=='bol')
     {
-      this.SetTickerBtn=<Button bsStyle="primary" className='GetTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">Confirm</Button>
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">Confirm</Button>
     }
     else if (e=='aap')
     {
-      this.SetTickerBtn=<Button bsStyle="primary" className='GetTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">Confirm</Button>
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">Confirm</Button>
     }
     this.setState({ show: true });
-    this.setState((state, props) => {
-      return {counter: 0 + props.step};
-    });
+  
 
   }
 
+
   componentDidMount = () =>
   {
+    this.TickerDisable=true;
     this.TickerLimit=''
     this.SetTickerBtn=''
     console.log("did mount ::");
@@ -133,10 +133,31 @@ class Home extends Component {
     });
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
       this.setState({ value: e.target.value });
       this.TickerLimit=e.target.value
+      if(this.TickerLimit)
+      {
+        console.log("button enabled");
+        this.TickerDisable=false
+      }
+      else
+      {
+        console.log("Button disabled");
+        this.TickerDisable=true
+      }
+
+
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('ary')} title="View News Tickers">Confirm</Button>
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('bol')} title="View News Tickers">Confirm</Button>
+      this.SetTickerBtn=<Button bsStyle="primary" disabled={this.TickerDisable} className='GetTickerBtn' onClick={()=>this.handleVideo('aap')} title="View News Tickers">Confirm</Button>
+
+
       console.log("Setting Value to :: ", this.TickerLimit);
+
+      this.setState((state, props) => {
+        return {counter: 0 + props.step};
+      });
 
   }
 
@@ -189,7 +210,7 @@ class Home extends Component {
       },
       json:true
     };
-
+    console.log("Get video Call options :: ", options);
     request(options, (error, response, body) =>
     {
       if (error)
