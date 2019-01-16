@@ -206,7 +206,7 @@ class Home extends Component {
       headers: { },
       form:{
         videoName:n,
-        timestamp : 10
+        timestamp : 5
       },
       json:true
     };
