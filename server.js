@@ -136,7 +136,7 @@ mongoose.connect(process.env.MONGODB_URI,
           var promise = new Promise((reject,resolve)=>{
             for(var i = 0; i<160 ; i = i+timeDiffrenece){
 
-              tcount = tcount+1;
+              tcount = tcount+timeDiffrenece;
               if(tcount <= 59 && tcount>=0){
                 //  console.log("currentTime before : ",parseInt(currentTime))
                 timeString = (previousTime+":"+tcount).toString();

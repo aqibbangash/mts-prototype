@@ -208,9 +208,9 @@ class Home extends Component {
     {
       timeStamp=30
     }
-    else if(n=='ary')
+    else if(n=='aap')
     {
-      timeStamp=40
+      timeStamp=20
     }
 
     var options = {
@@ -229,7 +229,7 @@ class Home extends Component {
       if (error)
       {
         console.log("Error", error);
-        
+
       }
       else
       {
