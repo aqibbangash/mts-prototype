@@ -283,7 +283,14 @@ exports.uploadFile = function(req,res){
                 transcription: transcription,
                 path : '/uploads/'+req.file.originalname
               }).then(function(result){
-                res.status(200).send({result:result});
+                var file = bucket.file(audioFileName[0]+".wav");
+                file.delete(function(err, apiResponse) {
+                  if(err){
+                    console.log("error in removing file from bucket",err);
+                  }else{
+                    res.status(200).send({result:result});
+                  }
+                });
               }).catch(err => {
                 console.error('ERROR:', err);
                 res.status(500).send({error:err});
