@@ -309,3 +309,39 @@ exports.uploadFile = function(req,res){
     }
   })
 }
+
+exports.getClip = function(req,res){
+  var params = req.body;
+  console.log("Request : ",params);
+  if(params.videoName!=null && params.videoName!=undefined && params.videoName!='' ){
+    if(params.start!=null && params.start!=undefined && params.start!=''){
+      if(params.end!=null && params.end!=undefined && params.end!=''){
+        ffmpeg('./uploads/'+params.videoName+'.mp4')
+        .setStartTime(params.start) // "00:00:00"
+        .setDuration(params.end) // "time in seconds like 50"
+        .output('./uploads/clips/'+params.videoName+'.mp4')
+        .on('end', function(err) {
+          if(!err)
+          {
+            console.log('conversion Done');
+            res.sendFile(normalize(__dirname.toString().replace("/api","")+'/uploads/clips/'+params.videoName+'.mp4'))
+          }else{
+            console.log("error in clipping video",err);
+            res.status(500).send({error:err})
+          }
+        })
+        .on('error', function(err){
+          console.log('error: ', +err);
+          res.status(500).send({error:err})
+        }).run();
+      }else{
+        res.status(400).send({message:"end required"});
+      }
+    }else{
+      res.status(400).send({message:"start required"});
+    }
+  }else{
+    res.status(400).send({message:"videoName required"});
+  }
+
+}

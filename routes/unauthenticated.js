@@ -9,4 +9,5 @@ router.post('/createTranscription',video.createTranscription);
 router.post('/createbucket',video.createbucket);
 router.post('/uploadFileToBucket',video.uploadFileToBucket);
 router.post('/uploadFile',video.uploadFile);
+router.post('/getClip',video.getClip);
 module.exports = router;
