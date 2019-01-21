@@ -85,7 +85,6 @@ app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next)
     res.send('Email Sent');
   });
 });
-// console.log that your server is up and running
 // ==========================================database connection===================================
 mongoose.connect(process.env.MONGODB_URI,
   {
@@ -116,10 +115,9 @@ mongoose.connect(process.env.MONGODB_URI,
       if(error){
         res.status(500).send({error:error});
       }else{
-        if(videoFound){
+        if(videoFound && videoFound.screenshots.length>0){
           res.status(200).send({result:videoFound});
         }else{
-
           var promises = [];
           var previousTime = "00";
           var count = 0;
@@ -127,12 +125,10 @@ mongoose.connect(process.env.MONGODB_URI,
           var screenshotsArray = [];
           var width = 1300;
           var height = 160;
-
           var x = 0;
           var y = 580;
           var tcount = 0;
           var timeString = "00";
-
           var promise = new Promise((reject,resolve)=>{
             for(var i = 0; i<160 ; i = i+timeDiffrenece){
 
@@ -173,8 +169,6 @@ mongoose.connect(process.env.MONGODB_URI,
                 }
               })
               .on('end', function() {
-                //  console.log('Processing finished !',i);
-
                 screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
                 gm(normalize(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png')).crop(stripWidth, stripHeight, x, y).write(normalize(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png'), function (err) {
                   //if (!err) console.log(' hooray! ');
@@ -196,21 +190,8 @@ mongoose.connect(process.env.MONGODB_URI,
 
               })
               .run();
-              //screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+i+'.png']);
-              // if( i >= 158){
-              //   video.create({
-              //     name : Date.now(),
-              //     datetime : Date.now(),
-              //     screenshots : screenshotsArray
-              //   }).then(function(result){
-              //     console.log("stored in db")
-              //   })
-              // }
-
             }
           })
-
-
           promise.all(promises)
           .then(function(data){ /* do stuff when success */
             video.create({
@@ -309,69 +290,6 @@ mongoose.connect(process.env.MONGODB_URI,
 
   })
 
-  // app.get('/takeshot',function(req,res){
-
-
-
-
-  //
-  // const speech = require('@google-cloud/speech');
-  //
-  // // Creates a client
-  // const client = new speech.SpeechClient();
-  //
-  // // The name of the audio file to transcribe
-  // const fileName = path.join(__dirname)+'/uploads/audio.mp3';
-  //
-  // // Reads a local audio file and converts it to base64
-  // const file = fs.readFileSync(fileName);
-  // const audioBytes = file.toString('base64');
-  //
-  // // The audio file's encoding, sample rate in hertz, and BCP-47 language code
-  // const audio = {
-  //   content: audioBytes,
-  // };
-  // const config = {
-  //   encoding: 'LINEAR16',
-  //   sampleRateHertz: 16000,
-  //   languageCode: 'en-US',
-  // };
-  // const request = {
-  //   audio: audio,
-  //   config: config,
-  // };
-  //
-  // // Detects speech in the audio file
-  // client
-  //   .recognize(request)
-  //   .then(data => {
-  //     const response = data[0];
-  //     const transcription = response.results
-  //       .map(result => result.alternatives[0].transcript)
-  //       .join('\n');
-  //     console.log(`Transcription: ${transcription}`);
-  //   })
-  //   .catch(err => {
-  //     console.error('ERROR:', err);
-  //   });
-
-
-
-  //})
-
-  // var converter = require('video-converter');
-  //
-  //
-  // // convert mp4 to mp3
-  // converter.convert("./uploads/videoplayback.mp4", "audio.wav", function(err) {
-  //   if (err) throw err;
-  //
-  // })
-
-
-
-
-
 
   // create a GET route
   app.get('/express_backend', (req, res) => {
@@ -386,5 +304,8 @@ mongoose.connect(process.env.MONGODB_URI,
       res.sendFile(path.join(normalize(__dirname), 'client/build', 'index.html'));
     });
   }
-  app.use('/', require('./routes/unauthenticated.js')); //routes which does't require token authentication
+  app.use('/',function(req, res, next){
+  req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
+  next()
+}, require('./routes/unauthenticated.js')); //routes which does't require token authentication
   app.listen(port, () => console.log(`Listening on port ${port}`));

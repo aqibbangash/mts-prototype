@@ -85,7 +85,7 @@ class Home extends Component {
 
       <div className="videoGrid" >
         <div>
-          <p className="videoTitle">BOL News</p>
+          <p className="videoTitle">PTV News</p>
         </div>
         <div className="videoStyle">
           <ReactPlayer

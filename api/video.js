@@ -1,4 +1,5 @@
 var video = require("../modals/video.js");
+var multer = require('multer');
 const gm = require('gm');
 const width = 1000;
 const height = 100;
@@ -7,15 +8,38 @@ var path = require('path')
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads')
+  },
+  filename: function (req, file, callback) {
+    callback(null,file.originalname)
+  }
+})
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
+var upload = multer({ storage: storage }).single('filename')
 const normalize = require('normalize-path');
 var convertVideoName = 'videoplayback.mp4';
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 exports.getVideos = function(req,res){
+  var params = req.body;
+  console.log("Request : ",params);
+  video.findOne({videoName : params.videoName}).exec(function(error,result){
+    if(error){
+      res.status(500).send({error:error});
+    }else{
+      res.status(200).send({result:result});
+    }
+  })
+}
+
+exports.getVideosUrls = function(req,res){
   video.find({}).sort({createdAt:-1}).exec(function(error,result){
     if(error){
       res.status(500).send({error:error});
     }else{
-      res.status(200).send({result:result[0]});
+      res.status(200).send({result:result});
     }
   })
 }
@@ -33,7 +57,6 @@ exports.combineTickers = function(req,res){
       if(start == 500){
         x = gm()
       }
-
       console.log(path.resolve(__dirname, "src"))
       if(params.screenshots[k][0] != '/'){
         params.screenshots[k] = "/"+params.screenshots[k];
@@ -86,8 +109,8 @@ exports.createTranscription = function(req,res){
         const client = new speech.SpeechClient();
 
         // The name of the audio file to transcribe
-        //  const fileName = './sample.mp3';
-        const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
+        const fileName = '../uploads/'+req.body.videoName+'.wav';
+        //const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
         const encoding = 'LINEAR16';
         const sampleRateHertz = 44100;
         const languageCode = 'ur-PK';
@@ -98,7 +121,7 @@ exports.createTranscription = function(req,res){
         };
 
         const audio = {
-          uri: gcsUri,
+          uri: fileName,
         };
 
         const request = {
@@ -167,32 +190,115 @@ exports.createbucket = function(req,res){
 
   // Creates the new bucket
   storage
-    .createBucket(bucketName)
-    .then(() => {
-      console.log(`Bucket ${bucketName} created.`);
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    });
+  .createBucket(bucketName)
+  .then(() => {
+    console.log(`Bucket ${bucketName} created.`);
+  })
+  .catch(err => {
+    console.error('ERROR:', err);
+  });
 
 }
 
 exports.uploadFileToBucket = function(req,res){
   process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
   const {Storage} = require('@google-cloud/storage');
-
-  // Your Google Cloud Platform project ID
   const projectId = 'mts-project-227607';
-
-  // Creates a client
   const storage = new Storage({
     projectId: projectId,
   });
-
-  // The name for the new bucket
   var bucket = storage.bucket('bolnews');
   console.log(normalize(__dirname.replace('/api',"")+'/headlines/output0.jpg'))
   bucket.upload(normalize(__dirname.replace('/api',"")+'/headlines/output0.jpg'), function(err, file) {
-              if (err) throw new Error(err);
-          });
+    if (err) throw new Error(err);
+  });
+}
+
+
+exports.uploadFile = function(req,res){
+  console.log("file : ",req.file);
+  upload(req, res, function (err) {
+    if(req.file){
+      console.log(req.file);
+      var audioFileName = req.file.originalname.split('.');
+      let  proc = new ffmpeg({source:'./uploads/'+req.file.originalname})
+      .setFfmpegPath(ffmpegInstaller.path).audioChannels(1)
+      .toFormat('wav')
+      .saveToFile('./uploads/converted/'+audioFileName[0]+'.wav')
+      console.log("123")
+      setTimeout(function(){
+        console.log("converted video");
+        process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
+        const {Storage} = require('@google-cloud/storage');
+        // Your Google Cloud Platform project ID
+        const projectId = 'mts-project-227607';
+        // Creates a client
+        const storage = new Storage({
+          projectId: projectId,
+        });
+        // The name for the new bucket
+        var bucket = storage.bucket('bolnews');
+        console.log(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'))
+        bucket.upload(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'), function(err, file) {
+          if (err) {
+            console.log("Error: ",err);
+            res.status(500).send({error:err});
+          }else{ // file uploaded to file bucket
+            const speech = require('@google-cloud/speech');
+            const client = new speech.SpeechClient();
+            //const fileName = '../uploads/convert'+req.body.videoName+'.wav';
+            const gcsUri = 'gs://bolnews/'+audioFileName[0]+'.wav';
+            const encoding = 'LINEAR16';
+            const sampleRateHertz = 44100;
+            const languageCode = 'ur-PK';
+            const config = {
+              encoding: encoding,
+              sampleRateHertz: sampleRateHertz,
+              languageCode: languageCode,
+            };
+            const audio = {
+              uri: gcsUri,
+            };
+            const request = {
+              config: config,
+              audio: audio,
+            };
+            // Detects speech in the audio file. This creates a recognition job that you
+            // can wait for now, or get its result later.
+            client
+            .longRunningRecognize(request)
+            .then(data => {
+              const operation = data[0];
+              // Get a Promise representation of the final result of the job
+              return operation.promise();
+            })
+            .then(data => {
+              const response = data[0];
+              const transcription = response.results
+              .map(result => result.alternatives[0].transcript)
+              .join('\n');
+              console.log(`Transcription: ${transcription}`);
+              video.create({
+                videoName:req.file.originalname,
+                transcription: transcription,
+                path : '/uploads/'+req.file.originalname
+              }).then(function(result){
+                res.status(200).send({result:result});
+              }).catch(err => {
+                console.error('ERROR:', err);
+                res.status(500).send({error:err});
+              });
+
+            })
+            .catch(err => {
+              console.error('ERROR:', err);
+              res.status(500).send({error:err});
+            });
+          }
+        });
+      }, 3000);
+    }else{
+      res.status(400).send({meseage:"file not found"});
+    }
+  })
 }
