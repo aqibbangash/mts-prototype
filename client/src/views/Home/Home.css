@@ -41,8 +41,45 @@
 .uploadVideoBtn
 {
   position: absolute;
-  top: 64px;
+  top: 62px;
   right: 10px;
-  /* height: 35px; */
-  width: 95px
+  height: 30px;
+  width: 117px;
+  background: #20a8d8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.uploadVideoBtn:hover
+{
+
+  background: #15789b;
+  cursor: pointer;
+}
+input[type="file"] {
+    display: none;
+}
+.loadingg
+{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0, 0.6);
+  z-index: 10;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.videoLoadingText
+{
+  color: white;
+
 }

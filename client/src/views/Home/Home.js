@@ -13,17 +13,40 @@ var request = require("request");
 
 class Home extends Component {
 
-  // constructor(props, context) {
-  //   super(props, context);
-  //
-  //   this.handleShow = this.handleShow.bind(this);
-  //   this.handleClose = this.handleClose.bind(this);
-  //   this.handleChange = this.handleChange.bind(this);
-  //
-  //   this.state = {
-  //     show: false
-  //   };
-  // }
+  constructor(props, context) {
+    super(props, context);
+
+    EventBus.on("showLoadingg", this.showLoadingg.bind(this));
+    EventBus.on("stopLoadingg", this.stopLoadingg.bind(this));
+
+    // this.handleShow = this.handleShow.bind(this);
+    // this.handleClose = this.handleClose.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
+    //
+    // this.state = {
+    //   show: false
+    // };
+  }
+
+  showLoadingg(msg){
+    this.loadingg = true
+
+    this.setState((state, props) => {
+    return {counter: state.counter + props.step};
+    })
+
+  }
+
+  stopLoadingg(msg){
+    this.loadingg = false
+
+    if (msg != undefined)
+    {alert(msg)}
+
+    this.setState((state, props) => {
+    return {counter: state.counter + props.step};
+    })
+  }
 
   // handleClose() {
   //   console.log("modal closed!");
@@ -104,9 +127,11 @@ class Home extends Component {
 
   handleVideoUpload=(e)=>
   {
+    EventBus.publish("showLoadingg");
     console.log("Upload video clicked",e.target.files[0]);
 
     this.fileUpload(e.target.files[0]).then((response)=>{
+      EventBus.publish("stopLoadingg");
     console.log("Video Upload Response :: ",response.data);
     })
   }
@@ -146,9 +171,13 @@ class Home extends Component {
 
           </Modal.Footer>
         </Modal> */}
+        <div className="loadingg"  hidden={!this.loadingg} >
+          <p className="videoLoadingText">Wait Video is Uploading...</p>
+        </div>
 
-          <input type="file"  className="uploadVideoBtn" onChange={(e)=>this.handleVideoUpload(e)} name="myFile" accept="video/mp4" multiple />
-
+         <label  className="uploadVideoBtn"> Upload Video
+          <input type="file" onChange={(e)=>this.handleVideoUpload(e)} name="myFile" accept="video/mp4" multiple />
+        </label>
       {this.HomeContent}
       </div>
     )
