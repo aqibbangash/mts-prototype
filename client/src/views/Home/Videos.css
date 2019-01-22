@@ -99,3 +99,57 @@ p{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.clippingStartText
+{
+  width: 30%;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.clippingEndText
+{
+  width: 84%;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.clippingEnd
+{
+  width: 100%;
+  /* display: flex;
+  align-items: center; */
+}
+.clippingStart
+{
+  width: 100%;
+  /* display: flex;
+  margin-right: 15px;
+  align-items: center; */
+}
+
+.ClippingDiv
+{
+  display: flex;
+  margin-bottom: 6px;
+  margin: 10px 0px 15px 0px
+  /* flex-direction: column; */
+}
+.HHMMSS
+{
+  width: 50%;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding-left: 3px
+}
+.durationDiv
+{
+  width: 25%;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding-left: 8px;
+  margin-left: 2%;
+}
+.ClipBtn
+{
+  margin-left: 2%;
+  width: 21%;
+  border-radius: 5px;
+}

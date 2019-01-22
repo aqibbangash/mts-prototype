@@ -131,7 +131,7 @@ class Home extends Component {
     console.log("Upload video clicked",e.target.files[0]);
 
     this.fileUpload(e.target.files[0]).then((response)=>{
-      EventBus.publish("stopLoadingg");
+      // EventBus.publish("stopLoadingg");
     console.log("Video Upload Response :: ",response.data);
     })
   }
@@ -172,7 +172,10 @@ class Home extends Component {
           </Modal.Footer>
         </Modal> */}
         <div className="loadingg"  hidden={!this.loadingg} >
-          <p className="videoLoadingText">Wait Video is Uploading...</p>
+        <img className="LoaderImage" src="/5.gif"/>
+          <p className="videoLoadingText">
+
+          Wait Video is Uploading...</p>
         </div>
 
          <label  className="uploadVideoBtn"> Upload Video

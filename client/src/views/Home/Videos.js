@@ -13,10 +13,23 @@ const url = "http://localhost:5000"
 
 class Videos extends Component {
 
+  constructor(props){
+    super(props);
+      this.state={
+        value:'00' ,
+      }
+        this.handleClipping = this.handleClipping.bind(this);
+    }
+
   componentDidMount()
   {
 
     console.log(" videos did mount ::");
+    this.start=''
+    this.end=''
+    this.hh=''
+    this.mm=''
+    this.ss=''
     this.HomeContent=''
     this.screen=''
     this.TickerLimit=''
@@ -24,7 +37,7 @@ class Videos extends Component {
     this.screenshotsList=''
     this.VideosList=[]
     this.GetVideoResponse=''
-
+    this.videoDetail=[]
     var options = {
       method: 'POST',
       url: url + '/getVideosUrls',
@@ -41,10 +54,16 @@ class Videos extends Component {
       {
         this.GetVideoResponse=JSON.parse(body)
         console.log("Response :: ", this.GetVideoResponse);
+
         this.GetVideoResponse.result.forEach((i,idx,x)=>{
+          var videoName=i['videoName'].split(".")
+          this.videoDetail[idx]={
+            videoName: videoName[0],
+            timeStamp : i['timestamp']
+          }
           this.VideosList.push(<div className="videoGrid" >
               <div>
-                <p className="videoTitle">{i['videoName'].toUpperCase()} News</p>
+                <p className="videoTitle">{videoName[0].toUpperCase()} News</p>
               </div>
               <div className="videoStyle">
                 <ReactPlayer
@@ -57,9 +76,29 @@ class Videos extends Component {
                   muted
                   />
               </div>
+              <div className="ClippingDiv">
+                <div className="HHMMSS">
+
+                  <label className="clippingStart"> Start<br/>
+                    <input name="HH" onChange={this.handleClipping} placeholder="HH" className="clippingStartText" type="number" />
+                    :
+                    <input name="MM" onChange={this.handleClipping} placeholder="MM" className="clippingStartText" type="number" />
+                    :
+                    <input name="SS" onChange={this.handleClipping} placeholder="SS" className="clippingStartText" type="number" />
+                  </label>
+
+                </div>
+                <div className="durationDiv">
+                  <label className="clippingEnd"> Duration
+                    <input name="Duration" onChange={this.handleClipping} placeholder="SS" className="clippingEndText" type="number" />
+                  </label>
+                </div>
+                <Button className="ClipBtn" bsStyle="primary" onClick={()=>this.handleClip(this.videoDetail[idx])}>Clip</Button>
+              </div>
               <div >
-                <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo(i['videoName'])}>Get Tickers</Button>
-                <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript(i['videoName'])} title="View Transcripts">View Transcripts</Button>
+
+                <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo(this.videoDetail[idx])}>Get Tickers</Button>
+                <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript(this.videoDetail[idx])} title="View Transcripts">View Transcripts</Button>
               </div>
             </div>)
         })
@@ -72,6 +111,65 @@ class Videos extends Component {
 
   }
 
+  handleClipping=(e)=>
+  {
+    console.log("chnaging value for ",e.target.name, " to ",e.target.value  )
+    this.setState({ value: e.target.value });
+
+    if(e.target.name =="HH" )
+    {
+      this.hh=e.target.value
+    }
+    else if(e.target.name =="MM" )
+    {
+      this.mm=e.target.value
+    }
+    else if(e.target.name =="SS" )
+    {
+      this.ss=e.target.value
+    }
+    else if(e.target.name="Duration")
+    {
+      this.end=e.target.value
+    }
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
+
+  handleClip=(e)=>
+  {
+    console.log("clip pressed")
+    this.start=this.hh+":"+this.mm+":"+this.ss
+    console.log("Start :: ", this.start)
+    console.log("End :: ", this.end)
+    console.log("VideoName :: ", e.videoName)
+
+    var options = {
+      method: 'POST',
+      url: url + '/getClip',
+      headers: { },
+      form:{
+        videoName:e.videoName,
+        start:this.start,
+        end:this.end
+      },
+      json: true
+    };
+    console.log("clip options :: ", options )
+    request(options, (error, response, body) =>
+    {
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response :: ", body);
+      }
+    });
+  }
+
   handleTranscript=(n)=>
   {
     console.log("transcript button clicked ::", n );
@@ -81,7 +179,7 @@ class Videos extends Component {
       url: url + '/createTranscription',
       headers: { },
       form:{
-        videoName:n
+        videoName:n.videoName
       },
       json: true
     };
@@ -110,27 +208,15 @@ class Videos extends Component {
   handleVideo=(n)=>
   {
     console.log("video clicked ::", n);
-    var timeStamp=''
-    if(n=='ary')
-    {
-      timeStamp=15
-    }
-    else if(n=='bol')
-    {
-      timeStamp=30
-    }
-    else if(n=='ary')
-    {
-      timeStamp=40
-    }
+
 
     var options = {
       method: 'POST',
       url: url + '/getvideos',
       headers: { },
       form:{
-        videoName:n,
-        timestamp : timeStamp
+        videoName:n.videoName,
+        timestamp : n.timeStamp
       },
       json:true
     };
@@ -168,51 +254,6 @@ class Videos extends Component {
       <div className="HomeStyle">
 
         {this.VideosList}
-
-
-{/*        <div className="videoGrid" >
-          <div>
-            <p className="videoTitle">BOL News</p>
-          </div>
-          <div className="videoStyle">
-            <ReactPlayer
-              width="99.9%"
-              height="100%"
-              url={url+"/uploads/bol.mp4"}
-              playing
-              controls={true}
-              volume={null}
-              muted
-              />
-          </div>
-          <div>
-            <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('bol')}>Get Tickers</Button>
-            <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
-          </div>
-        </div>
-
-        <div className="videoGrid" >
-          <div>
-            <p className="videoTitle">AAP News</p>
-          </div>
-          <div className="videoStyle">
-            <ReactPlayer
-              id='ary'
-              width="99.9%"
-              height="100%"
-              url={url+"/uploads/aap.mp4"}
-              playing
-              controls={true}
-              volume={null}
-              muted
-              />
-          </div>
-          <div>
-            <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')}>Get Tickers</Button>
-            <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
-          </div>
-        </div> */}
-
 
       </div>
     )

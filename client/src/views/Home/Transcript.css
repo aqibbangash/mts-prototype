@@ -9,4 +9,56 @@
 .transcriptContent{
   font-size: 16px;
   text-align: center;
+  height: 456px;
+}
+.printBtn
+{
+  width: 25%;
+  margin-right: 25px;
+}
+.ShareBtnDiv
+{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px
+}
+.WhatsappShareButton{
+  display: flex;
+  align-items: center;
+  width: 25%;
+  background: rgb(44, 183, 66);
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+.whatsAppTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.EmailShareButton
+{
+  display: flex;
+  align-items: center;
+  width: 25%;
+  background: rgb(127, 127, 127);
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  cursor: pointer;
+}
+.emailTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
 }
