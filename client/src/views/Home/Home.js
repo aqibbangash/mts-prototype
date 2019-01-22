@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
 import { Button,Modal } from 'react-bootstrap';
 import EventBus from 'eventing-bus';
-import Videos from'./Videos.js'
+import Videos from'./Videos.js';
+import axios, { post } from 'axios'
+// import FileInput from 'react-file-input';
 import './Home.css'
 
 var request = require("request");
@@ -50,7 +52,7 @@ class Home extends Component {
 
   callbackHomeScreenView=(e)=>
   {
-    console.log("home view screen recieved");
+    console.log("Home view screen recieved");
     this.HomeContent=e;
 
     this.setState((state, props) => {
@@ -100,7 +102,28 @@ class Home extends Component {
   //
   // }
 
+  handleVideoUpload=(e)=>
+  {
+    console.log("Upload video clicked",e.target.files[0]);
 
+    this.fileUpload(e.target.files[0]).then((response)=>{
+    console.log("Video Upload Response :: ",response.data);
+    })
+  }
+
+  fileUpload=(file)=>
+  {
+    console.log("Uploaded file :: ", file);
+     // const urll = 'https://httpbin.org/post';
+    const formData = new FormData();
+    formData.append('filename',file)
+    const config = {
+        headers: {'content-type': 'multipart/form-data'},
+
+    }
+    console.log("Video sending options :: ", url + "uploadFile" , formData,config );
+    return  post(url + "uploadFile" , formData,config)
+  }
 
 
   render() {
@@ -123,6 +146,8 @@ class Home extends Component {
 
           </Modal.Footer>
         </Modal> */}
+
+          <input type="file"  className="uploadVideoBtn" onChange={(e)=>this.handleVideoUpload(e)} name="myFile" accept="video/mp4" multiple />
 
       {this.HomeContent}
       </div>

@@ -39,13 +39,12 @@ class Videos extends Component {
       }
       else
       {
-
         this.GetVideoResponse=JSON.parse(body)
         console.log("Response :: ", this.GetVideoResponse);
         this.GetVideoResponse.result.forEach((i,idx,x)=>{
           this.VideosList.push(<div className="videoGrid" >
               <div>
-                <p className="videoTitle">ARY News</p>
+                <p className="videoTitle">{i['videoName'].toUpperCase()} News</p>
               </div>
               <div className="videoStyle">
                 <ReactPlayer
@@ -59,8 +58,8 @@ class Videos extends Component {
                   />
               </div>
               <div >
-                <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')}>Get Tickers</Button>
-                <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
+                <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo(i['videoName'])}>Get Tickers</Button>
+                <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript(i['videoName'])} title="View Transcripts">View Transcripts</Button>
               </div>
             </div>)
         })
