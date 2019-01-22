@@ -52,7 +52,7 @@ class Home extends Component {
   {
     console.log("home view screen recieved");
     this.HomeContent=e;
-    
+
     this.setState((state, props) => {
       return {counter: 0 + props.step};
     });
