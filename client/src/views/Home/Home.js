@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
-// import { Player, ControlBar } from 'video-react';
-// import ReactJWPlayer from 'react-jw-player';
 import { Button,Modal } from 'react-bootstrap';
-import Screenshots from'./Screenshots.js'
-import Transcript from'./Transcript.js'
+import EventBus from 'eventing-bus';
+import Videos from'./Videos.js'
 import './Home.css'
 
 var request = require("request");
@@ -50,84 +48,25 @@ class Home extends Component {
   //
   // }
 
+  callbackHomeScreenView=(e)=>
+  {
+    console.log("home view screen recieved");
+    this.HomeContent=e;
+    
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
 
   componentDidMount = () =>
   {
+    EventBus.on("HomeScreenView", this.callbackHomeScreenView.bind(this));
     this.TickerDisable=true;
     this.TickerLimit=''
     this.SetTickerBtn=''
     console.log("did mount ::");
     this.screenshotsList=''
-    this.HomeContent=
-    <div className="HomeStyle">
-
-      <div className="videoGrid" >
-        <div>
-          <p className="videoTitle">ARY News</p>
-        </div>
-        <div className="videoStyle">
-          <ReactPlayer
-            width="99.9%"
-            height="100%"
-            url={url+"uploads/ary.mp4"}
-            playing
-            controls={true}
-            volume={null}
-            muted
-            />
-        </div>
-        <div >
-          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')}>Get Tickers</Button>
-          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
-        </div>
-      </div>
-
-
-      <div className="videoGrid" >
-        <div>
-          <p className="videoTitle">BOL News</p>
-        </div>
-        <div className="videoStyle">
-          <ReactPlayer
-            width="99.9%"
-            height="100%"
-            url={url+"uploads/bol.mp4"}
-            playing
-            controls={true}
-            volume={null}
-            muted
-            />
-        </div>
-        <div>
-          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('bol')}>Get Tickers</Button>
-          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('bol')} title="View Transcripts">View Transcripts</Button>
-        </div>
-      </div>
-
-      <div className="videoGrid" >
-        <div>
-          <p className="videoTitle">AAP News</p>
-        </div>
-        <div className="videoStyle">
-          <ReactPlayer
-            id='ary'
-            width="99.9%"
-            height="100%"
-            url={url+"uploads/aap.mp4"}
-            playing
-            controls={true}
-            volume={null}
-            muted
-            />
-        </div>
-        <div>
-          <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')}>Get Tickers</Button>
-          <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
-        </div>
-      </div>
-
-
-    </div>
+    this.HomeContent=<Videos />
     this.setState((state, props) => {
       return {counter: 0 + props.step};
     });
@@ -161,93 +100,7 @@ class Home extends Component {
   //
   // }
 
-  handleTranscript=(n)=>
-  {
-    console.log("transcript button clicked ::", n );
 
-    var options = {
-      method: 'POST',
-      url: url + 'createTranscription',
-      headers: { },
-      form:{
-        videoName:n
-      },
-      json: true
-    };
-
-    request(options, (error, response, body) =>
-    {
-      if (error)
-      {
-        console.log("Error", error);
-      }
-      else
-      {
-        console.log("Response :: ", body.transcription);
-
-        this.HomeContent=<Transcript content={body.transcription} />
-
-        this.setState((state, props) => {
-          return {counter: 0 + props.step};
-        });
-      }
-    });
-
-
-  }
-
-  handleVideo=(n)=>
-  {
-    console.log("video clicked ::", n);
-    var timeStamp=''
-    if(n=='ary')
-    {
-      timeStamp=15
-    }
-    else if(n=='bol')
-    {
-      timeStamp=30
-    }
-    else if(n=='ary')
-    {
-      timeStamp=40
-    }
-
-    var options = {
-      method: 'POST',
-      url: url + 'getvideos',
-      headers: { },
-      form:{
-        videoName:n,
-        timestamp : timeStamp
-      },
-      json:true
-    };
-    console.log("Get video Call options :: ", options);
-    request(options, (error, response, body) =>
-    {
-      if (error)
-      {
-        console.log("Error", error);
-      }
-      else
-      {
-        console.log("Response body :: ", body);
-        this.screenshotsList=body
-
-        this.HomeContent=<Screenshots  screenshots={this.screenshotsList}/>
-        // this.handleClose();
-        this.setState((state, props) => {
-          return {counter: 0 + props.step};
-        });
-
-      }
-    });
-
-
-
-
-  }
 
 
   render() {

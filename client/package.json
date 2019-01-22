@@ -27,6 +27,7 @@
     "downloadbutton": "^1.0.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
+    "eventing-bus": "^1.3.3",
     "flag-icon-css": "^3.2.1",
     "font-awesome": "^4.7.0",
     "image-downloader": "^3.4.2",

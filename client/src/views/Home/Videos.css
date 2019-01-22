@@ -1,0 +1,101 @@
+@import "~video-react/dist/video-react.css";
+
+.modalContainer {
+  position: absolute  ;
+  /* background: yellow */
+}
+
+.fade:not(.show) {
+    opacity: 1;
+    background: rgb(0,0,0,0.3)
+}
+
+.modalBody
+{
+  /* background: orange; */
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.modal-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+    top: 150px
+}
+
+.HomeStyle
+{
+  width:100%;
+  /* background:yellow; */
+  display:flex;
+  flex-wrap: wrap;
+}
+.videoStyle
+{
+  width:100%;
+  height:80%;
+  cursor: pointer;
+  /* background: black */
+}
+.videoGrid
+{
+  width:32%;
+  margin:8px;
+  height: 100%;
+  /* background:orange */
+}
+.videoTitle
+{
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 8px
+}
+/* .videoClickDescription
+{
+  font-weight:bold;
+  margin:8px 0px 8px 0px
+} */
+p{
+  margin: 0
+}
+
+.newsTickerBtn
+{
+  width: 49%;
+  height: 34px;
+  margin-right: 2%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: nowrap;
+}
+.transcriptionBtn
+{
+  width: 49%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: nowrap;
+}
+
+.TickerLimitField
+{
+  border-radius: 4px;
+  border: 1px solid gray;
+  width: 100%;
+}
+.GetTickerBtn
+{
+  width: 30%;
+  height: 35px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
