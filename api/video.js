@@ -103,11 +103,8 @@ exports.createTranscription = function(req,res){
         process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
         // Imports the Google Cloud client library
         const speech = require('@google-cloud/speech');
-        //const fs = require('fs');
-
         // Creates a client
         const client = new speech.SpeechClient();
-
         // The name of the audio file to transcribe
         const fileName = '../uploads/'+req.body.videoName+'.wav';
         //const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
@@ -148,46 +145,30 @@ exports.createTranscription = function(req,res){
             console.log(completed);
             res.status(200).send({transcription : transcription});
           })
-          // resu.transcription = transcription;
-          // resu.save(function(error,done){
-          //   if(error){
-          //     res.status(500).send({error:error});
-          //   }else{
-          //   res.status(200).send({transcription : done.transcription});
-          //   }
-          // })
-
-        })
+          })
         .catch(err => {
           console.error('ERROR:', err);
           res.status(500).send({error:err});
         });
       }
-
     }
   })
-
 }
 
 
 
 exports.createbucket = function(req,res){
-
   // Imports the Google Cloud client library
   process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
   const {Storage} = require('@google-cloud/storage');
-
   // Your Google Cloud Platform project ID
   const projectId = 'mts-project-227607';
-
   // Creates a client
   const storage = new Storage({
     projectId: projectId,
   });
-
   // The name for the new bucket
   const bucketName = 'bolnews';
-
   // Creates the new bucket
   storage
   .createBucket(bucketName)
@@ -197,7 +178,6 @@ exports.createbucket = function(req,res){
   .catch(err => {
     console.error('ERROR:', err);
   });
-
 }
 
 exports.uploadFileToBucket = function(req,res){
@@ -295,7 +275,6 @@ exports.uploadFile = function(req,res){
                 console.error('ERROR:', err);
                 res.status(500).send({error:err});
               });
-
             })
             .catch(err => {
               console.error('ERROR:', err);
@@ -343,5 +322,4 @@ exports.getClip = function(req,res){
   }else{
     res.status(400).send({message:"videoName required"});
   }
-
 }
