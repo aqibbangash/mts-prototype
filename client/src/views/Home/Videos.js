@@ -8,8 +8,8 @@ import EventBus from 'eventing-bus';
 import './Videos.css'
 
 var request = require("request");
-const url = "http://localhost:5000/"
-// const url = "https://mts-prototype.herokuapp.com/"
+const url = "http://localhost:5000"
+// const url = "https://mts-prototype.herokuapp.com"
 
 class Videos extends Component {
 
@@ -22,10 +22,12 @@ class Videos extends Component {
     this.TickerLimit=''
     this.SetTickerBtn=''
     this.screenshotsList=''
+    this.VideosList=[]
+    this.GetVideoResponse=''
 
     var options = {
       method: 'POST',
-      url: url + 'getVideosUrls',
+      url: url + '/getVideosUrls',
       headers: { },
     };
     console.log("Get Videos :: ", options);
@@ -37,7 +39,35 @@ class Videos extends Component {
       }
       else
       {
-        console.log("Response :: ", body);
+
+        this.GetVideoResponse=JSON.parse(body)
+        console.log("Response :: ", this.GetVideoResponse);
+        this.GetVideoResponse.result.forEach((i,idx,x)=>{
+          this.VideosList.push(<div className="videoGrid" >
+              <div>
+                <p className="videoTitle">ARY News</p>
+              </div>
+              <div className="videoStyle">
+                <ReactPlayer
+                  width="99.9%"
+                  height="100%"
+                  url={url+i["path"]}
+                  playing
+                  controls={true}
+                  volume={null}
+                  muted
+                  />
+              </div>
+              <div >
+                <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')}>Get Tickers</Button>
+                <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
+              </div>
+            </div>)
+        })
+
+          this.setState((state, props) => {
+            return {counter: 0 + props.step};
+          });
       }
     });
 
@@ -49,7 +79,7 @@ class Videos extends Component {
 
     var options = {
       method: 'POST',
-      url: url + 'createTranscription',
+      url: url + '/createTranscription',
       headers: { },
       form:{
         videoName:n
@@ -97,7 +127,7 @@ class Videos extends Component {
 
     var options = {
       method: 'POST',
-      url: url + 'getvideos',
+      url: url + '/getvideos',
       headers: { },
       form:{
         videoName:n,
@@ -138,29 +168,10 @@ class Videos extends Component {
     return (
       <div className="HomeStyle">
 
-        <div className="videoGrid" >
-          <div>
-            <p className="videoTitle">ARY News</p>
-          </div>
-          <div className="videoStyle">
-            <ReactPlayer
-              width="99.9%"
-              height="100%"
-              url={url+"uploads/ary.mp4"}
-              playing
-              controls={true}
-              volume={null}
-              muted
-              />
-          </div>
-          <div >
-            <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('ary')}>Get Tickers</Button>
-            <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('ary')} title="View Transcripts">View Transcripts</Button>
-          </div>
-        </div>
+        {this.VideosList}
 
 
-        <div className="videoGrid" >
+{/*        <div className="videoGrid" >
           <div>
             <p className="videoTitle">BOL News</p>
           </div>
@@ -168,7 +179,7 @@ class Videos extends Component {
             <ReactPlayer
               width="99.9%"
               height="100%"
-              url={url+"uploads/bol.mp4"}
+              url={url+"/uploads/bol.mp4"}
               playing
               controls={true}
               volume={null}
@@ -190,7 +201,7 @@ class Videos extends Component {
               id='ary'
               width="99.9%"
               height="100%"
-              url={url+"uploads/aap.mp4"}
+              url={url+"/uploads/aap.mp4"}
               playing
               controls={true}
               volume={null}
@@ -201,7 +212,7 @@ class Videos extends Component {
             <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo('aap')}>Get Tickers</Button>
             <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript('aap')} title="View Transcripts">View Transcripts</Button>
           </div>
-        </div>
+        </div> */}
 
 
       </div>
