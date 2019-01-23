@@ -82,10 +82,12 @@ input[type="file"] {
 .videoLoadingText
 {
   color: white;
+  margin-top: 7px;
+  margin-left: 16px;
 }
 .LoaderImage
 {
-  object-fit: scale-down;
+  /* object-fit: scale-down; */
   /* height: 100%; */
-  width: 10%;
+  width: 5%;
 }

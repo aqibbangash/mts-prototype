@@ -23,7 +23,8 @@ class Videos extends Component {
   constructor(props){
     super(props);
       this.state={
-        value:'00' ,
+        value:'00',
+        WhatsAppValue:''
       }
         this.handleChange = this.handleChange.bind(this);
         this.handleClipping = this.handleClipping.bind(this);
@@ -31,6 +32,7 @@ class Videos extends Component {
 
   componentDidMount()
   {
+
     console.log(" videos did mount ::");
     this.recipent=''
     this.EmailBody=''
@@ -50,6 +52,7 @@ class Videos extends Component {
     this.VideosList=[]
     this.GetVideoResponse=''
     this.videoDetail=[]
+    EventBus.publish("showLoading");
     var options = {
       method: 'POST',
       url: url + '/getVideosUrls',
@@ -64,6 +67,7 @@ class Videos extends Component {
       }
       else
       {
+        EventBus.publish("stopLoading");
         this.GetVideoResponse=JSON.parse(body)
         console.log("Response :: ", this.GetVideoResponse);
 
@@ -163,6 +167,10 @@ class Videos extends Component {
       {
         this.body=e.target.value
       }
+      else if (e.target.name =='WhatsAppNumber')
+      {
+        this.setState({ WhatsAppValue: e.target.value });
+      }
 
   }
 
@@ -238,7 +246,7 @@ class Videos extends Component {
 
   sendEmail=()=>
   {
-    EventBus.publish("showLoadingg");
+    EventBus.publish("showLoading");
     console.log("email sent !");
 
     console.log("Recipent :: ", this.recipent);
@@ -257,7 +265,7 @@ class Videos extends Component {
     request(options, (error, response, body) =>
     {
 
-      EventBus.publish("stopLoadingg");
+      EventBus.publish("stopLoading");
       if (error)
       {
         console.log("Error", error);
@@ -278,7 +286,7 @@ class Videos extends Component {
 
   handleClip=(e)=>
   {
-    EventBus.publish("showLoadingg");
+    EventBus.publish("showLoading");
     console.log("clip pressed")
     this.start=this.hh+":"+this.mm+":"+this.ss
     console.log("Start :: ", this.start)
@@ -307,7 +315,7 @@ class Videos extends Component {
       else
       {
         console.log("Response :: ", body);
-        EventBus.publish("stopLoadingg");
+        EventBus.publish("stopLoading");
         this.videoPath=url+body.result
         console.log("Video Path :: ", this.videoPath);
         this.VideosList=
@@ -325,15 +333,15 @@ class Videos extends Component {
             <div className="ShareBtnDiv">
 
               <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Video</Button>
-
-                <WhatsappShareButton
+              <Button className='WhatsappBtn' onClick={()=>this.handleWhatsapp()}><img className="DownloadBtnLogo" src='./whatsapp.png' />Share via WhatsApp</Button>
+                {/*<WhatsappShareButton
                    url={this.videoPath}
 
                    className="WhatsappBtn">
                      <WhatsappIcon size={32} round />
                      <p className="whatsAppTitle">Share via WhatsApp</p>
 
-                 </WhatsappShareButton>
+                 </WhatsappShareButton>*/}
 
                  <Button className="EmailBtn" onClick={this.handleEmailForm}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
 
@@ -348,9 +356,45 @@ class Videos extends Component {
     });
   }
 
+  handleWhatsapp=()=>
+  {
+    console.log("WhatsApp clicked :: ");
+    this.VideosList=
+    <div className="WhatsAppBody">
+      <div className="WhatsAppFormDiv">
+        <FormGroup >
+          <ControlLabel className="whatsAppTitle">Enter whatsApp Number</ControlLabel>
+          <FormControl
+            className="WhatsAppNumberField"
+            type="text"
+            name="WhatsAppNumber"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <Button bsStyle="primary" onClick={this.handleWhatsappSend} className="whatsAppSendbtn">Send</Button>
+      </div>
+    </div>
+
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
+
+  handleWhatsappSend=()=>
+  {
+    console.log("Number :: ", this.state.WhatsAppValue);
+    console.log("sent!!");
+    var WPUrl='https://web.whatsapp.com/send?phone='+this.state.WhatsAppValue+'&text='+this.videoPath;
+    window.open(
+      WPUrl,
+      '_blank'
+    );
+    this.componentDidMount();
+  }
+
   handleTranscript=(n)=>
   {
-    EventBus.publish("showLoadingg");
+    EventBus.publish("showLoading");
     console.log("transcript button clicked ::", n );
 
     var options = {
@@ -372,7 +416,7 @@ class Videos extends Component {
       else
       {
         console.log("Response :: ", body.transcription);
-        EventBus.publish("stopLoadingg");
+        EventBus.publish("stopLoading");
         this.HomeContent=<Transcript content={body.transcription} />
         EventBus.publish("HomeScreenView", this.HomeContent);
         this.setState((state, props) => {
@@ -386,6 +430,7 @@ class Videos extends Component {
 
   handleVideo=(n)=>
   {
+    EventBus.publish("showLoading");
     console.log("video clicked ::", n);
 
 
@@ -408,6 +453,7 @@ class Videos extends Component {
       }
       else
       {
+        EventBus.publish("stopLoading");
         console.log("Response body :: ", body);
         this.screenshotsList=body
 

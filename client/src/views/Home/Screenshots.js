@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
 import { Button, Glyphicon, glyph, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
-
+import EventBus from 'eventing-bus';
 import {
   WhatsappShareButton,
   EmailShareButton,
@@ -23,7 +23,8 @@ class Screenshots extends Component {
     super(props);
 
     this.state = {
-      imgSelect:false
+      imgSelect:false,
+      WhatsAppValue:''
     };
 
         this.onSelectImage = this.onSelectImage.bind(this);
@@ -170,13 +171,17 @@ class Screenshots extends Component {
       {
         this.body=e.target.value
       }
+      else if (e.target.name =='WhatsAppNumber')
+      {
+        this.setState({ WhatsAppValue: e.target.value });
+      }
 
   }
 
   sendEmail=()=>
   {
     console.log("email sent !");
-
+    EventBus.publish("showLoading");
     console.log("Recipent :: ", this.recipent);
     console.log("Suject :: ", this.subject);
     console.log("Body  :: ", this.body);
@@ -201,7 +206,7 @@ class Screenshots extends Component {
       else
       {
         console.log("Response", response);
-
+        EventBus.publish("stopLoading");
         this.componentDidMount();
       }
     })
@@ -258,6 +263,7 @@ class Screenshots extends Component {
 
    onCombine=()=>
    {
+     EventBus.publish("showLoading");
      var title= "title";
      console.log("combined ", imageArray);
 
@@ -278,6 +284,7 @@ class Screenshots extends Component {
        }
        else
        {
+         EventBus.publish("stopLoading");
          console.log("Response :: ", response);
          console.log("url :: ", url+"/"+body.image)
          this.imagePath=url+"/"+body.image
@@ -292,15 +299,15 @@ class Screenshots extends Component {
             <div className="ShareBtnDiv">
 
               <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Image</Button>
-
-                <WhatsappShareButton
+              <Button className='WhatsappBtn' onClick={this.handleWhatsapp}><img className="DownloadBtnLogo" src='./whatsapp.png' />Share via WhatsApp</Button>
+                {/*<WhatsappShareButton
                    url={url+"/"+body.image}
 
                    className="WhatsappBtn">
                      <WhatsappIcon size={32} round />
                      <p className="whatsAppTitle">Share via WhatsApp</p>
 
-                 </WhatsappShareButton>
+                 </WhatsappShareButton>*/}
 
                  <Button className="EmailBtn" onClick={this.handleEmailForm}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
 
@@ -312,6 +319,42 @@ class Screenshots extends Component {
        }
      });
 
+   }
+
+   handleWhatsapp=()=>
+   {
+     console.log("WhatsApp clicked :: ");
+     this.bottomContent=
+     <div className="WhatsAppBody">
+       <div className="WhatsAppFormDiv">
+         <FormGroup >
+           <ControlLabel className="whatsAppTitle">Enter whatsApp Number</ControlLabel>
+           <FormControl
+             className="WhatsAppNumberField"
+             type="text"
+             name="WhatsAppNumber"
+             onChange={this.handleChange}
+           />
+         </FormGroup>
+         <Button bsStyle="primary" onClick={this.handleWhatsappSend} className="whatsAppSendbtn">Send</Button>
+       </div>
+     </div>
+
+     this.setState((state, props) => {
+       return {counter: 0 + props.step};
+     });
+   }
+
+   handleWhatsappSend=()=>
+   {
+     console.log("Number :: ", this.state.WhatsAppValue);
+     console.log("sent!!");
+     var WPUrl='https://web.whatsapp.com/send?phone='+this.state.WhatsAppValue+'&text='+url+"/"+this.imageName;
+     window.open(
+       WPUrl,
+       '_blank'
+     );
+     this.componentDidMount();
    }
 
 

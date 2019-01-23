@@ -13,7 +13,7 @@
 }
 .printBtn
 {
-  width: 25%;
+  width: 16%;
   margin-right: 25px;
 }
 .ShareBtnDiv
@@ -46,7 +46,7 @@
 {
   display: flex;
   align-items: center;
-  width: 25%;
+  width: 16%;
   background: rgb(127, 127, 127);
   color: white;
   border-radius: 4px;
@@ -61,4 +61,34 @@
   justify-content: center;
   align-content: center;
   align-items: center;
+}
+.WhatsAppBody
+{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.WhatsAppNumberField
+{
+  border-color: darkgray;
+}
+.whatsAppTitle
+{
+  margin-right: 47%;
+  margin-bottom: 2px;
+  font-weight: bold;
+  width: 58%;
+}
+.WhatsAppFormDiv
+{
+  width: 25%;
+  padding: 1%;
+  background: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+}
+.whatsAppSendbtn
+{
+  margin-left: 65%;
+    width: 35%;
 }

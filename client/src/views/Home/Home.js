@@ -16,8 +16,8 @@ class Home extends Component {
   constructor(props, context) {
     super(props, context);
 
-    EventBus.on("showLoadingg", this.showLoadingg.bind(this));
-    EventBus.on("stopLoadingg", this.stopLoadingg.bind(this));
+    EventBus.on("showLoading", this.showLoading.bind(this));
+    EventBus.on("stopLoading", this.stopLoading.bind(this));
 
     // this.handleShow = this.handleShow.bind(this);
     // this.handleClose = this.handleClose.bind(this);
@@ -28,7 +28,7 @@ class Home extends Component {
     // };
   }
 
-  showLoadingg(msg){
+  showLoading(msg){
     this.loadingg = true
 
     this.setState((state, props) => {
@@ -37,7 +37,7 @@ class Home extends Component {
 
   }
 
-  stopLoadingg(msg){
+  stopLoading(msg){
     this.loadingg = false
 
     if (msg != undefined)
@@ -127,11 +127,11 @@ class Home extends Component {
 
   handleVideoUpload=(e)=>
   {
-    EventBus.publish("showLoadingg");
+    EventBus.publish("showLoading");
     console.log("Upload video clicked",e.target.files[0]);
 
     this.fileUpload(e.target.files[0]).then((response)=>{
-      EventBus.publish("stopLoadingg");
+      EventBus.publish("stopLoading");
     console.log("Video Upload Response :: ",response.data);
     })
   }
