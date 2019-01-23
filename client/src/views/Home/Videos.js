@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
-import { Button } from 'react-bootstrap';
+import { Button,Glyphicon, glyph, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import Transcript from'./Transcript.js'
 import Screenshots from'./Screenshots.js'
 import Home from'./Home.js'
 import EventBus from 'eventing-bus';
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon
+} from 'react-share';
+
 import './Videos.css'
 
 var request = require("request");
@@ -18,18 +25,23 @@ class Videos extends Component {
       this.state={
         value:'00' ,
       }
+        this.handleChange = this.handleChange.bind(this);
         this.handleClipping = this.handleClipping.bind(this);
     }
 
   componentDidMount()
   {
-
     console.log(" videos did mount ::");
+    this.recipent=''
+    this.EmailBody=''
+    this.EmailSubject=''
+    this.videoName=''
     this.start=''
     this.end=''
     this.hh=''
     this.mm=''
     this.ss=''
+    this.videoPath=''
     this.HomeContent=''
     this.screen=''
     this.TickerLimit=''
@@ -137,13 +149,142 @@ class Videos extends Component {
     });
   }
 
+  handleChange(e) {
+      this.setState({ value: e.target.value });
+      if(e.target.name=='email')
+      {
+        this.recipent=e.target.value
+      }
+      else if (e.target.name=='subject')
+      {
+        this.subject=e.target.value
+      }
+      else if (e.target.name=='body')
+      {
+        this.body=e.target.value
+      }
+
+  }
+
+  forceDownload=(link)=>{
+    console.log("Download Video clicked ", link);
+    var url = this.videoPath;
+    var fileName = 'Video.mp4';
+    link.innerText = "Working...";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function(){
+      var urlCreator = window.URL || window.webkitURL;
+      var imageUrl = urlCreator.createObjectURL(this.response);
+      var tag = document.createElement('a');
+      tag.href = imageUrl;
+      tag.download = fileName;
+      document.body.appendChild(tag);
+      tag.click();
+      document.body.removeChild(tag);
+      link.innerText="Download Vidoe";
+    }
+    xhr.send();
+  }
+
+  handleEmailForm=()=>
+  {
+    console.log("send Email button clicked");
+    this.showEmail=true;
+
+    this.VideosList=<div className="emailModal">
+      <div className="EmailModalBody">
+        <p className="emailLabel">Send via Email</p>
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="email"
+            name='email'
+            placeholder="Enter Email"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailField">
+
+          <FormControl
+            type="text"
+            name='subject'
+            placeholder="Subject"
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <FormGroup className="EmailBody">
+
+          <FormControl
+            style={{height:"100px"}}
+            componentClass="textarea"
+            placeholder="Body"
+            name='body'
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+
+        <Button bsStyle="success" onClick={this.sendEmail} className="EmailSendBtn">Send</Button>
+      </div>
+    </div>
+
+    this.setState((state, props) => {
+      return {counter: 0 + props.step};
+    });
+  }
+
+  sendEmail=()=>
+  {
+    EventBus.publish("showLoadingg");
+    console.log("email sent !");
+
+    console.log("Recipent :: ", this.recipent);
+    console.log("Suject :: ", this.subject);
+    console.log("Body  :: ", this.body);
+    console.log("Video Name :: ", this.videoName);
+
+    var options = {
+      method: 'GET',
+      url: url + '/sendVideoEmail/'+this.recipent+"/"+this.subject+"/"+this.body+"/"+this.videoName,
+      headers: { },
+      json: true
+    };
+    console.log("Options :: ", options);
+
+    request(options, (error, response, body) =>
+    {
+
+      EventBus.publish("stopLoadingg");
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response", response)
+        if(response.statusCode==200)
+        {
+          alert("E-Mail sent!")
+        }
+        // this.componentDidMount();
+      }
+    })
+
+  }
+
+
   handleClip=(e)=>
   {
+    EventBus.publish("showLoadingg");
     console.log("clip pressed")
     this.start=this.hh+":"+this.mm+":"+this.ss
     console.log("Start :: ", this.start)
     console.log("End :: ", this.end)
-    console.log("VideoName :: ", e.videoName)
+    this.videoName=e.videoName
+    console.log("VideoName :: ", this.videoName)
 
     var options = {
       method: 'POST',
@@ -166,12 +307,50 @@ class Videos extends Component {
       else
       {
         console.log("Response :: ", body);
+        EventBus.publish("stopLoadingg");
+        this.videoPath=url+body.result
+        console.log("Video Path :: ", this.videoPath);
+        this.VideosList=
+        <div style={{height:"700px", width:"100%"}}>
+        <div className="videoStyle">
+          <ReactPlayer
+            width="99.9%"
+            height="100%"
+            url={url+body.result}
+            playing
+            controls={true}
+            volume={null}
+            muted
+            />
+            <div className="ShareBtnDiv">
+
+              <Button bsStyle='primary' className='DownloadBtn' onClick={()=>this.forceDownload(this)}><img className="DownloadBtnLogo" src='./download.png' />Download Video</Button>
+
+                <WhatsappShareButton
+                   url={this.videoPath}
+
+                   className="WhatsappBtn">
+                     <WhatsappIcon size={32} round />
+                     <p className="whatsAppTitle">Share via WhatsApp</p>
+
+                 </WhatsappShareButton>
+
+                 <Button className="EmailBtn" onClick={this.handleEmailForm}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
+
+           </div>
+        </div>
+        </div>
+
+        this.setState((state, props) => {
+          return {counter: 0 + props.step};
+        });
       }
     });
   }
 
   handleTranscript=(n)=>
   {
+    EventBus.publish("showLoadingg");
     console.log("transcript button clicked ::", n );
 
     var options = {
@@ -193,7 +372,7 @@ class Videos extends Component {
       else
       {
         console.log("Response :: ", body.transcription);
-
+        EventBus.publish("stopLoadingg");
         this.HomeContent=<Transcript content={body.transcription} />
         EventBus.publish("HomeScreenView", this.HomeContent);
         this.setState((state, props) => {

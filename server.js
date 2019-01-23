@@ -59,10 +59,10 @@ app.get('/sendemail/:id/:subject/:message', function (req, res, next) {
     if (err) {
       // handle error
       console.log(err);
-      res.send('There was an error sending the email');
+      res.status(400).send({message:'There was an error sending the email'});
       return;
     }
-    res.send('Email Sent');
+    res.status(200).send({message:"Email sent"});
   });
 });
 
@@ -73,17 +73,64 @@ app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next)
     otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
     message:  req.params.message,
     attachments:[
-                  {filename: 'test.jpg', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/headlines/'+req.params.imageName+'.jpg'))),contentType: 'image/jpeg'}
-             ]
+      {filename: 'test.jpg', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/headlines/'+req.params.imageName+'.jpg'))),contentType: 'image/jpeg'}
+    ]
   }, function (err) {
     if (err) {
       // handle error
       console.log(err);
-      res.send('There was an error sending the email');
+      res.status(400).send({message:'There was an error sending the email'});
       return;
     }
-    res.send('Email Sent');
+    res.status(200).send({message:"Email sent"});
   });
+});
+app.get('/sendVideoEmail/:id/:subject/:message/:videoName', function (req, res, next) {
+  app.mailer.send('email', {
+    to: req.params.id, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+    subject: req.params.subject, // REQUIRED.
+    otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
+    message:  req.params.message,
+    attachments:[
+      {filename: req.params.videoName+'.mp4', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/uploads/'+req.params.videoName+'-clip.mp4'))),contentType: 'video/mp4'}
+    ]
+  }, function (err) {
+    if (err) {
+      // handle error
+      console.log(err);
+      res.status(400).send({message:'There was an error sending the email'});
+      return;
+    }
+    res.status(200).send({message:"Email sent"});
+  });
+});
+
+app.post('/sendTranscriptEmail/:id/:subject/:message/:videoName', function (req, res, next) {
+  video.findOne({videoName:req.params.videoName}).exec(function(error,result){
+    if(error){
+      res.status(500).send({error:error});
+    }else{
+      if(result){
+        app.mailer.send('email', {
+          to: req.params.id, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+          subject: req.params.subject, // REQUIRED.
+          otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
+          message:  result.transcript
+        }, function (err) {
+          if (err) {
+            // handle error
+            console.log(err);
+            res.status(400).send({message:'There was an error sending the email'});
+            return;
+          }
+          res.status(200).send({message:"Email sent"});
+        });
+      }else{
+        res.status(404).send({message:"video not found"});
+      }
+    }
+  })
+
 });
 // ==========================================database connection===================================
 mongoose.connect(process.env.MONGODB_URI,
@@ -111,7 +158,7 @@ mongoose.connect(process.env.MONGODB_URI,
     if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
       convertVideoName = params.videoName;
     }
-    video.findOne({videoName : convertVideoName,timestamp:timeDiffrenece}).exec(function(error,videoFound){
+    video.findOne({videoName : convertVideoName,timestamp:timeDiffrenece,path:'/uploads/'+convertVideoName+'.mp4'}).exec(function(error,videoFound){
       if(error){
         res.status(500).send({error:error});
       }else{
@@ -157,14 +204,16 @@ mongoose.connect(process.env.MONGODB_URI,
                 resolve();
                 count = count+timeDiffrenece;
                 if (i == count){
-                  video.create({
-                    name : Date.now(),
-                    videoName : convertVideoName,
-                    datetime : Date.now(),
-                    timestamp : timeDiffrenece,
+
+                  video.update({videoName:convertVideoName,path:'/uploads/'+convertVideoName+'.mp4'},{
                     screenshots : screenshotsArray
                   }).then(function(result){
-                    res.status(200).send({message:"data stored in db",result:result});
+                    video.findOne({videoName:convertVideoName,path:'/uploads/'+convertVideoName+'.mp4'}).exec(function(error,foundResult){
+                      if(error){
+                        res.status(500).send({message:"data stored in db",result:foundResult});
+                      }
+                    })
+                  //  res.status(200).send({message:"data stored in db",result:result});
                   })
                 }
               })
@@ -177,14 +226,15 @@ mongoose.connect(process.env.MONGODB_URI,
                 resolve();
                 count = count+timeDiffrenece;
                 if (i == count){
-                  video.create({
-                    name : Date.now(),
-                    videoName : convertVideoName,
-                    datetime : Date.now(),
-                    timestamp : timeDiffrenece,
+                  video.update({videoName:convertVideoName,path:'/uploads/'+convertVideoName+'.mp4'},{
                     screenshots : screenshotsArray
                   }).then(function(result){
-                    res.status(200).send({message:"data stored in db",result:result});
+                    video.findOne({videoName:convertVideoName,path:'/uploads/'+convertVideoName+'.mp4'}).exec(function(error,foundResult){
+                      if(error){
+                        res.status(500).send({message:"data stored in db",result:foundResult});
+                      }
+                    })
+                  //  res.status(200).send({message:"data stored in db",result:result});
                   })
                 }
 
@@ -305,7 +355,7 @@ mongoose.connect(process.env.MONGODB_URI,
     });
   }
   app.use('/',function(req, res, next){
-  req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
-  next()
-}, require('./routes/unauthenticated.js')); //routes which does't require token authentication
+    req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
+    next()
+  }, require('./routes/unauthenticated.js')); //routes which does't require token authentication
   app.listen(port, () => console.log(`Listening on port ${port}`));

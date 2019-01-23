@@ -28,9 +28,9 @@ class Transcript extends Component {
 
     }
 
-    sendEmailTranscript=(e)=>
-    {
-      console.log("transcript email sent !", e);
+    // sendEmailTranscript=(e)=>
+    // {
+    //   console.log("transcript email sent !", e);
 
 
       // var options = {
@@ -57,7 +57,7 @@ class Transcript extends Component {
       //   }
       // })
 
-    }
+    // }
 
     onPrint=(e)=>
     {
@@ -97,8 +97,13 @@ class Transcript extends Component {
 
            </WhatsappShareButton>
 
-           <Button className="EmailShareButton" onClick={()=>this.sendEmailTranscript(this.state.value)}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
-
+           <EmailShareButton
+            className="EmailShareButton"
+            body={this.state.value}>
+              <EmailIcon size={32} round /> Share via E-Mail
+           </EmailShareButton>
+           {/*<Button className="EmailShareButton" onClick={()=>this.sendEmailTranscript(this.state.value)}> <img className="DownloadBtnLogo" src='./email.png' /> Share via E-Mail</Button>
+*/}
      </div>
       </div>
     )

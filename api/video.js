@@ -258,8 +258,10 @@ exports.uploadFile = function(req,res){
               .map(result => result.alternatives[0].transcript)
               .join('\n');
               console.log(`Transcription: ${transcription}`);
+              req.file.originalname = req.file.originalname.replace(".mp4","");
               video.create({
                 videoName:req.file.originalname,
+                name : Date.now(),
                 transcription: transcription,
                 path : '/uploads/'+req.file.originalname
               }).then(function(result){
@@ -298,12 +300,12 @@ exports.getClip = function(req,res){
         ffmpeg('./uploads/'+params.videoName+'.mp4')
         .setStartTime(params.start) // "00:00:00"
         .setDuration(params.end) // "time in seconds like 50"
-        .output('./uploads/clips/'+params.videoName+'.mp4')
+        .output('./uploads/'+params.videoName+'-clip.mp4')
         .on('end', function(err) {
           if(!err)
           {
             console.log('conversion Done');
-            res.sendFile(normalize(__dirname.toString().replace("/api","")+'/uploads/clips/'+params.videoName+'.mp4'))
+            res.status(200).send({result:'/uploads/'+params.videoName+'-clip.mp4'});
           }else{
             console.log("error in clipping video",err);
             res.status(500).send({error:err})
