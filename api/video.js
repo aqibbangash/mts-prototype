@@ -8,6 +8,10 @@ var path = require('path')
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var command = ffmpeg();
+var stripHeightLogo = 110;  //ARY
+var stripWidthLogo = 130; //ARY
+var stripStartXLogo = 1060; //ARY
+var stripStartYLogo = 550;//ARY
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, './uploads')
@@ -325,3 +329,91 @@ exports.getClip = function(req,res){
     res.status(400).send({message:"videoName required"});
   }
 }
+
+// exports.checkLogoChange = function(req,res){
+//   var params = req.body;
+//   if(params.videoName!=null && params.videoName!=undefined && params.videoName!=''){
+//
+//       console.log("request ",req.body)
+//       var params = req.body;
+//       var timeDiffrenece = 15;
+//       if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
+//         timeDiffrenece = parseInt(req.body.timestamp);
+//       //timeDiffrenece = 20;
+//       }
+//       if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
+//         convertVideoName = params.videoName;
+//       }
+//
+//             var promises = [];
+//             var previousTime = "00";
+//             var count = 0;
+//             var currentTime = "0"
+//             var screenshotsArray = [];
+//             var width = 1300;
+//             var height = 160;
+//             var x = 0;
+//             var y = 580;
+//             var tcount = 0;
+//             var timeString = "00";
+//             var promise = new Promise((reject,resolve)=>{
+//               for(var i = 0; i<160 ; i = i+timeDiffrenece){
+//
+//                 tcount = tcount+timeDiffrenece;
+//                 if(tcount <= 59 && tcount>=0){
+//                   //  console.log("currentTime before : ",parseInt(currentTime))
+//                   timeString = (previousTime+":"+tcount).toString();
+//                 }else{
+//                   tcount = 0;
+//                   currentTime = (parseInt(previousTime)+1).toString();
+//                   previousTime = currentTime;
+//                   timeString = (currentTime+":"+tcount).toString();
+//                 }
+//                     console.log("timeString : ", normalize((__dirname).toString().replace("/api","/")+'uploads/'+convertVideoName+'.mp4'));
+//                 ffmpeg(normalize((__dirname).toString().replace("/api","")+'uploads/'+convertVideoName+'.mp4'))
+//                 .output('./screenshots/screenshotlogo'+convertVideoName+i+'.png')
+//                 .noAudio()
+//                 .seek(timeString)
+//                 .on('error', function(err) {
+//                   console.log("i",i);
+//                   promises.push('/screenshots/screenshot'+i+'.png')
+//                   screenshotsArray = screenshotsArray.concat(['/screenshots/screenshotlogo'+convertVideoName+count+'.png']);
+//                   console.log("Address : 1 : ",(__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')
+//                   gm(normalize((__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')).crop(stripWidthLogo, stripHeightLogo, stripStartXLogo, stripStartYLogo).write(normalize((__dirname).toString().replace("/api","")+'/logos/logo'+convertVideoName+count+'.png'), function (err) {
+//                     if (!err) console.log(' hooray! ');
+//                   });
+//                   resolve();
+//                   count = count+timeDiffrenece;
+//                   if (i == count){
+//                     //*****************************************************
+//
+//                   }
+//                 })
+//                 .on('end', function() {
+//                   screenshotsArray = screenshotsArray.concat(['/screenshots/screenshotlogo'+convertVideoName+count+'.png']);
+//                                     console.log("Address : 2 : ",(__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')
+//                   gm(normalize((__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')).crop(stripWidthLogo, stripHeightLogo, stripStartXLogo, stripStartYLogo).write(normalize((__dirname).toString().replace("/api","")+'/logos/logo'+convertVideoName+count+'.png'), function (err) {
+//                     if (!err) console.log(' hooray!121 ');
+//                   });
+//                   promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
+//                   resolve();
+//                   count = count+timeDiffrenece;
+//                   if (i == count){
+//                     //*****************************************************
+//                   }
+//
+//                 })
+//                 .run();
+//               }
+//             })
+//             promise.all(promises)
+//             .then(function(data){ /* do stuff when success */
+//               console.log("12312312312312323213123123123123123123123");
+//             })
+//             .catch(function(err){ /* error handling */ });
+//
+//
+//   }else{
+//     res.status(400).send({message: "videoName required"});
+//   }
+// }
