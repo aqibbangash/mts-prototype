@@ -13,6 +13,7 @@ var path = require('path'); // node path module
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 var ffmpeg = require('fluent-ffmpeg');
 var fs = require('fs');
+var logo = require('./modals/logo.js');
 app.use(express.static('screenshots'))
 app.use(express.static('headlines'))
 app.use(express.static('uploads'))
@@ -24,10 +25,16 @@ const height = 100;
 var convertVideoName = 'ary';
 var stripHeight = 120;
 var stripWidth = 1050;
+
+
+var stripHeightLogo = 110;  //ARY
+var stripWidthLogo = 130; //ARY
+var stripStartXLogo = 1060; //ARY
+var stripStartYLogo = 550;//ARY
+
 var timestamp = 60;
 var stripStartX = 0;
 var stripEndX = 1050;
-
 var stripStartY = 600;
 var stripEndY = 720;
 app.set('views', __dirname + '/views');
@@ -105,6 +112,30 @@ app.get('/sendVideoEmail/:id/:subject/:message/:videoName', function (req, res, 
   });
 });
 
+// var looksSame = require('looks-same');
+//
+// looksSame('./uploads/logoptv120.png', './uploads/logoptv10.png', function(error, {equal}) {
+//     // equal will be true, if images looks the same
+//     if(error){
+//       console.log("error : ",error);
+//     }else{
+//       console.log("equal :",{equal} )
+//     }
+// });
+// var resemble = require('node-resemble-js')
+// var diff = resemble('./uploads/logoary20.png').compareTo('./uploads/logoptv120.png').onComplete(function(data){
+//     console.log(data);
+//     /*
+//     {
+//       misMatchPercentage : 100, // %
+//       isSameDimensions: true, // or false
+//       dimensionDifference: { width: 0, height: -1 }, // defined if dimensions are not the same
+//       getImageDataUrl: function(){}
+//     }
+//     */
+// });
+
+
 app.post('/sendTranscriptEmail/:id/:subject/:message/:videoName', function (req, res, next) {
   video.findOne({videoName:req.params.videoName}).exec(function(error,result){
     if(error){
@@ -148,12 +179,16 @@ mongoose.connect(process.env.MONGODB_URI,
   app.use(morgan('combined'));
   app.use('/static', express.static(path.join(__dirname, 'public')));
 
-  app.post('/getVideos',function(req,res){
+  app.post('/getVideos',function(req, res, next){
+    req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
+    next()
+  },function(req,res){
     console.log("request ",req.body)
     var params = req.body;
-    var timeDiffrenece = 5;
+    var timeDiffrenece = 15;
     if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
       timeDiffrenece = parseInt(req.body.timestamp);
+      //timeDiffrenece = 20;
     }
     if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
       convertVideoName = params.videoName;
@@ -198,6 +233,9 @@ mongoose.connect(process.env.MONGODB_URI,
 
                 promises.push('/screenshots/screenshot'+i+'.png')
                 screenshotsArray = screenshotsArray.concat(['/screenshots/screenshot'+convertVideoName+count+'.png']);
+                // gm(normalize(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png')).crop(stripWidthLogo, stripHeightLogo, stripStartXLogo, stripStartYLogo).write(normalize(__dirname+'/uploads/logo'+convertVideoName+count+'.png'), function (err) {
+                //   //if (!err) console.log(' hooray! ');
+                // });
                 gm(normalize(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png')).crop(stripWidth, stripHeight, stripStartX, stripStartY).write(normalize(__dirname+'/screenshots/screenshot'+convertVideoName+count+'.png'), function (err) {
                   //if (!err) console.log(' hooray! ');
                 });
@@ -213,7 +251,7 @@ mongoose.connect(process.env.MONGODB_URI,
                         res.status(500).send({message:"data stored in db",result:foundResult});
                       }
                     })
-                  //  res.status(200).send({message:"data stored in db",result:result});
+                    //  res.status(200).send({message:"data stored in db",result:result});
                   })
                 }
               })
@@ -234,7 +272,7 @@ mongoose.connect(process.env.MONGODB_URI,
                         res.status(500).send({message:"data stored in db",result:foundResult});
                       }
                     })
-                  //  res.status(200).send({message:"data stored in db",result:result});
+                    //  res.status(200).send({message:"data stored in db",result:result});
                   })
                 }
 
@@ -277,9 +315,10 @@ mongoose.connect(process.env.MONGODB_URI,
     res.sendFile(normalize(__dirname+'/headlines/'+req.params.id))
   })
 
-  app.get('/headlines/:id',function(req,res){
+
+  app.get('/logos/:id',function(req,res){
     console.log(req.params)
-    res.sendFile(normalize(__dirname+'/headlines/'+req.params.id))
+    res.sendFile(normalize(__dirname+'/logos/'+req.params.id))
   })
 
   app.get('/uploads/:id',function(req,res){
@@ -288,7 +327,10 @@ mongoose.connect(process.env.MONGODB_URI,
   })
 
 
-  app.post('/combineTickers',function(req,res){
+  app.post('/combineTickers',function(req, res, next){
+    req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
+    next()
+  },function(req,res){
     var params = req.body;
     console.log("*****************",req.body)
     var x = gm()
@@ -341,21 +383,203 @@ mongoose.connect(process.env.MONGODB_URI,
   })
 
 
-  // create a GET route
-  app.get('/express_backend', (req, res) => {
-    res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-  });
-
-  if (process.env.NODE_ENV === 'production') {
-    // Serve any static files
-    app.use(express.static(path.join(normalize(__dirname), 'client/build')));
-    // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(normalize(__dirname), 'client/build', 'index.html'));
-    });
-  }
-  app.use('/',function(req, res, next){
+  app.post('/checkLogoChange',function(req, res, next){
     req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
     next()
-  }, require('./routes/unauthenticated.js')); //routes which does't require token authentication
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+  },function(req,res){
+
+    var params = req.body;
+    var baseLogo = "/uploads/logoary.png";
+    var changedLogo = "";
+    if(params.videoName!=null && params.videoName!=undefined && params.videoName!=''){
+      logo.find({name:params.videoName}).exec(function(error,resultCheck){
+        if(error){
+          res.status(500).send({error:error});
+        }else{
+          if(resultCheck.length>0){
+            res.status(200).send({message:"logo changed in this video",result:resultCheck});
+          }else{
+            console.log("request ",req.body)
+            var params = req.body;
+            var timeDiffrenece = 15;
+            if(parseInt(req.body.timestamp)!=null && parseInt(req.body.timestamp)!=undefined && parseInt(req.body.timestamp)!=''){
+              timeDiffrenece = parseInt(req.body.timestamp);
+              //timeDiffrenece = 20;
+            }
+            if(params.videoName !=null && params.videoName !=undefined && params.videoName !=''){
+              convertVideoName = params.videoName;
+            }
+
+            var promises = [];
+            var previousTime = "00";
+            var count = 0;
+            var currentTime = "0"
+            var screenshotsArray = [];
+            var width = 1300;
+            var height = 160;
+            var x = 0;
+            var y = 580;
+            var tcount = 0;
+            var timeString = "00";
+            var promise = new Promise((reject,resolve)=>{
+              for(var i = 0; i<=160 ; i = i+timeDiffrenece){
+
+                tcount = tcount+timeDiffrenece;
+                if(tcount <= 59 && tcount>=0){
+                  //  console.log("currentTime before : ",parseInt(currentTime))
+                  timeString = (previousTime+":"+tcount).toString();
+                }else{
+                  tcount = 0;
+                  currentTime = (parseInt(previousTime)+1).toString();
+                  previousTime = currentTime;
+                  timeString = (currentTime+":"+tcount).toString();
+                }
+                console.log("timeString : ", normalize((__dirname).toString().replace("/api","/")+'uploads/'+convertVideoName+'.mp4'));
+                ffmpeg('./uploads/'+convertVideoName+'.mp4')
+                .output('./screenshots/screenshotlogo'+convertVideoName+i+'.png')
+                .noAudio()
+                .seek(timeString)
+                .on('error', function(err) {
+                  //console.log("i",i , err);
+                  promises.push('/screenshots/screenshot'+i+'.png')
+                  screenshotsArray = screenshotsArray.concat(['/screenshots/screenshotlogo'+convertVideoName+count+'.png']);
+                  console.log("Address : 1 : ",(__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')
+                  gm(normalize((__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')).crop(stripWidthLogo, stripHeightLogo, stripStartXLogo, stripStartYLogo).write(normalize((__dirname).toString().replace("/api","")+'/logos/logo'+convertVideoName+count+'.png'), function (err) {
+                    if (!err) console.log(' hooray! ');
+                    var resemble = require('node-resemble-js')
+                    var diff = resemble("."+baseLogo).compareTo('./logos/logo'+convertVideoName+count+'.png').onComplete(function(data){
+                      console.log(data);
+                      if(parseFloat(data.misMatchPercentage)>80){
+                        console.log("****************Logo Changed*****************")
+                        logo.create({
+                          name : convertVideoName,
+                          changeDate : Date.now(),
+                          before : baseLogo,
+                          screenshot : '/screenshots/screenshotlogo'+convertVideoName+count+'.png',
+                          after: '/logos/logo'+convertVideoName+count+'.png'
+                        }).then(function(doneit){
+
+                          console.log("saved");
+                        })
+                        baseLogo = '/logos/logo'+convertVideoName+count+'.png';
+                      }
+                      count = count+timeDiffrenece;
+                      /*
+                      {
+                      misMatchPercentage : 100, // %
+                      isSameDimensions: true, // or false
+                      dimensionDifference: { width: 0, height: -1 }, // defined if dimensions are not the same
+                      getImageDataUrl: function(){}
+                    }
+                    */
+                  });
+                });
+                resolve();
+              console.log(i,count)
+                if (i == count+timeDiffrenece){
+                  //*****************************************************
+                  logo.find({name:convertVideoName}).exec(function(error,logoResult){
+                    if(error){
+                      res.status(500).send({error:error});
+                    }else{
+                      if(logoResult.length>0){
+                        res.status(200).send({message:"Logo changed in this video",result:logoResult});
+                      }else{
+                        res.status(200).send({message:"no logo change detected"});
+                      }
+                    }
+                  })
+
+                }
+              })
+              .on('end', function() {
+                screenshotsArray = screenshotsArray.concat(['/screenshots/screenshotlogo'+convertVideoName+count+'.png']);
+                console.log("Address : 2 : ",(__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')
+                gm(normalize((__dirname).toString().replace("/api","")+'/Screenshots/screenshotlogo'+convertVideoName+count+'.png')).crop(stripWidthLogo, stripHeightLogo, stripStartXLogo, stripStartYLogo).write(normalize((__dirname).toString().replace("/api","")+'/logos/logo'+convertVideoName+count+'.png'), function (err) {
+                  if (!err) console.log(' hooray!121 ');
+                });
+                promises.push('/screenshots/screenshot'+convertVideoName+i+'.png')
+                var resemble = require('node-resemble-js')
+                var diff = resemble("."+baseLogo).compareTo('./logos/logo'+convertVideoName+count+'.png').onComplete(function(data){
+                  console.log(data);
+                  if(parseFloat(data.misMatchPercentage)>80){
+                    console.log("****************Logo Changed*****************")
+                    logo.create({
+                      name : convertVideoName,
+                      changeDate : Date.now(),
+                      before : baseLogo,
+                      screenshot : '/screenshots/screenshotlogo'+convertVideoName+count+'.png',
+                      after: '/logos/logo'+convertVideoName+count+'.png'
+                    }).then(function(doneit){
+                      console.log("saved");
+                    })
+                    baseLogo = '/logos/logo'+convertVideoName+count+'.png';
+                  }
+                  count = count+timeDiffrenece;
+                  /*
+                  {
+                  misMatchPercentage : 100, // %
+                  isSameDimensions: true, // or false
+                  dimensionDifference: { width: 0, height: -1 }, // defined if dimensions are not the same
+                  getImageDataUrl: function(){}
+                }
+                */
+              });
+              resolve();
+              console.log(i,count)
+              if (i == count+timeDiffrenece){
+                //*****************************************************
+                logo.find({name:convertVideoName}).exec(function(error,logoResult){
+                  if(error){
+                    res.status(500).send({error:error});
+                  }else{
+                    if(logoResult.length>0){
+                      res.status(200).send({message:"Logo changed in this video",result:logoResult});
+                    }else{
+                      res.status(200).send({message:"no logo change detected"});
+                    }
+                  }
+                })
+              }
+
+            })
+            .run();
+          }
+        })
+        promise.all(promises)
+        .then(function(data){ /* do stuff when success */
+          console.log("12312312312312323213123123123123123123123");
+        })
+        .catch(function(err){
+          console.log("Error",err)
+        /* error handling */ });
+
+      }
+    }
+  })
+
+
+}else{
+  res.status(400).send({message: "videoName required"});
+}
+
+})
+
+// create a GET route
+app.get('/express_backend', (req, res) => {
+  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
+});
+
+if (process.env.NODE_ENV === 'production') {
+  // Serve any static files
+  app.use(express.static(path.join(normalize(__dirname), 'client/build')));
+  // Handle React routing, return all requests to React app
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(normalize(__dirname), 'client/build', 'index.html'));
+  });
+}
+app.use('/',function(req, res, next){
+  req.setTimeout(0) // no timeout for all requests, your server will be DoS'd
+  next()
+}, require('./routes/unauthenticated.js')); //routes which does't require token authentication
+app.listen(port, () => console.log(`Listening on port ${port}`));

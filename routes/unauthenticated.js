@@ -11,4 +11,5 @@ router.post('/uploadFileToBucket',video.uploadFileToBucket);
 router.post('/uploadFile',video.uploadFile);
 router.post('/getClip',video.getClip);
 router.post('/getVideosUrls',video.getVideosUrls);
+//router.post('/checkLogoChange',video.checkLogoChange);
 module.exports = router;
