@@ -153,3 +153,19 @@ p{
   width: 21%;
   border-radius: 5px;
 }
+.BtnDiv
+{
+   width:100%;
+   display:flex
+}
+.LogoDetectBtn
+{
+  width: 49%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: nowrap;
+  color: white;
+  margin-left: 10px;
+  margin-left: 2%
+}

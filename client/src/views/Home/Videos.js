@@ -111,10 +111,11 @@ class Videos extends Component {
                 </div>
                 <Button className="ClipBtn" bsStyle="primary" onClick={()=>this.handleClip(this.videoDetail[idx])}>Clip</Button>
               </div>
-              <div >
+              <div className="BtnDiv">
 
                 <Button bsStyle="success" className='newsTickerBtn' onClick={()=>this.handleVideo(this.videoDetail[idx])}>Get Tickers</Button>
                 <Button bsStyle="danger" className='transcriptionBtn' onClick={()=>this.handleTranscript(this.videoDetail[idx])} title="View Transcripts">View Transcripts</Button>
+                <Button bsStyle="info" className='LogoDetectBtn' onClick={()=>this.handleLogoDetect(this.videoDetail[idx])}>Detect Logo Change</Button>
               </div>
             </div>)
         })
@@ -124,6 +125,40 @@ class Videos extends Component {
           });
       }
     });
+
+  }
+
+  handleLogoDetect=(e)=>
+  {
+    EventBus.publish("showLoading");
+    console.log("video detail :: ",e);
+
+    var options = {
+      method: 'POST',
+      url: url + '/checkLogoChange',
+      headers: { },
+      form:{
+        videoName:e.videoName,
+      },
+      json: true
+    };
+    console.log("Options :: ", options);
+
+    request(options, (error, response, body) =>
+    {
+
+      EventBus.publish("stopLoading");
+      if (error)
+      {
+        console.log("Error", error);
+      }
+      else
+      {
+        console.log("Response", response)
+
+      }
+    })
+
 
   }
 
