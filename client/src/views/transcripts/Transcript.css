@@ -1,0 +1,116 @@
+.transcriptBody
+{
+  background: white;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  width: 100%;
+  padding: 12px
+}
+.transcriptContent{
+  font-size: 16px;
+  text-align: center;
+  height: 456px;
+  max-height: 456px !important;
+  font-size: 16px !important
+}
+.printBtn
+{
+  width: 16%;
+  margin-right: 25px;
+}
+.ShareBtnDiv
+{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px
+}
+.WhatsappShareButton{
+  display: flex;
+  align-items: center;
+  width: 25%;
+  background: rgb(44, 183, 66);
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+.whatsAppTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.EmailShareButton
+{
+  /* display: flex;
+  align-items: center;
+  width: 16%;
+  background: rgb(127, 127, 127);
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px; */
+  /* cursor: pointer; */
+
+  background: #344675;
+background-image: -webkit-linear-gradient(to bottom left, #344675, #263148, #344675);
+background-image: -webkit-gradient(linear, right top, left bottom, from(#344675), color-stop(#263148), to(#344675));
+background-image: -webkit-linear-gradient(top right, #344675, #263148, #344675);
+background-image: linear-gradient(to bottom left, #344675, #263148, #344675);
+background-size: 210% 210%;
+background-position: top right;
+background-color: #344675;
+  height: 30px;
+  width: 25%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer ;
+  margin:0px !important;
+  padding: 0px !important
+
+}
+.emailTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.WhatsAppBody
+{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.WhatsAppNumberField
+{
+  border-color: darkgray;
+}
+.whatsAppTitle
+{
+  margin-right: 47%;
+  margin-bottom: 2px;
+  font-weight: bold;
+  width: 58%;
+}
+.WhatsAppFormDiv
+{
+  width: 25%;
+  padding: 1%;
+  background: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+}
+.whatsAppSendbtn
+{
+  margin-left: 65%;
+    width: 35%;
+}

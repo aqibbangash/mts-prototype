@@ -1,0 +1,254 @@
+.videoView{
+  /* background: yellow */
+}
+.VideoBtns{
+  /* background: "orange", */
+}
+.row{
+  margin: 0px !important
+}
+
+.sharebtn{
+  height: 30px;
+  width: 25%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer ;
+  margin:0px !important;
+  padding: 0px !important
+}
+
+.whatsappsharebtn{
+  height: 30px;
+    width: 30%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    margin: 0px 1% 0px 1% !important;
+    padding: 0px !important;
+}
+
+.infoBtn
+{
+  height: 30px;
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer ;
+  background: #3358f4 !important;
+  background: -webkit-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%) !important;
+  background: -webkit-gradient(linear, left bottom, left top, from(#3358f4), to(#1d8cf8)) !important;
+  background: -webkit-linear-gradient(bottom, #3358f4 0%, #1d8cf8 100%) !important;
+  background: linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%) !important;
+  margin:0px !important;
+  padding: 0px !important
+}
+.infoBtn:hover{
+  cursor: pointer ;
+  background: #3358f4 !important;
+}
+.btn:disabled, .btn[disabled], .btn.disabled{
+  color: white !important;
+  cursor: not-allowed !important;
+  pointer-events: all !important;
+}
+
+.VideosDropOptions
+{
+  height: 30px;
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer ;
+  /* background: #3358f4 !important;
+  background: -webkit-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%) !important;
+  background: -webkit-gradient(linear, left bottom, left top, from(#3358f4), to(#1d8cf8)) !important;
+  background: -webkit-linear-gradient(bottom, #3358f4 0%, #1d8cf8 100%) !important;
+  background: linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%) !important; */
+  margin:0px !important;
+  padding: 0px !important
+
+}
+.cursorPointer{
+  cursor: pointer !important;
+}
+.colorBlack{
+  color: black !important;
+}
+
+/* ----------- Screenshots screen --------- */
+
+.screenshotPage
+{
+  width: 100%;
+  height: 500px;
+  /* background: red */
+}
+.combineBtn
+{
+  width:20%;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  /* color: white; */
+  /* background-color: blue */
+}
+.ShareBtnDiv
+{
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px
+}
+.WhatsappBtn{
+  display: flex;
+  align-items: center;
+  width: 16%;
+  background: #55CD6C;
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+.whatsAppTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.EmailBtn
+{
+  display: flex;
+  align-items: center;
+  width: 16%;
+  background: rgb(127, 127, 127);
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  cursor: pointer;
+}
+.emailTitle
+{
+  height: 37px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.combinedImg
+{
+  display: flex;
+  justify-content: center;
+}
+
+.DownloadBtn
+{
+  display: flex;
+  align-items: center;
+  width: 16%;
+  /* background: rgb(44, 183, 66); */
+  color: white;
+  border-radius: 4px;
+  justify-content: center;
+  height: 37px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+.DownloadBtnLogo
+{
+    object-fit: scale-down;
+    width: 16px;
+    margin-right: 6px;
+}
+.emailModal
+{
+  /* background: rgb(0,0,0,0.4); */
+  width: 100%;
+  /* background: white; */
+  height:100%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+
+}
+
+.EmailModalBody
+{
+  background: white;
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* padding: 15px; */
+  border: 1px solid lightgray;
+  height: 350px;
+  justify-content: center;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+}
+.EmailSendBtn
+{
+  height: 35px;
+  width: 30%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  margin: 0px 1% 0px 1% !important;
+  padding: 0px !important;
+}
+.EmailField
+{
+  padding: 0px !important;
+  width: 80%;
+}
+.emailLabel
+{
+  font-weight: bold;
+  color: #686767;
+  font-size: 18px;
+  margin-right: 52%;
+  margin-bottom: 10px;
+}
+.EmailBody
+{
+  padding: 0px !important;
+  width: 80%
+}
+
+.form-group .form-control, .input-group .form-control{
+        padding: 10px !important;
+}
+.WhatsAppBody{
+  width: 100%;
+  display: flex;justify-content: center;align-items: center;
+}
+.WhatsAppFormDiv{
+  background: white;
+  width: 44%;
+  border-radius: 4%;
+  padding: 20px;
+  -webkit-box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 3px 11px 0px rgba(0,0,0,0.75);
+}

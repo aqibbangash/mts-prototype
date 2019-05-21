@@ -1,0 +1,27 @@
+.uploadVideoBtn
+{
+  /* position: absolute; */
+  /* top: 62px;
+  right: 10px; */
+  height: 30px;
+  width: 117px;
+  /* background: #20a8d8; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  background: #3358f4;
+  background: -webkit-linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%);
+  background: -webkit-gradient(linear, left bottom, left top, from(#3358f4), to(#1d8cf8));
+  background: -webkit-linear-gradient(bottom, #3358f4 0%, #1d8cf8 100%);
+  background: linear-gradient(0deg, #3358f4 0%, #1d8cf8 100%);
+  margin:0px !important
+}
+
+.uploadVideoBtn:hover
+{
+  background: #3358f4;
+  cursor: pointer;
+}

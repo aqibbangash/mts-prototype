@@ -1,75 +1,40 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
-  "version": "2.1.2",
-  "description": "CoreUI React Open Source Bootstrap 4 Admin Template",
-  "author": "Łukasz Holeczek",
-  "homepage": "https://coreui.io",
-  "copyright": "Copyright 2018 creativeLabs Łukasz Holeczek",
-  "license": "MIT",
+  "name": "MTS",
+  "version": "1.0.0",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
+  "proxy": "http://localhost:5000/",
+  "engines": {
+    "node": "10.3.0"
   },
   "dependencies": {
-    "@coreui/coreui": "^2.1.1",
-    "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
-    "@coreui/icons": "0.3.0",
-    "@coreui/react": "^2.1.1",
-    "axios": "^0.18.0",
-    "base64-img": "^1.0.4",
-    "bootstrap": "^4.1.3",
-    "browserify-fs": "^1.0.0",
-    "chart.js": "^2.7.3",
-    "classnames": "^2.2.6",
-    "core-js": "^2.5.7",
-    "download-file": "^0.1.5",
-    "downloadbutton": "^1.0.0",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
+    "@types/react": "16.4.16",
+    "bootstrap": "4.1.3",
+    "chart.js": "^2.7.2",
+    "classnames": "2.2.6",
     "eventing-bus": "^1.3.3",
-    "flag-icon-css": "^3.2.1",
-    "font-awesome": "^4.7.0",
-    "image-downloader": "^3.4.2",
-    "image-to-base64": "^2.0.1",
-    "node-sass": "^4.10.0",
+    "history": "4.7.2",
+    "node-sass": "4.9.3",
+    "perfect-scrollbar": "1.4.0",
     "prop-types": "^15.6.2",
-    "react": "^16.7.0",
-    "react-app-polyfill": "^0.1.3",
-    "react-bootstrap": "^0.32.4",
-    "react-chartjs-2": "^2.7.2",
-    "react-dom": "^16.7.0",
-    "react-download-link": "^2.2.0",
-    "react-file-input": "^0.2.5",
-    "react-html-email": "^3.0.0",
-    "react-image-compressor": "^1.0.1",
-    "react-image-process": "^0.1.6",
-    "react-jw-player": "^1.19.0",
-    "react-loadable": "^5.5.0",
-    "react-player": "^1.8.0",
-    "react-router-config": "^4.4.0-beta.6",
-    "react-router-dom": "^4.3.1",
-    "react-share": "^2.4.0",
-    "react-simple-video-player": "^1.0.0",
-    "react-test-renderer": "^16.6.3",
-    "reactstrap": "^6.5.0",
-    "simple-line-icons": "^2.4.1",
-    "video-react": "^0.13.1"
-  },
-  "proxy": "http://localhost:5000/",
-  "devDependencies": {
-    "react-scripts": "^2.1.1"
+    "react": "^16.8.1",
+    "react-chartjs-2": "^2.7.4",
+    "react-dom": "^16.8.1",
+    "react-google-maps": "9.4.5",
+    "react-grid-gallery": "^0.5.4",
+    "react-html-parser": "^2.0.2",
+    "react-notification-alert": "0.0.8",
+    "react-player": "^1.11.0",
+    "react-router-dom": "4.3.1",
+    "react-scripts": "2.0.4",
+    "react-share": "^3.0.0",
+    "reactstrap": "6.5.0",
+    "request": "^2.88.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:cov": "react-scripts test --coverage",
-    "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject"
-  },
-  "bugs": {
-    "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -77,15 +42,7 @@
   "browserslist": [
     ">0.2%",
     "not dead",
-    "not ie <= 9",
+    "not ie <= 11",
     "not op_mini all"
-  ],
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!**/*index.js",
-      "!src/serviceWorker.js",
-      "!src/polyfill.js"
-    ]
-  }
+  ]
 }
