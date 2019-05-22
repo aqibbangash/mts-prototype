@@ -4,12 +4,12 @@ import { Route, Switch } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
-import Sidebar from "components/Sidebar/Sidebar.jsx";
+import AdminNavbar from "../../components/Navbars/AdminNavbar.jsx";
+import Sidebar from "../../components/Sidebar/Sidebar.jsx";
 
-import routes from "routes.js";
+import routes from "../../routes.js";
 
-import logo from "assets/img/react-logo.png";
+import logo from "../../assets/img/react-logo.png";
 
 var ps;
 

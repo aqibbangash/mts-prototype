@@ -25,7 +25,14 @@ const height = 100;
 var convertVideoName = 'ary';
 var stripHeight = 120;
 var stripWidth = 1050;
-
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads')
+  },
+  filename: function (req, file, callback) {
+    callback(null,file.originalname)
+  }
+})
 
 var stripHeightLogo = 110;  //ARY
 var stripWidthLogo = 130; //ARY
@@ -93,13 +100,14 @@ app.get('/sendemail/:id/:subject/:message/:imageName', function (req, res, next)
   });
 });
 app.get('/sendVideoEmail/:id/:subject/:message/:videoName', function (req, res, next) {
+  console.log("Request : ",req.params)
   app.mailer.send('email', {
     to: req.params.id, // REQUIRED. This can be a comma delimited string just like a normal email to field.
     subject: req.params.subject, // REQUIRED.
     otherProperty: {message : req.params.message}, // All additional properties are also passed to the template as local variables.
     message:  req.params.message,
     attachments:[
-      {filename: req.params.videoName+'.mp4', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/uploads/'+req.params.videoName+'-clip.mp4'))),contentType: 'video/mp4'}
+      {filename: req.params.videoName+'.mp4', contents : new Buffer(fs.readFileSync(normalize(__dirname +'/uploads/'+req.params.videoName+'.mp4'))),contentType: 'video/mp4'}
     ]
   }, function (err) {
     if (err) {
@@ -111,7 +119,105 @@ app.get('/sendVideoEmail/:id/:subject/:message/:videoName', function (req, res, 
     res.status(200).send({message:"Email sent"});
   });
 });
+var upload = multer({ storage: storage }).single('filename')
 
+app.post('/uploadFile',function(req,res){
+
+    console.log("file : ",req.file);
+    upload(req, res, function (err) {
+      if(req.file){
+        console.log(req.file);
+        var audioFileName = req.file.originalname.split('.');
+        let  proc = new ffmpeg({source:'./uploads/'+req.file.originalname})
+        .setFfmpegPath(ffmpegInstaller.path).audioChannels(1)
+        .toFormat('wav')
+        .saveToFile('./uploads/converted/'+audioFileName[0]+'.wav')
+        console.log("123")
+        setTimeout(function(){
+          console.log("converted video");
+          process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
+          const {Storage} = require('@google-cloud/storage');
+          // Your Google Cloud Platform project ID
+          const projectId = 'mts-project-227607';
+          // Creates a client
+          const storage = new Storage({
+            projectId: projectId,
+          });
+          // The name for the new bucket
+          var bucket = storage.bucket('bolnews');
+          console.log(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'))
+          bucket.upload(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'), function(err, file) {
+            if (err) {
+              console.log("Error:************************* ",err);
+              res.status(500).send({error:err});
+            }else{ // file uploaded to file bucket
+              console.log("Uploaded to bucket *************************")
+              const speech = require('@google-cloud/speech');
+              const client = new speech.SpeechClient();
+              //const fileName = '../uploads/convert'+req.body.videoName+'.wav';
+              const gcsUri = 'gs://bolnews/'+audioFileName[0]+'.wav';
+              const encoding = 'LINEAR16';
+              const sampleRateHertz = 44100;
+              const languageCode = 'ur-PK';
+              const config = {
+                encoding: encoding,
+                sampleRateHertz: sampleRateHertz,
+                languageCode: languageCode,
+              };
+              const audio = {
+                uri: gcsUri,
+              };
+              const request = {
+                config: config,
+                audio: audio,
+              };
+              // Detects speech in the audio file. This creates a recognition job that you
+              // can wait for now, or get its result later.
+              client
+              .longRunningRecognize(request)
+              .then(data => {
+                const operation = data[0];
+                // Get a Promise representation of the final result of the job
+                return operation.promise();
+              })
+              .then(data => {
+                const response = data[0];
+                const transcription = response.results
+                .map(result => result.alternatives[0].transcript)
+                .join('\n');
+                console.log(`Transcription: ${transcription}`);
+                req.file.originalname = req.file.originalname.replace(".mp4","");
+                video.create({
+                  videoName:req.file.originalname,
+                  name : Date.now(),
+                  transcription: transcription,
+                  path : '/uploads/'+req.file.originalname
+                }).then(function(result){
+                  var file = bucket.file(audioFileName[0]+".wav");
+                  file.delete(function(err, apiResponse) {
+                    if(err){
+                      console.log("error in removing file from bucket",err);
+                    }else{
+                      res.status(200).send({result:result});
+                    }
+                  });
+                }).catch(err => {
+                  console.error('ERROR:', err);
+                  res.status(500).send({error:err});
+                });
+              })
+              .catch(err => {
+                console.error('ERROR:', err);
+                res.status(500).send({error:err});
+              });
+            }
+          });
+        }, 3000);
+      }else{
+        res.status(400).send({meseage:"file not found"});
+      }
+    })
+})
 // var looksSame = require('looks-same');
 //
 // looksSame('./uploads/logoptv120.png', './uploads/logoptv10.png', function(error, {equal}) {

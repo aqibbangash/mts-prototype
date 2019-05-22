@@ -97,7 +97,7 @@ exports.createTranscription = function(req,res){
   if(req.body.videoName == null || req.body.videoName == undefined){
     req.body.videoName = convertVideoName;
   }
-  video.findOne({videoName : req.body.videoName, transcription:{$ne:null},transcription:{$ne:""}}).exec(function(error,resu){
+  video.findOne({videoName : req.body.videoName, transcription:{$ne:null},transcription:{$ne:""},transcription:{$ne:undefined}}).exec(function(error,resu){
     if(error){
       res.status(500).send({error:error});
     }else{
@@ -110,25 +110,44 @@ exports.createTranscription = function(req,res){
         // Creates a client
         const client = new speech.SpeechClient();
         // The name of the audio file to transcribe
-        const fileName = '../uploads/'+req.body.videoName+'.wav';
+        const fileName = '../uploads/converted/'+req.body.videoName+'.wav';
         //const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
-        const encoding = 'LINEAR16';
-        const sampleRateHertz = 44100;
-        const languageCode = 'ur-PK';
-        const config = {
-          encoding: encoding,
-          sampleRateHertz: sampleRateHertz,
-          languageCode: languageCode,
-        };
+        // const encoding = 'LINEAR16';
+        // const sampleRateHertz = 44100;
+        // const languageCode = 'ur-PK';
+        // const config = {
+        //   encoding: encoding,
+        //   sampleRateHertz: sampleRateHertz,
+        //   languageCode: languageCode,
+        // };
+        //
+        // const audio = {
+        //   uri: fileName,
+        // };
+        //
+        // const request = {
+        //   config: config,
+        //   audio: audio,
+        // };
 
-        const audio = {
-          uri: fileName,
-        };
 
-        const request = {
-          config: config,
-          audio: audio,
-        };
+
+        const gcsUri = 'gs://arynews/'+req.body.videoName+'.wav';
+                    const encoding = 'LINEAR16';
+                    const sampleRateHertz = 44100;
+                    const languageCode = 'ur-PK';
+                    const config = {
+                      encoding: encoding,
+                      sampleRateHertz: sampleRateHertz,
+                      languageCode: languageCode,
+                    };
+                    const audio = {
+                      uri: gcsUri,
+                    };
+                    const request = {
+                      config: config,
+                      audio: audio,
+                    };
 
         // Detects speech in the audio file. This creates a recognition job that you
         // can wait for now, or get its result later.
@@ -182,6 +201,7 @@ exports.createbucket = function(req,res){
   .catch(err => {
     console.error('ERROR:', err);
   });
+  
 }
 
 exports.uploadFileToBucket = function(req,res){
@@ -199,101 +219,104 @@ exports.uploadFileToBucket = function(req,res){
 }
 
 
-exports.uploadFile = function(req,res){
-  console.log("file : ",req.file);
-  upload(req, res, function (err) {
-    if(req.file){
-      console.log(req.file);
-      var audioFileName = req.file.originalname.split('.');
-      let  proc = new ffmpeg({source:'./uploads/'+req.file.originalname})
-      .setFfmpegPath(ffmpegInstaller.path).audioChannels(1)
-      .toFormat('wav')
-      .saveToFile('./uploads/converted/'+audioFileName[0]+'.wav')
-      console.log("123")
-      setTimeout(function(){
-        console.log("converted video");
-        process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
-        const {Storage} = require('@google-cloud/storage');
-        // Your Google Cloud Platform project ID
-        const projectId = 'mts-project-227607';
-        // Creates a client
-        const storage = new Storage({
-          projectId: projectId,
-        });
-        // The name for the new bucket
-        var bucket = storage.bucket('bolnews');
-        console.log(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'))
-        bucket.upload(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'), function(err, file) {
-          if (err) {
-            console.log("Error: ",err);
-            res.status(500).send({error:err});
-          }else{ // file uploaded to file bucket
-            const speech = require('@google-cloud/speech');
-            const client = new speech.SpeechClient();
-            //const fileName = '../uploads/convert'+req.body.videoName+'.wav';
-            const gcsUri = 'gs://bolnews/'+audioFileName[0]+'.wav';
-            const encoding = 'LINEAR16';
-            const sampleRateHertz = 44100;
-            const languageCode = 'ur-PK';
-            const config = {
-              encoding: encoding,
-              sampleRateHertz: sampleRateHertz,
-              languageCode: languageCode,
-            };
-            const audio = {
-              uri: gcsUri,
-            };
-            const request = {
-              config: config,
-              audio: audio,
-            };
-            // Detects speech in the audio file. This creates a recognition job that you
-            // can wait for now, or get its result later.
-            client
-            .longRunningRecognize(request)
-            .then(data => {
-              const operation = data[0];
-              // Get a Promise representation of the final result of the job
-              return operation.promise();
-            })
-            .then(data => {
-              const response = data[0];
-              const transcription = response.results
-              .map(result => result.alternatives[0].transcript)
-              .join('\n');
-              console.log(`Transcription: ${transcription}`);
-              req.file.originalname = req.file.originalname.replace(".mp4","");
-              video.create({
-                videoName:req.file.originalname,
-                name : Date.now(),
-                transcription: transcription,
-                path : '/uploads/'+req.file.originalname
-              }).then(function(result){
-                var file = bucket.file(audioFileName[0]+".wav");
-                file.delete(function(err, apiResponse) {
-                  if(err){
-                    console.log("error in removing file from bucket",err);
-                  }else{
-                    res.status(200).send({result:result});
-                  }
-                });
-              }).catch(err => {
-                console.error('ERROR:', err);
-                res.status(500).send({error:err});
-              });
-            })
-            .catch(err => {
-              console.error('ERROR:', err);
-              res.status(500).send({error:err});
-            });
-          }
-        });
-      }, 3000);
-    }else{
-      res.status(400).send({meseage:"file not found"});
-    }
-  })
-}
+
+
+
+// exports.uploadFile = function(req,res){
+//   console.log("file : ",req.file);
+//   upload(req, res, function (err) {
+//     if(req.file){
+//       console.log(req.file);
+//       var audioFileName = req.file.originalname.split('.');
+//       let  proc = new ffmpeg({source:'./uploads/'+req.file.originalname})
+//       .setFfmpegPath(ffmpegInstaller.path).audioChannels(1)
+//       .toFormat('wav')
+//       .saveToFile('./uploads/converted/'+audioFileName[0]+'.wav')
+//       console.log("123")
+//       setTimeout(function(){
+//         console.log("converted video");
+//         process.env.GOOGLE_APPLICATION_CREDENTIALS=normalize("./mts-project-227607-06400f774c3f.json")
+//         const {Storage} = require('@google-cloud/storage');
+//         // Your Google Cloud Platform project ID
+//         const projectId = 'mts-project-227607';
+//         // Creates a client
+//         const storage = new Storage({
+//           projectId: projectId,
+//         });
+//         // The name for the new bucket
+//         var bucket = storage.bucket('bolnews');
+//         console.log(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'))
+//         bucket.upload(normalize(__dirname.replace('/api',"")+'/uploads/converted/'+audioFileName[0]+'.wav'), function(err, file) {
+//           if (err) {
+//             console.log("Error: ",err);
+//             res.status(500).send({error:err});
+//           }else{ // file uploaded to file bucket
+//             const speech = require('@google-cloud/speech');
+//             const client = new speech.SpeechClient();
+//             //const fileName = '../uploads/convert'+req.body.videoName+'.wav';
+//             const gcsUri = 'gs://bolnews/'+audioFileName[0]+'.wav';
+//             const encoding = 'LINEAR16';
+//             const sampleRateHertz = 44100;
+//             const languageCode = 'ur-PK';
+//             const config = {
+//               encoding: encoding,
+//               sampleRateHertz: sampleRateHertz,
+//               languageCode: languageCode,
+//             };
+//             const audio = {
+//               uri: gcsUri,
+//             };
+//             const request = {
+//               config: config,
+//               audio: audio,
+//             };
+//             // Detects speech in the audio file. This creates a recognition job that you
+//             // can wait for now, or get its result later.
+//             client
+//             .longRunningRecognize(request)
+//             .then(data => {
+//               const operation = data[0];
+//               // Get a Promise representation of the final result of the job
+//               return operation.promise();
+//             })
+//             .then(data => {
+//               const response = data[0];
+//               const transcription = response.results
+//               .map(result => result.alternatives[0].transcript)
+//               .join('\n');
+//               console.log(`Transcription: ${transcription}`);
+//               req.file.originalname = req.file.originalname.replace(".mp4","");
+//               video.create({
+//                 videoName:req.file.originalname,
+//                 name : Date.now(),
+//                 transcription: transcription,
+//                 path : '/uploads/'+req.file.originalname
+//               }).then(function(result){
+//                 var file = bucket.file(audioFileName[0]+".wav");
+//                 file.delete(function(err, apiResponse) {
+//                   if(err){
+//                     console.log("error in removing file from bucket",err);
+//                   }else{
+//                     res.status(200).send({result:result});
+//                   }
+//                 });
+//               }).catch(err => {
+//                 console.error('ERROR:', err);
+//                 res.status(500).send({error:err});
+//               });
+//             })
+//             .catch(err => {
+//               console.error('ERROR:', err);
+//               res.status(500).send({error:err});
+//             });
+//           }
+//         });
+//       }, 3000);
+//     }else{
+//       res.status(400).send({meseage:"file not found"});
+//     }
+//   })
+// }
 
 exports.getClip = function(req,res){
   var params = req.body;

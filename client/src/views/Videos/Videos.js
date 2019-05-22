@@ -64,7 +64,8 @@ class Videos extends React.Component {
 
 
     handleClip=(n)=>{
-      window.location.href=("/home/clip-video")
+      var url="/home/clip-video/"+n.videoName+"/"+n.timeStamp
+      window.location.href=(url)
       console.log("handleClip");
     }
 
@@ -87,34 +88,6 @@ class Videos extends React.Component {
       console.log("transcript button clicked ::", n );
       var url="/home/view-transcripts/"+n.videoName
       window.location.href=(url)
-      // var options = {
-      //   method: 'POST',
-      //   url: url + '/createTranscription',
-      //   headers: { },
-      //   form:{
-      //     videoName:n.videoName
-      //   },
-      //   json: true
-      // };
-      //
-      // request(options, (error, response, body) =>
-      // {
-      //   if (error)
-      //   {
-      //     console.log("Error", error);
-      //   }
-      //   else
-      //   {
-      //     console.log("Response :: ", body.transcription);
-      //     EventBus.publish("stopLoading");
-      //     this.HomeContent=<Transcript content={body.transcription} />
-      //     EventBus.publish("HomeScreenView", this.HomeContent);
-      //     this.setState((state, props) => {
-      //       return {counter: 0 + props.step};
-      //     });
-      //   }
-      // });
-
 
     }
 

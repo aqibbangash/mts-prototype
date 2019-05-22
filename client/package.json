@@ -16,6 +16,7 @@
     "node-sass": "4.9.3",
     "perfect-scrollbar": "1.4.0",
     "prop-types": "^15.6.2",
+    "rc-time-picker": "^3.6.6",
     "react": "^16.8.1",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.8.1",
