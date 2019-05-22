@@ -86,11 +86,10 @@ class Admin extends React.Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "TRAMIS";
   };
   render() {
     return (
-      <>
         <div className="wrapper">
           <Sidebar
             {...this.props}
@@ -118,7 +117,6 @@ class Admin extends React.Component {
 
           </div>
         </div>
-      </>
     );
   }
 }

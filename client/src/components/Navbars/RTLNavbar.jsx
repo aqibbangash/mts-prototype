@@ -70,7 +70,7 @@ class AdminNavbar extends React.Component {
   };
   render() {
     return (
-      <>
+      <div>
         <Navbar
           className={classNames("navbar-absolute", this.state.color)}
           expand="lg"
@@ -93,7 +93,9 @@ class AdminNavbar extends React.Component {
                 </button>
               </div>
               <NavbarBrand href="#pablo" onClick={e => e.preventDefault()}>
-                {this.props.brandText}
+                (this.props.brandText=="BRAND")
+                ?"TRAMIS"
+                :{this.props.brandText}
               </NavbarBrand>
             </div>
             <button
@@ -213,7 +215,7 @@ class AdminNavbar extends React.Component {
             </button>
           </div>
         </Modal>
-      </>
+      </div>
     );
   }
 }

@@ -39,7 +39,7 @@ class Clip extends React.Component {
       video:'',
       dropdownOpen: false,
       videoName:'',
-      duration:'',
+      duration:1,
       startTime:'',
       clippedvideo:false,
       isClipped:false,
@@ -60,6 +60,7 @@ class Clip extends React.Component {
   }
   getVideo=()=>{
     console.log("thi.state :: ", this.state);
+    EventBus.publish("showLoading");
     var options = {
       method: 'POST',
       url: url + '/getvideos',
@@ -100,7 +101,14 @@ class Clip extends React.Component {
   }
   handleDurationChange=(e)=>{
     console.log("e ", e);
-    this.setState({duration:e.target.value})
+    if(e.target.value<=0)
+    {
+      console.log("no change");
+    }
+    else {
+      this.setState({duration:e.target.value})
+    }
+
   }
 
   forceDownload=(link)=>{
@@ -134,6 +142,7 @@ class Clip extends React.Component {
   }
 
   handleClip=()=>{
+    EventBus.publish("showLoading");
     var options = {
       method: 'POST',
       url: url + '/getClip',
@@ -154,6 +163,7 @@ class Clip extends React.Component {
       }
       else
       {
+        EventBus.publish("stopLoading");
         console.log("clip Response :: ", body);
         this.setState({isClipped:true})
         this.setState({clippedvideo:body.result})
@@ -242,7 +252,7 @@ render() {
             muted
             />
           </div>
-          <div style={{margin:"16px", margin:"10px"}}>
+          <div style={{margin:"16px", margin:"10px", display:"flex"}}>
             <div>
               <h4>Start time</h4>
               <TimePicker
@@ -255,7 +265,7 @@ render() {
             </div>
             <div>
               <h4>Duration</h4>
-              <input type="number" name="duration" style={{background:"white", width:"50px", border:"1px solid lightgray", borderRadius:"6px"}} onChange={(value)=>this.handleDurationChange(value)} />
+              <input type="number" value={this.state.duration} name="duration" style={{padding:"5px",background:"white", width:"70px",height:"28px", border:"1px solid lightgray", borderRadius:"4px"}} onChange={(value)=>this.handleDurationChange(value)} />
             </div>
           </div>
           <div className="col-lg-3">

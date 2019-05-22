@@ -91,6 +91,41 @@ class Videos extends React.Component {
 
     }
 
+    handleLogoDetect=(e)=>
+{
+  EventBus.publish("showLoading");
+  console.log("video detail :: ",e);
+  var url="/home/logo-detect/"+e.videoName
+  window.location.href=(url)
+  // var options = {
+  //   method: 'POST',
+  //   url: url + '/checkLogoChange',
+  //   headers: { },
+  //   form:{
+  //     videoName:e.videoName,
+  //   },
+  //   json: true
+  // };
+  // console.log("Options :: ", options);
+  //
+  // request(options, (error, response, body) =>
+  // {
+  //
+  //   EventBus.publish("stopLoading");
+  //   if (error)
+  //   {
+  //     console.log("Error", error);
+  //   }
+  //   else
+  //   {
+  //     console.log("Response", response)
+  //
+  //   }
+  // })
+
+
+}
+
 render() {
   var options = {
     method: 'POST',
@@ -133,9 +168,9 @@ render() {
               muted
               />
             </div>
-            <div className="col-lg-12">
+            <div className="col-lg-4 col-md-6 col-sm-12" style={{padding:"0px"}}>
               <Dropdown isOpen={this.state.dropdownOpen && this.state.dropdownCheck==i._id} toggle={()=>this.toggle(i._id)}>
-                <DropdownToggle className="VideosDropOptions" caret>
+                <DropdownToggle className="VideosDropOptions">
                   Options
                 </DropdownToggle>
                 <DropdownMenu className="col-lg-12" style={{border:"1px solid lightgray"}}>

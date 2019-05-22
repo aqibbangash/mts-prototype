@@ -91,7 +91,7 @@ render() {
     return (
       <div className="content">
         <div className="WhatsAppBody">
-          <div className="WhatsAppFormDiv">
+          <div className="WhatsAppFormDiv" style={{width:"30%"}}>
             <FormGroup >
               <label className="whatsAppTitle">Enter whatsApp Number</label>
               <Input

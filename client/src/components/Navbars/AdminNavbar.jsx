@@ -55,7 +55,7 @@ class AdminNavbar extends React.Component {
   handleVideoUpload=(e)=>{
     console.log("Video uploading");
     console.log("Upload video clicked",e.target.files[0]);
-
+    EventBus.publish("showLoading");
     this.fileUpload(e.target.files[0]).then((response)=>{
       EventBus.publish("stopLoading");
     console.log("Video Upload Response :: ",response.data);
@@ -99,7 +99,7 @@ class AdminNavbar extends React.Component {
   };
   render() {
     return (
-      <>
+      <div>
         <Navbar
           className={classNames("navbar-absolute", this.state.color)}
           expand="lg"
@@ -191,7 +191,7 @@ class AdminNavbar extends React.Component {
             </button>
           </div>
         </Modal>
-      </>
+      </div>
     );
   }
 }

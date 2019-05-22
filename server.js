@@ -191,7 +191,7 @@ app.post('/uploadFile',function(req,res){
                   videoName:req.file.originalname,
                   name : Date.now(),
                   transcription: transcription,
-                  path : '/uploads/'+req.file.originalname
+                  path : '/uploads/'+req.file.originalname+".mp4"
                 }).then(function(result){
                   var file = bucket.file(audioFileName[0]+".wav");
                   file.delete(function(err, apiResponse) {

@@ -53,6 +53,7 @@ class Screenshots extends React.Component {
   }
 
   getTickers=()=>{
+    EventBus.publish("showLoading");
     console.log("thi.state :: ", this.state);
     var options = {
       method: 'POST',

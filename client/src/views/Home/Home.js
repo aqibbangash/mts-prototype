@@ -31,8 +31,31 @@ class Main extends React.Component {
   constructor(){
     super()
     this.state={
-      views:<Videos/>
+      views:<Videos/>,
+    loadingg:false
     }
+
+    EventBus.on("showLoading", this.showLoading.bind(this));
+    EventBus.on("stopLoading", this.stopLoading.bind(this));
+
+  }
+
+  showLoading(msg){
+    this.setState({loadingg:true})
+    this.setState((state, props) => {
+    return {counter: state.counter + props.step};
+    })
+
+  }
+
+  stopLoading(msg){
+    this.setState({loadingg:false})
+    if (msg != undefined)
+    {alert(msg)}
+
+    this.setState((state, props) => {
+    return {counter: state.counter + props.step};
+    })
   }
 
 
@@ -40,6 +63,12 @@ class Main extends React.Component {
 render() {
     return (
       <div className="content">
+        <div className="loadingg"  hidden={!this.state.loadingg} >
+          <img className="LoaderImage" src="/5.gif"/>
+          <p className="videoLoadingText">
+
+          Please wait...</p>
+        </div>
         {this.state.views}
       </div>
     );
